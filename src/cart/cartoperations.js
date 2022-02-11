@@ -281,7 +281,7 @@ export const displayCartItems = async (client) => {
   try {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
-
+    console.log('The cartItems', fetchCartItems);
     if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
       fetchCartItems = JSON.parse(fetchCartItems);
       fetchCartItems.forEach((item) => {
@@ -357,7 +357,9 @@ export const cartOperations = async (
     const response = await findItemToChangeQuantity(client, itemId);
     message = response.message;
   } else if (level === 6) {
+    console.log('The level is 6');
     const response = await findItemToChangeQuantity(client, itemId);
+    console.log(response.itemToUpdate);
     const item = response.itemToUpdate;
     message = changeQuantity(client, index, item, itemId);
   } else if (level === 7) {
@@ -365,7 +367,9 @@ export const cartOperations = async (
   } else if (level === 8) {
     const products = [];
     const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
+    console.log('The retreived details are', details);
     const cartItems = JSON.parse(details[1]);
+
     cartItems.forEach((item) => {
       const pickedFields = (({
 
@@ -373,20 +377,25 @@ export const cartOperations = async (
         // eslint-disable-next-line camelcase
         product_id,
         userQuantity,
+        grade,
         totalCost,
       }) => ({
         id,
         product_id,
         userQuantity,
+        grade,
         totalCost,
       }))(item);
-      const cartSelections = {
-        id: pickedFields.id,
-        product_id: pickedFields.product_id,
-        units: pickedFields.userQuantity,
-        amount: pickedFields.totalCost,
-      };
-      products.push(cartSelections);
+      if (pickedFields.userQuantity > 0 && pickedFields.totalCost > 0) {
+        const cartSelections = {
+          id: pickedFields.id,
+          product_id: pickedFields.product_id,
+          grade: pickedFields.grade,
+          units: pickedFields.userQuantity,
+          price: pickedFields.totalCost,
+        };
+        products.push(cartSelections);
+      }
     });
 
     const cartSelections = {
@@ -397,11 +406,12 @@ export const cartOperations = async (
     };
 
     const response = await makebasicOrder(cartSelections);
+    console.log('The response here is', response);
 
     if (response.status === 200) {
       client.del('cartItems');
       message = `${end()} ${response.data.message}`;
-    } else if (response === 'Error') {
+    } else if (response.data.status === 'error') {
       message = `${end()} Similar order exists for this user`;
     }
   } else if (level === 9) {

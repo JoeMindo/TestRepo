@@ -7,19 +7,12 @@ import { BASEURL } from '../core/urls.js';
  * @returns The response from the server.
  */
 const makebasicOrder = async (cartSelections) => {
-  try {
-    const makeOrderRequest = await axios.post(
-      `${BASEURL}/ussd/savebasicorder`,
-      cartSelections,
-    );
+  const makeOrderRequest = await axios.post(
+    `${BASEURL}/ussd/savebasicorder`,
+    cartSelections,
+  ).catch((err) => err.response);
 
-    if (makeOrderRequest.status === 200) {
-      return makeOrderRequest;
-    }
-    return false;
-  } catch (err) {
-    return 'Error';
-  }
+  return makeOrderRequest;
 };
 
 export default makebasicOrder;

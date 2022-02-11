@@ -126,7 +126,6 @@ export const renderOfferings = async (client, id) => {
 };
 
 export const showAvailableProducts = async (client, textValue, text) => {
-  // Added client
   if (textValue === 1) {
     message = await renderProductCategories();
   } else if (textValue === 2) {
@@ -182,6 +181,7 @@ export const showAvailableProducts = async (client, textValue, text) => {
     // Point A
 
     message = await cartOperations(text, 'inner', 6, itemID, index);
+    console.log('The message is', message);
   } else if (
     textValue === 13
     && text.split('*')[10] === '1'

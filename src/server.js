@@ -60,6 +60,8 @@ app.post('/ussd', async (req, res) => {
   const text = ussdRouter(rawtext, '0', '00');
   // TODO: Migrate this to usermanagement
   const textValue = text.split('*').length;
+
+  console.log("The textvalue is", textValue);
   const userStatus = await checkIfUserExists(req.body.phoneNumber);
   let message;
 
