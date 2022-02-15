@@ -29,9 +29,10 @@ export const menus = {
     updateDetails: '4. Update farmer details\n',
     updateListedProduce: '5. Update listed produce',
     joinGroup: '6. Join Group\n',
-    cropCalendar: '7. Crop Calendar',
+    myFarms: '7. My Farms',
     cropCalendarMenus: '\n1. Option 1\n. Option 2. \n Option 3.',
     addFarmLocationOption: 'Where would you like to add your farm?\n1.Registred Location\n2.Other location',
+    noProduce: 'You have no produce listed',
   },
   addfarmDetails: {
     0: 'Enter farm name',

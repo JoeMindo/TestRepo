@@ -22,7 +22,9 @@ import {
   getUserFarms,
   showGroups,
   joinGroup,
+  renderFarmerFarms,
   inputFarmLocation,
+  renderProductsInFarm,
 } from './farmmanagement.js';
 
 import { responsePrompt } from '../../menus/prompts.js';
@@ -157,7 +159,7 @@ export const renderAddFarmDetailsMenu = async (textValue, text) => {
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else if (textValue === 5 && text.split('*')[1] === '1') {
-      client.set('farm_size', parseInt(text.split('*')[3], 10));
+      client.set('farm_size', parseInt(text.split('*')[4], 10));
       const farmDetails = await retreiveCachedItems(client, [
         'farm_name',
         'farm_location',
@@ -421,7 +423,11 @@ export const secondLevelMenu = async (textValue, text) => {
     }
   } else if (selection === '7') {
     if (textValue === 2) {
-      // message = renderCropCalendarMenus();
+      const userID = await retreiveCachedItems(client, ['user_id']);
+      message = await renderFarmerFarms(userID[0]);
+    } else if (textValue === 3) {
+      const farmID = parseInt(text.split('*')[2], 10);
+      message = await renderProductsInFarm(farmID);
     }
   }
   message += menus.footer;

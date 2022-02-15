@@ -123,7 +123,7 @@ export const renderLocationOptions = () => {
  */
 export const renderFarmerMenusLevelTwo = () => {
   let menuPrompt = `${con()} ${menus.farmer.joinGroup}`;
-  menuPrompt += `${menus.farmer.cropCalendar}`;
+  menuPrompt += `${menus.farmer.myFarms}`;
   message = menuPrompt;
   return message;
 };

@@ -15,4 +15,19 @@ const makebasicOrder = async (cartSelections) => {
   return makeOrderRequest;
 };
 
+export const viewOrders = async (userId) => {
+  const response = axios.get(`${BASEURL}/ussd/showmyorders/${userId}`).catch((err) => err.response);
+  return response;
+};
+
+export const renderOrders = async (userId) => {
+  const response = await viewOrders(userId);
+  console.log('The orders are: ', response.data.message.data);
+  let orders = '';
+  response.data.message.data.forEach((order) => {
+    orders += `OrderID: ${order.order_id.substring(0, 3) + order.order_id.substring(5, 7)}, Status: ${order.order_status}\n`;
+  });
+  return orders;
+};
+
 export default makebasicOrder;

@@ -60,8 +60,7 @@ app.post('/ussd', async (req, res) => {
   const text = ussdRouter(rawtext, '0', '00');
   // TODO: Migrate this to usermanagement
   const textValue = text.split('*').length;
-
-  console.log("The textvalue is", textValue);
+  console.log('The text value is', textValue);
   const userStatus = await checkIfUserExists(req.body.phoneNumber);
   let message;
 
@@ -81,22 +80,26 @@ app.post('/ussd', async (req, res) => {
         role_id: req.session.registration[6],
       };
 
-      const response = await registerUser(
-        userDetails,
-        req.body.phoneNumber,
-      );
+      const response = await registerUser(userDetails, req.body.phoneNumber);
+      console.log('The registration response is', response);
       if (response.status === 200) {
-        message = 'END Success';
+        if (response.data.data.role_id === '1') {
+          // message = await checkFarmerSelection(text, 8);
+          message = 'CON You have signed up as a farmer\n1. Continue';
+        } else if (response.data.data.role_id === '2') {
+          message = 'CON You have successfully registered as a buyer';
+        }
       } else {
         message = 'END Something went wrong try later!';
-      }
+      }// }
     }
+
     res.send(message);
-  } else if (userStatus.exists === true) {
+  } if (userStatus.exists === true) {
     client.set('user_id', userStatus.user_id);
     if (userStatus.role === 'FARMER') {
       client.set('role', 'farmer');
-      message = await checkFarmerSelection(text, textValue);
+      message = await checkFarmerSelection(text, 0);
     } else if (userStatus.role === 'BUYER') {
       client.set('role', 'buyer');
       message = await checkBuyerSelection(textValue, text);

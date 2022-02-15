@@ -131,7 +131,6 @@ export const confirmQuantityWithPrice = async (
     itemSelection.totalCost = total;
     message = `${con()} Buy ${prompt}\n Total ${total}\n 1. Add to cart`;
   }
-  message += menus.footer;
   return message;
 };
 

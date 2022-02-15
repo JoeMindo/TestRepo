@@ -23,7 +23,7 @@ export const numberValidation = (text, index) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    return 'Choose option 1 or 2';
+    return 'Choose option only the listed options';
   }
   return 'valid';
 };

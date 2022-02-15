@@ -2,24 +2,28 @@
 import * as farmerMenus from './farmermenus.js';
 import { renderFarmerMenus } from '../../menus/rendermenu.js';
 
-const checkFarmerSelection = async (text, textValue) => {
+const checkFarmerSelection = async (text, startIndex) => {
   let message;
-  if (textValue === 1 && text === '') {
+  const textToUse = text.split('*').slice(startIndex).join('*');
+  const textValue = textToUse.split('*').length;
+  console.log('The text value is', textValue);
+  console.log('The text to use is', textToUse);
+  if (textValue === 1 && textToUse === '') {
     message = renderFarmerMenus();
-  } else if (text !== '') {
-    const selection = text.split('*')[0];
+  } else if (textToUse !== '') {
+    const selection = textToUse.split('*')[0];
     if (selection === '1') {
-      message = await farmerMenus.renderUpdateLocationMenu(textValue, text);
+      message = await farmerMenus.renderUpdateLocationMenu(textValue, textToUse);
     } else if (selection === '2') {
-      message = await farmerMenus.renderAddFarmDetailsMenu(textValue, text);
+      message = await farmerMenus.renderAddFarmDetailsMenu(textValue, textToUse);
     } else if (selection === '3') {
-      message = farmerMenus.renderFarmerAddProductMenu(textValue, text);
+      message = farmerMenus.renderFarmerAddProductMenu(textValue, textToUse);
     } else if (selection === '4') {
-      message = farmerMenus.renderFarmerUpdateDetailsMenu(textValue, text);
+      message = farmerMenus.renderFarmerUpdateDetailsMenu(textValue, textToUse);
     } else if (selection === '5') {
-      message = farmerMenus.renderUpdateListedProduceMenu(textValue, text);
+      message = farmerMenus.renderUpdateListedProduceMenu(textValue, textToUse);
     } else if (selection === '98') {
-      message = farmerMenus.secondLevelMenu(textValue, text);
+      message = farmerMenus.secondLevelMenu(textValue, textToUse);
     } else {
       message = 'CON Invalid choice, try again';
     }

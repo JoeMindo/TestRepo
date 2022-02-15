@@ -233,7 +233,6 @@ export const inputFarmLocation = async (textValue, text, client) => {
       farm_size: farmDetails[3],
       user_id: farmDetails[4],
       locationID: farmDetails[5],
-
     };
     const responseForAddingFarm = await addFarm(postDetails);
 
@@ -245,6 +244,71 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = `${end()} ${responseForAddingFarm.data.message}`;
       message = menuPrompt;
     }
+  }
+  return message;
+};
+/**
+ * It fetches all the farms owned by a farmer
+ * @param userId - The id of the farmer whose farms we want to fetch.
+ * @returns The response is an array of objects.
+ */
+export const fetchFarmerFarms = async (userId) => {
+  const response = await axios
+    .get(`${BASEURL}/ussd/farm/${userId}`)
+    .catch((err) => err.response);
+  return response;
+};
+
+/**
+ * It fetches the produce in a farm.
+ * @param farmId - The id of the farm whose produce you want to fetch.
+ * @returns The response is an array of produce objects.
+ */
+export const fetchProduceInFarms = async (farmId) => {
+  const response = await axios
+    .get(`${BASEURL}/ussd/farmproducts/farm/${farmId}`)
+    .catch((err) => err.response);
+  return response;
+};
+
+/**
+ * This function will fetch produce in a farm and render it in the DOM
+ * @param farmId - The id of the farm that you want to render the products in.
+ */
+export const renderProductsInFarm = async (farmId) => {
+  let message;
+  const response = await fetchProduceInFarms(farmId);
+  if (response.status === 200) {
+    if (response.data.message.length > 0) {
+      const menuPrompt = `${con()} Here are the listed produce in your farm.\n`;
+      message = menuPrompt;
+      response.data.message.forEach((element, index) => {
+        message += `${index}. ${element.product_name}\n`;
+      });
+    } else {
+      message = `${con()} ${menus.farmer.noProduce}`;
+    }
+  }
+  return message;
+};
+
+/**
+ * It fetches the farms owned by the farmer and returns a menu prompt with the farms' names
+ * @param userId - The id of the user who is logged in.
+ * @returns A string.
+ */
+export const renderFarmerFarms = async (userId) => {
+  let message;
+  const response = await fetchFarmerFarms(userId);
+
+  if (response.status === 200) {
+    let menuPrompt = 'CON Choose a farm you view\n';
+    response.data.message.data.forEach((farm) => {
+      menuPrompt += `${farm.id}. ${farm.farm_name}\n`;
+    });
+    message = menuPrompt;
+  } else {
+    message = 'CON Sorry, there are no farms available at the moment.';
   }
   return message;
 };
