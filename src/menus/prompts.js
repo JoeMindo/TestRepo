@@ -1,6 +1,9 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable import/prefer-default-export */
 import { menus } from './menuoptions.js';
+import checkFarmerSelection from '../users/farmer/farmerselection.js';
+import checkBuyerSelection from '../users/buyer/buyerselection.js';
 
 const con = () => 'CON';
 const end = () => 'END';
@@ -68,4 +71,21 @@ export const responsePrompt = (response, section) => {
     message = `${end()} Something went wrong, try again later`;
   }
   return message;
+};
+
+/**
+ * It checks the user's selection and returns the appropriate response
+ * @param role - The role of the user.
+ * @param text - The text that the user has entered so far.
+ * @param startIndex - The index of the first menu to be shown.
+ * @returns A list of options to be displayed to the user.
+ */
+export const showUserMenus = async (role, text, startIndex) => {
+  let response;
+  if (role === 'farmer') {
+    response = await checkFarmerSelection(text, startIndex);
+  } else if (role === 'buyer') {
+    response = await checkBuyerSelection(text, startIndex);
+  }
+  return response;
 };

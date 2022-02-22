@@ -83,10 +83,13 @@ export const promptToGive = async (client, locality, id = null) => {
     prompt += menus.footer;
   } else if (locality === 'location') {
     const results = await fetchLocalityDetails(client, 'location', id);
+    console.log('The location menu results', results);
     prompt = `${con()} ${menus.updateLocation[3]}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'area') {
+    const results = await fetchLocalityDetails(client, 'area', id);
+    console.log('The are location ids', results);
     prompt = `${con()} ${menus.updateLocation[4]}`;
     prompt += menus.footer;
   }

@@ -5,9 +5,8 @@ import { renderFarmerMenus } from '../../menus/rendermenu.js';
 const checkFarmerSelection = async (text, startIndex) => {
   let message;
   const textToUse = text.split('*').slice(startIndex).join('*');
-  const textValue = textToUse.split('*').length;
-  console.log('The text value is', textValue);
   console.log('The text to use is', textToUse);
+  const textValue = textToUse.split('*').length;
   if (textValue === 1 && textToUse === '') {
     message = renderFarmerMenus();
   } else if (textToUse !== '') {

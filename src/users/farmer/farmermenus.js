@@ -118,8 +118,9 @@ export const renderUpdateLocationMenu = async (textValue, text) => {
 
     const userId = parseInt(postLocationDetails[3], 10);
     const response = await addLocation(postDetails, userId);
+    console.log('The response is', response);
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       const menuPrompt = `${end()} ${menus.updateLocation.success}`;
       message = menuPrompt;
     } else {
@@ -155,6 +156,7 @@ export const renderAddFarmDetailsMenu = async (textValue, text) => {
         message = 'CON Invalid input, try again';
       }
     } else if (textValue === 4 && text.split('*')[1] === '1') {
+      client.set('farm_location', text.split('*')[3]);
       let menuPrompt = `${con()} ${menus.addfarmDetails[4]}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
@@ -280,12 +282,14 @@ export const renderFarmerAddProductMenu = async (textValue, text) => {
   let message = '';
   const items = await retreiveCachedItems(client, ['user_id']);
   const userID = parseInt(items[0], 10);
+  console.log('The user ID is', userID);
   const hasFarms = await getUserFarms(userID);
+  console.log('The farmer farms', hasFarms.data);
   if (hasFarms.status === 404) {
     message = 'CON Please register a farm first';
   } else if (hasFarms.status === 200) {
     let farmList = '';
-    hasFarms.data.message.data.forEach((farm) => {
+    hasFarms.data.message.forEach((farm) => {
       farmList += `\n${farm.id}. ${farm.farm_name}`;
     });
     message = `CON Which farm do you want to add products to? ${farmList}`;

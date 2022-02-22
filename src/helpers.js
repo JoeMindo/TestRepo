@@ -1,3 +1,9 @@
+/* eslint-disable import/no-cycle */
+import { renderRegisterMenu } from './menus/rendermenu.js';
+import checkFarmerSelection from './users/farmer/farmerselection.js';
+import checkBuyerSelection from './users/buyer/buyerselection.js';
+import { checkIfUserExists } from './core/usermanagement.js';
+
 const usernameValidation = (text, index) => {
   const username = text.split('*')[`${index}`];
   const regex = /^[a-zA-Z]*$/;
@@ -36,4 +42,5 @@ export const numberWithinRange = (text, index) => {
   }
   return 'valid';
 };
+
 export default usernameValidation;

@@ -164,6 +164,7 @@ export const joinGroup = async (groupID, userId) => {
  */
 export const inputFarmLocation = async (textValue, text, client) => {
   let message;
+  let locationId;
   if (textValue === 2) {
     const menuPrompt = await promptToGive(client, 'region');
     message = menuPrompt;
@@ -224,7 +225,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       'farm_description',
       'farm_size',
       'user_id',
-      'userLocationSelection',
+      'userLocationIds',
     ]);
     const postDetails = {
       farm_name: farmDetails[0],
@@ -232,8 +233,9 @@ export const inputFarmLocation = async (textValue, text, client) => {
       farm_description: 'Null',
       farm_size: farmDetails[3],
       user_id: farmDetails[4],
-      locationID: farmDetails[5],
+      locationID: farmDetails[5].split(',')[`${text.split('*')[5] - 1}`],
     };
+    console.log('The data to be posted is', postDetails);
     const responseForAddingFarm = await addFarm(postDetails);
 
     if (responseForAddingFarm.status === 200) {

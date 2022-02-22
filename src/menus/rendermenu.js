@@ -1,11 +1,12 @@
+/* eslint-disable import/no-cycle */
 import { menus } from './menuoptions.js';
 import usernameValidation, { numberValidation, IdValidation } from '../helpers.js';
+import { registerUser } from '../core/usermanagement.js';
 
 export const con = () => 'CON';
 export const end = () => 'END';
 let message = '';
 
-let completedStatus = false;
 /**
  * It takes in the text value and text from the user and checks if the text value is equal to the
 number of the text value in the menus.register object. If it is, it returns the corresponding text
@@ -17,7 +18,7 @@ from the menus.register object. If it isn't, it returns the message 'CON Invalid
  *   completedStatus: false,
  * }
  */
-export const renderRegisterMenu = (textValue, text) => {
+export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
   if (textValue === 1 && text.length === 0) {
     let menuPrompt = `${con()} Welcome to Mamlaka\n${menus.register.firstname}`;
     menuPrompt += menus.footer;
@@ -76,14 +77,29 @@ export const renderRegisterMenu = (textValue, text) => {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 8 && text.split('*')[7] === '1') {
-    completedStatus = true;
-  } else {
-    message = 'CON Invalid input';
+    const userDetails = {
+      first_name: text.split('*')[0],
+      last_name: text.split('*')[1],
+      id_no: text.split('*')[2],
+      gender: text.split('*')[3],
+      password: text.split('*')[4],
+      password_confirmation: text.split('*')[5],
+      role_id: text.split('*')[6],
+    };
+    const registrationResponse = await registerUser(userDetails, phoneNumber);
+    console.log('This response is', registrationResponse.data.data);
+    const role = registrationResponse.status === 200 ? registrationResponse.data.data.role_id
+      : null;
+
+    if (role === null) {
+      message = 'CON Hmm... I don\'t know you. Please register first.';
+    } else if (role === '1') {
+      message = 'CON Welcome to Mamlaka Foods, you have registred as a farmer';
+    } else if (role === '2') {
+      message = 'CON Welcome to Mamlaka Foods, you have registred as a buyer';
+    }
   }
-  return {
-    message,
-    completedStatus,
-  };
+  return message;
 };
 
 /**
