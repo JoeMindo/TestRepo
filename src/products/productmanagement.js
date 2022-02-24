@@ -47,7 +47,7 @@ const fetchFarmOfferings = async (id) => {
     response.data.forEach((item) => {
       item.farm_products.forEach((farmItem) => {
         if (farmItem.product_id === id) {
-          farmOfferings += `${farmItem.farm_id}. Available units: ${farmItem.units} grade of items: ${farmItem.grade}\n `;
+          farmOfferings += `${farmItem.farm_id}. ${menus.productmanagement.unitsAvailable} ${farmItem.units} ${menus.productmanagement.gradeOfItems} ${farmItem.grade}\n `;
         }
       });
     });
@@ -108,7 +108,7 @@ export const confirmQuantityWithPrice = async (
   availableUnits = buyerSelection[0].availableUnits;
 
   if (userQuantity > availableUnits) {
-    message = `${con()} The amount you set is higher than the available units go back and choose a smaller quantity`;
+    message = `${con()} ${menus.productmanagement.amountIsHigher}`;
   } else {
     if (status === 'unit') {
       pricePoint = parseInt(buyerSelection[0].unitPrice, 10);
@@ -118,7 +118,7 @@ export const confirmQuantityWithPrice = async (
 
     const total = userQuantity * pricePoint;
 
-    const prompt = `${buyerSelection[0].product} from ${buyerSelection[0].farmName} of grade:${buyerSelection[0].grade} at ${pricePoint}`;
+    const prompt = `${buyerSelection[0].product} ${menus.miscellaneous.from} ${buyerSelection[0].farmName} ${menus.miscellaneous.grade} ${buyerSelection[0].grade} at ${pricePoint}`;
 
     itemSelection.id = parseInt(`${buyerSelection[0].id}`, 10);
     itemSelection.product = `${buyerSelection[0].product}`;
@@ -129,7 +129,7 @@ export const confirmQuantityWithPrice = async (
     itemSelection.userQuantity = parseInt(`${userQuantity}`, 10);
     itemSelection.unitPrice = pricePoint;
     itemSelection.totalCost = total;
-    message = `${con()} Buy ${prompt}\n Total ${total}\n 1. Add to cart`;
+    message = `${con()} ${menus.miscellaneous.buy} ${prompt}\n ${menus.miscellaneous.total} ${total}\n ${menus.cartOperations.addToCart}`;
   }
   return message;
 };

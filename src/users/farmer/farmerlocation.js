@@ -9,7 +9,7 @@ export const fetchLocalityDetails = async (client, locality, id = null) => {
   if (locality === 'region') {
     const regions = await getRegions();
     if (regions.status === 500) {
-      results = 'CON Server error please try later';
+      results = `${con()} ${menus.miscellaneous.serverError}`;
     }
     const list = await regions;
     results = list.items;
@@ -52,7 +52,7 @@ export const fetchLocalityDetails = async (client, locality, id = null) => {
     userLocationSelection = parseInt(userLocationSelection, 10);
     client.set('userLocationSelection', userLocationSelection);
   } else {
-    results = 'END Data not found';
+    results = `${con()} ${menus.miscellaneous.dataNotFound}`;
   }
   return results;
 };

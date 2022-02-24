@@ -120,7 +120,6 @@ const isLocationPresent = async (id) => {
   return false;
 };
 
-
 export {
   clearData,
   registerUser,

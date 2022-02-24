@@ -35,9 +35,9 @@ export const renderProductCategories = async () => {
     const response = await fetchCategories();
 
     if (response) {
-      message = `${con()} Choose a category\n ${response}`;
+      message = `${con()} ${menus.miscellaneous.category}\n ${response}`;
     } else {
-      message = `${end()} Could not fetch categories at the moment, try later`;
+      message = `${end()} ${menus.renderProducts.couldNotFetchCategories}`;
     }
     return message;
   } catch (err) {
@@ -46,14 +46,14 @@ export const renderProductCategories = async () => {
 };
 
 export const askForQuantity = () => {
-  message = `${con()} Enter quantity you want to buy\n`;
+  message = `${con()} ${menus.cartOperations.quantityToBuy}`;
   message += menus.footer;
   return message;
 };
 // Array of offers should be cached
 
 export const chooseCenter = (administrativeID) => {
-  let message = `${con()} Choose a place where you will pick your goods\n`;
+  let message = `${con()} ${menus.buyermenu.centerForPicking}`;
   const center = centersMapping[`${administrativeID}`];
   message += `1. ${center}`;
   return message;

@@ -164,7 +164,6 @@ export const joinGroup = async (groupID, userId) => {
  */
 export const inputFarmLocation = async (textValue, text, client) => {
   let message;
-  let locationId;
   if (textValue === 2) {
     const menuPrompt = await promptToGive(client, 'region');
     message = menuPrompt;
@@ -175,7 +174,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'county', regionId);
       message = menuPrompt;
     } else {
-      message = `${end()} Invalid input. Please enter a number within the range.`;
+      message = `${end()} ${menus.miscellaneous.outOfRange}`;
     }
   } else if (textValue === 4) {
     const validRange = numberWithinRange(text, 1);
@@ -184,7 +183,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'subcounty', countyId);
       message = menuPrompt;
     } else {
-      message = `${end()} Invalid input. Please enter a number within the range.`;
+      message = `${end()} ${menus.miscellaneous.outOfRange}`;
     }
   } else if (textValue === 5) {
     const validRange = numberWithinRange(text, 1);
@@ -193,7 +192,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'location', subcountyId);
       message = menuPrompt;
     } else {
-      message = `${end()} Invalid input. Please enter a number within the range.`;
+      message = `${end()} ${menus.miscellaneous.outOfRange}`;
     }
   } else if (textValue === 6) {
     let menuPrompt = `${con()} ${menus.addfarmDetails[0]}`;
@@ -206,7 +205,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       message = menuPrompt;
       client.set('farm_name', text.split('*')[6]);
     } else {
-      message = 'CON Invalid input, try again';
+      message = `${con()} ${menus.miscellaneous.invalidInput}`;
     }
   } else if (textValue === 8) {
     if (isTextOnly(text.split('*')[7]) === true) {
@@ -215,7 +214,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       message = menuPrompt;
       client.set('farm_location', text.split('*')[7]);
     } else {
-      message = 'CON Invalid input, try again';
+      message = `${con()} ${menus.miscellaneous.invalidInput}`;
     }
   } else if (textValue === 9) {
     client.set('farm_size', parseInt(text.split('*')[8], 10));
@@ -235,9 +234,9 @@ export const inputFarmLocation = async (textValue, text, client) => {
       user_id: farmDetails[4],
       locationID: farmDetails[5].split(',')[`${text.split('*')[5] - 1}`],
     };
-    console.log('The data to be posted is', postDetails);
+    console.log('The farm data', postDetails);
     const responseForAddingFarm = await addFarm(postDetails);
-
+    console.log('The response for adding the farm', responseForAddingFarm);
     if (responseForAddingFarm.status === 200) {
       const menuPrompt = `${end()} ${menus.addfarmDetails.success}`;
       message = menuPrompt;
@@ -282,7 +281,7 @@ export const renderProductsInFarm = async (farmId) => {
   const response = await fetchProduceInFarms(farmId);
   if (response.status === 200) {
     if (response.data.message.length > 0) {
-      const menuPrompt = `${con()} Here are the listed produce in your farm.\n`;
+      const menuPrompt = `${con()} ${menus.farm.listedProduce}`;
       message = menuPrompt;
       response.data.message.forEach((element, index) => {
         message += `${index}. ${element.product_name}\n`;
@@ -310,7 +309,7 @@ export const renderFarmerFarms = async (userId) => {
     });
     message = menuPrompt;
   } else {
-    message = 'CON Sorry, there are no farms available at the moment.';
+    message = `${con()} ${menus.farm.noFarms}`;
   }
   return message;
 };

@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import * as farmerMenus from './farmermenus.js';
-import { renderFarmerMenus } from '../../menus/rendermenu.js';
+import { renderFarmerMenus, con } from '../../menus/rendermenu.js';
+import { menus } from '../../menus/menuoptions.js';
 
 const checkFarmerSelection = async (text, startIndex) => {
   let message;
@@ -24,7 +25,7 @@ const checkFarmerSelection = async (text, startIndex) => {
     } else if (selection === '98') {
       message = farmerMenus.secondLevelMenu(textValue, textToUse);
     } else {
-      message = 'CON Invalid choice, try again';
+      message = `${con()} ${menus.miscellaneous.invalidInput}`;
     }
   }
   return message;

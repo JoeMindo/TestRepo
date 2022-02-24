@@ -19,23 +19,23 @@ export const promptToShow = (response, textToShow) => {
   let menuPrompt = '';
   menuPrompt += response;
   if (textToShow === 'productcategories') {
-    message = `${con()} Choose a category`;
+    message = `${con()} ${menus.miscellaneous.category}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'products') {
-    message = `${con()} Choose a product\n`;
+    message = `${con()} ${menus.miscellaneous.product}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycsections') {
-    message = `${con()} Choose a section to fill`;
+    message = `${con()} ${menus.miscellaneous.kycsection}`;
     message = menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycmetrics') {
-    message = `${con()} Choose a question to answer`;
+    message = `${con()} ${menus.miscellaneous.kycmetrics}`;
     message = menuPrompt;
     message += menus.footer;
   } else {
-    message = `${con()} Choose a farm offering\n`;
+    message = `${con()} ${menus.farm.chooseOffering}`;
     message += menuPrompt;
     message += menus.footer;
   }
@@ -68,7 +68,7 @@ export const responsePrompt = (response, section) => {
     });
     message = promptToShow(menuPrompt, 'kycmetrics');
   } else {
-    message = `${end()} Something went wrong, try again later`;
+    message = `${end()} ${menus.miscellaneous.somethingWentWrong}`;
   }
   return message;
 };

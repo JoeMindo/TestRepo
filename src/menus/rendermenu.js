@@ -20,7 +20,7 @@ from the menus.register object. If it isn't, it returns the message 'CON Invalid
  */
 export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
   if (textValue === 1 && text.length === 0) {
-    let menuPrompt = `${con()} Welcome to Mamlaka\n${menus.register.firstname}`;
+    let menuPrompt = `${con()} ${menus.registration}${menus.register.firstname}`;
     menuPrompt += menus.footer;
     message = menuPrompt;
   } else if (textValue === 1) {
@@ -92,11 +92,11 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
       : null;
 
     if (role === null) {
-      message = 'CON Hmm... I don\'t know you. Please register first.';
+      message = `${con()} ${menus.register.couldNotAssignRole}`;
     } else if (role === '1') {
-      message = 'CON Welcome to Mamlaka Foods, you have registred as a farmer';
+      message = `${con()} ${menus.register.successFarmer}`;
     } else if (role === '2') {
-      message = 'CON Welcome to Mamlaka Foods, you have registred as a buyer';
+      message = `${con()} ${menus.register.successBuyer}`;
     }
   }
   return message;

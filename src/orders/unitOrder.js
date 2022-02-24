@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASEURL } from '../core/urls.js';
+import { menus } from '../menus/menuoptions.js';
 
 /**
  * It takes in a cartSelections object and sends it to the server.
@@ -25,7 +26,7 @@ export const renderOrders = async (userId) => {
   console.log('The orders are: ', response.data.message.data);
   let orders = '';
   response.data.message.data.forEach((order) => {
-    orders += `OrderID: ${order.order_id.substring(0, 3) + order.order_id.substring(5, 7)}, Status: ${order.order_status}\n`;
+    orders += `${menus.orders.orderId} ${order.order_id.substring(0, 3) + order.order_id.substring(5, 7)}, ${menus.orders.status} ${order.order_status}\n`;
   });
   return orders;
 };

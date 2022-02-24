@@ -19,7 +19,7 @@ let message;
  * @returns The message variable.
  */
 export const askForNumber = () => {
-  message = `${con()} Checkout using\n 1. This Number\n`;
+  message = `${con()} ${menus.cartOperations.askForNumber}`;
   return message;
 };
 /**
@@ -27,7 +27,7 @@ export const askForNumber = () => {
  * @returns A string
  */
 export const askForQuantity = () => {
-  message = `${con()} Enter quantity you want to buy\n`;
+  message = `${con()} ${menus.cartOperations.quantityToBuy}`;
   return message;
 };
 /**
@@ -108,11 +108,9 @@ export const addToCart = async (client, itemsObject, totalPriceObject) => {
         }
       }
     });
-    message = `${con()} Cart Items added successfully\n`;
-    message += '1. Checkout\n';
-    message += '67. View Cart';
+    message = `${con()} ${menus.cartOperations.successfullyAddItemsTocart}`;
   } else {
-    message = `${con()} You have not selected any item to add to cart`;
+    message = `${con()} ${menus.cartOperations.noItemsAddedToCart}`;
   }
   return message;
 };
@@ -128,10 +126,9 @@ export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
   if (itemsObject && totalPriceObject) {
     cartItems.push(itemsObject);
     client.set('cartItems', JSON.stringify(cartItems));
-    message = `${con()} Cart Items updated successfully\n`;
-    message += '1. Checkout\n';
+    message = `${con()} ${menus.cartOperations.cartItemsUpdatedSuccessfully}`;
   } else {
-    message = `${con()} You have not selected an item to update`;
+    message = `${con()} ${menus.cartOperations.noItemSelectedToUpdate}`;
   }
   message += menus.footer;
   return message;
@@ -144,9 +141,9 @@ export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
  */
 export const updateType = async (type) => {
   if (type === 'remove') {
-    message = `${con()} Select an item to remove\n`;
+    message = `${con()} ${menus.cartOperations.askForItemToRemove}`;
   } else {
-    message = `${con()} Select an item to update\n`;
+    message = `${con()} ${menus.cartOperations.askForItemToUpdate}`;
   }
   const cartItems = await showCartItems(client);
 
@@ -169,11 +166,10 @@ export const removeItemFromCart = async (id) => {
         const indexOfItem = cartItems.indexOf(item);
         cartItems.splice(indexOfItem, 1);
         client.set('cartItems', JSON.stringify(cartItems));
-        message = `${con()} Item removed successfully\n`;
-        message += '67. View cart';
+        message = `${con()} ${menus.cartOperations.itemRemovedSuccessfully}`;
         message += menus.footer;
       } else {
-        message = `${con()} Item not found`;
+        message = `${con()} ${menus.cartOperations.itemNotFound}`;
       }
     });
     return message;
@@ -204,7 +200,7 @@ export const changeQuantity = async (client, amount, object, id) => {
     newCartItems.push(oldObject);
 
     client.set('cartItems', JSON.stringify(newCartItems));
-    message = `${end()} Updated successfully`;
+    message = `${end()} ${menus.cartOperations.updatedSuccessfully}`;
     return message;
   } catch (err) {
     throw new Error(err);
@@ -234,9 +230,9 @@ export const findItemToChangeQuantity = async (client, id) => {
     cartItems.forEach((item) => {
       if (item.id === id) {
         itemToUpdate = item;
-        message = `${con()} What is the quantity you want?`;
+        message = `${con()} ${menus.cartOperations.updatedQuantityToBuy}`;
       } else {
-        message = `${con()} Item not found\n`;
+        message = `${con()} ${menus.cartOperations.itemNotFound}`;
       }
     });
     return {
@@ -256,7 +252,7 @@ export const findItemToChangeQuantity = async (client, id) => {
 export const displayTotalCost = async (client) => {
   try {
     const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
-    message = `${con()} Proceed to pay KES ${chargeToUser}\n 1. Yes`;
+    message = `${con()} ${menus.cartOperations.paymentPrompt} ${chargeToUser}\n ${menus.miscellaneous.yes}`;
     message += menus.footer;
   } catch (error) {
     throw new Error(error);
@@ -283,15 +279,15 @@ export const displayCartItems = async (client) => {
     if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
       fetchCartItems = JSON.parse(fetchCartItems);
       fetchCartItems.forEach((item) => {
-        prompt += `${item.id}. ${item.product} from ${item.farmName} grade: ${item.grade}  at KES ${item.totalCost}\n`;
+        prompt += `${item.id}. ${item.product} ${menus.miscellaneous.from} ${item.farmName} ${menus.miscellaneous.grade}: ${item.grade} ${menus.miscellaneous.atKES} ${item.totalCost}\n`;
       });
       const availableTotal = fetchCartItems.reduce(
         (total, obj) => obj.totalCost + total,
         0,
       );
-      message = `${con()} Your cart items are\n ${prompt} Total ${availableTotal}\n 1. Checkout\n 2. Update Cart`;
+      message = `${con()} ${menus.cartOperations.yourCartItems} ${prompt} ${menus.miscellaneous.total} ${availableTotal}\n ${menus.cartOperations.checkoutAndUpdate}`;
     } else if (fetchCartItems[0] === null) {
-      message = `${con()} You have no items at the moment\n Go home and add products`;
+      message = `${con()} ${menus.cartOperations.noItemsInCart}`;
       message += menus.footer;
     }
     return message;
@@ -301,14 +297,14 @@ export const displayCartItems = async (client) => {
 };
 export const updateCart = async (operation, id = null) => {
   if (operation === 'firstscreen') {
-    message = `${con()} Choose an operation\n 1. Remove Item\n 2. Change Item quantity`;
+    message = `${con()} ${menus.cartOperations.operation}`;
     message += menus.footer;
   } else if (operation === 'removeItem') {
     message = await removeItemFromCart(id);
   } else if (operation === 'updateItemCount') {
     message = await findItemToChangeQuantity(id);
   } else {
-    message = `${end()} Selection not found`;
+    message = `${end()} ${menus.cartOperations.itemNotFound}`;
   }
   return message;
 };

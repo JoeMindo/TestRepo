@@ -62,7 +62,6 @@ app.post('/ussd', async (req, res) => {
   console.log('The text value is', textValue);
   let message;
   const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
-  console.log('The response is', response);
   if (response.exists && response.role === 'BUYER') {
     client.set('user_Id', response.user_id);
     message = await checkBuyerSelection(textValue, text);

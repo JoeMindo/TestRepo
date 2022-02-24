@@ -10,6 +10,7 @@ import {
   askForQuantity,
   renderProductCategories,
 } from '../users/buyer/buyermenus.js';
+import { con } from '../menus/rendermenu.js';
 
 /**
  * Checks if a user is in a group
@@ -54,18 +55,18 @@ export const createGroup = async (groupdata) => {
   const response = await axios.post(`${BASEURL}/ussd/saveusergroup`, groupdata);
   return response.data.status;
 };
-export const requestGroupName = () => 'CON What is the name of your group?\n';
+export const requestGroupName = () => `${con()} ${menus.groupOrder.requestName}`;
 /**
- * This function is used to create a CON group.
+ * This function is used to create a group.
  * @param status - The status of the group creation.
  * @returns The message that is being returned.
  */
 export const groupCreationMessage = (status) => {
   let message;
   if (status === 'success') {
-    message = 'CON Group created successfully\n 1. Add items to buy';
+    message = `${con()} ${menus.groupOrder.groupCreatedSuccess}`;
   } else {
-    message = 'CON Could not create group. Try again\n';
+    message = `${con()} ${menus.groupOrder.couldNotCreateGroup}`;
   }
   message += menus.footer;
   return message;

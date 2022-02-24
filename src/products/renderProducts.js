@@ -28,9 +28,9 @@ export const renderProducts = async (id) => {
   try {
     const response = await fetchProducts(id);
     if (response) {
-      message = `${con()} Choose a product to buy\n ${response}`;
+      message = `${con()} ${menus.renderProducts.chooseProduct} ${response}`;
     } else {
-      message = `${con()} Could not fetch products at the moment try again later`;
+      message = `${con()} ${menus.renderProducts.couldNotFetch}`;
     }
     return message;
   } catch (err) {
@@ -44,7 +44,7 @@ export const renderOffers = (offers, offersArray, client) => {
     const userViewOffers = {};
 
     if (offer.status !== '0') {
-      offeringText += `\n${offer.id}. ${offer.product_name} from ${offer.farm_name} Grade: ${offer.grade} KES ${offer.group_price}`;
+      offeringText += `\n${offer.id}. ${offer.product_name} ${menus.miscellaneous.from} ${offer.farm_name} ${menus.miscellaneous.grade} ${offer.grade} ${menus.miscellaneous.atKES} ${offer.group_price}`;
       userViewOffers.id = `${offer.id}`;
       userViewOffers.product = `${offer.product_name}`;
       userViewOffers.farmName = `${offer.farm_name}`;
@@ -58,7 +58,7 @@ export const renderOffers = (offers, offersArray, client) => {
 
     client.set('groupOffersArray', JSON.stringify(offersArray));
   });
-  const message = `CON Choose one of the available options to buy. ${offeringText}`;
+  const message = `${con()} ${menus.renderProducts.chooseOneToBuy} ${offeringText}`;
   return message;
 };
 export const renderProductCategories = async () => {
@@ -66,9 +66,9 @@ export const renderProductCategories = async () => {
     const response = await fetchCategories();
 
     if (response) {
-      message = `${con()} Choose a category\n ${response}`;
+      message = `${con()} ${menus.renderProducts.selectCategory} ${response}`;
     } else {
-      message = `${end()} Could not fetch categories at the moment, try later`;
+      message = `${end()} ${menus.renderProducts.couldNotFetchCategories}`;
     }
     return message;
   } catch (err) {
@@ -77,11 +77,11 @@ export const renderProductCategories = async () => {
 };
 export const checkGroupAndIndividualPrice = (status) => {
   if (status === 'both') {
-    message = `${con()} Select the price you want to buy at\n 1. Unit Price\n 2. Group price \n`;
+    message = `${con()} ${menus.price.selectPrice}`;
   } else if (status === 'unit') {
-    message = `${con()} Buy item at unit price\n 1. Yes\n `;
+    message = `${con()} ${menus.price.buyAtUnit}`;
   } else if (status === 'group') {
-    message = `${con()} Buy item at group price 1. Yes\n `;
+    message = `${con()} ${menus.price.buyAtGroup}`;
   }
 
   return message;
@@ -115,9 +115,9 @@ export const renderOfferings = async (client, id) => {
       client.set('offersArray', JSON.stringify(offersArray));
     });
 
-    message = `${con()} Choose one of the available options to buy. ${offeringText}`;
+    message = `${con()} ${menus.renderProducts.askForOptionSelection} ${offeringText}`;
   } else {
-    message = `${con()} Product not available`;
+    message = `${con()} ${menus.renderProducts.productNotAvailable}`;
     message += menus.footer;
   }
   return {
