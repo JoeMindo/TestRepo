@@ -435,26 +435,26 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
 
 export const secondLevelMenu = async (textValue, text, menus) => {
   let message;
-  const selection = text.split('*')[1];
-  if (textValue === 1) {
-    message = renderFarmerMenusLevelTwo();
+  const selection = text.split('*')[2];
+  if (textValue === 2) {
+    message = renderFarmerMenusLevelTwo(menus);
   }
   if (selection === '6') {
-    if (textValue === 2) {
+    if (textValue === 3) {
       const userID = await retreiveCachedItems(client, ['user_id']);
-      message = await showGroups(userID[0]);
+      message = await showGroups(userID[0], menus);
     } else if (textValue === 3) {
       const selectedGroup = parseInt(text.split('*')[2], 10);
       const userID = await retreiveCachedItems(client, ['user_id']);
       message = await joinGroup(selectedGroup, userID[0]);
     }
   } else if (selection === '7') {
-    if (textValue === 2) {
+    if (textValue === 3) {
       const userID = await retreiveCachedItems(client, ['user_id']);
-      message = await renderFarmerFarms(userID[0]);
-    } else if (textValue === 3) {
-      const farmID = parseInt(text.split('*')[2], 10);
-      message = await renderProductsInFarm(farmID);
+      message = await renderFarmerFarms(userID[0], menus);
+    } else if (textValue === 4) {
+      const farmID = parseInt(text.split('*')[3], 10);
+      message = await renderProductsInFarm(farmID, menus);
     }
   }
   message += menus.footer;

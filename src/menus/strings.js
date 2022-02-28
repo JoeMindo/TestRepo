@@ -220,6 +220,11 @@ export const strings = {
     en: '\n67. View cart',
     sw: '\n67. Tazama bidhaa ulizochagua',
   },
+  viewFarms: {
+    en: 'Choose a farm to view\n',
+    sw: 'Chagua shamba ili kuona\n',
+  },
+
   more: {
     en: '\n98.More',
     sw: '\n98.Zaidi',
@@ -600,6 +605,15 @@ export const strings = {
     en: 'valid',
     sw: 'valid',
   },
+  noGroups: {
+    en: 'No groups found',
+    sw: 'Hakuna vikundi zilizopatikana',
+  },
+  chooseGroupToJoin: {
+    en: 'Choose a group to join\n',
+    sw: 'Chagua kikundi cha kuunga\n',
+  },
+
   idTooShort: {
     en: 'ID number must be at least 8 characters',
     sw: 'Nambari ya kitambulisho lazima iwe angalau vibambo 8',

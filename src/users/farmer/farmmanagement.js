@@ -114,17 +114,17 @@ export const getLocationID = async (userId) => {
  * @param locationID - The location ID of the location where the user is trying to join a group.
  * @returns The message that is being returned is a string.
  */
-export const showGroups = async (locationID) => {
+export const showGroups = async (locationID, menus) => {
   let message;
   const availableGroups = await fetchAvailableGroups(locationID);
   if (availableGroups.status === 200) {
-    let menuPrompt = 'CON Choose a group you want to join\n';
+    let menuPrompt = `${con()} ${menus.chooseGroupToJoin}`;
     availableGroups.data.message.forEach((group) => {
       menuPrompt += `${group.id}. ${group.group_name}`;
     });
     message = menuPrompt;
   } else {
-    message = 'CON Sorry, there are no groups available at the moment.';
+    message = `${con()} ${menus.noGroups}`;
   }
 
   return message;
@@ -276,9 +276,10 @@ export const fetchProduceInFarms = async (farmId) => {
  * This function will fetch produce in a farm and render it in the DOM
  * @param farmId - The id of the farm that you want to render the products in.
  */
-export const renderProductsInFarm = async (farmId) => {
+export const renderProductsInFarm = async (farmId, menus) => {
   let message;
   const response = await fetchProduceInFarms(farmId);
+  console.log('The response for fetching the produce in a farm', response);
   if (response.status === 200) {
     if (response.data.message.length > 0) {
       const menuPrompt = `${con()} ${menus.listedProduce}`;
@@ -298,13 +299,13 @@ export const renderProductsInFarm = async (farmId) => {
  * @param userId - The id of the user who is logged in.
  * @returns A string.
  */
-export const renderFarmerFarms = async (userId) => {
+export const renderFarmerFarms = async (userId, menus) => {
   let message;
   const response = await fetchFarmerFarms(userId);
 
   if (response.status === 200) {
-    let menuPrompt = 'CON Choose a farm you view\n';
-    response.data.message.data.forEach((farm) => {
+    let menuPrompt = `${con()} ${menus.viewFarms}`;
+    response.data.message.forEach((farm) => {
       menuPrompt += `${farm.id}. ${farm.farm_name}\n`;
     });
     message = menuPrompt;

@@ -142,14 +142,14 @@ export const renderLocationOptions = (menus) => {
  * This function renders the second level of the farmer menu.
  * @returns A string that is the message that is being displayed to the user.
  */
-export const renderFarmerMenusLevelTwo = () => {
+export const renderFarmerMenusLevelTwo = (menus) => {
   let menuPrompt = `${con()} ${menus.joinGroup}`;
   menuPrompt += `${menus.myFarms}`;
   message = menuPrompt;
   return message;
 };
 
-export const renderCropCalendarMenus = () => {
+export const renderCropCalendarMenus = (menus) => {
   const menuPrompt = `${con()} ${menus.cropCalendarMenus}`;
   message = menuPrompt;
   return message;
@@ -158,7 +158,7 @@ export const renderCropCalendarMenus = () => {
  * This function renders the buyer menu.
  * @returns A string that is the message that is to be sent to the user.
  */
-export const renderBuyerMenus = () => {
+export const renderBuyerMenus = (menus) => {
   let menuPrompt = `${con()} ${menus.viewProducts}\n`;
   menuPrompt += `${menus.myCart}\n`;
   menuPrompt += `${menus.myOrders}\n`;
