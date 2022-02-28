@@ -363,9 +363,7 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
   let userID = await retreiveCachedItems(client, ['user_id']);
   userID = parseInt(userID, 10);
   const hasFarms = await getUserFarms(userID);
-  console.log('The user farms are', hasFarms.data.message);
   const userFarms = [];
-
   let message = '';
   if (hasFarms.status === 404) {
     message = `${con()} ${menus.updateListedProduceNotFound}`;
@@ -373,32 +371,32 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
     let farmList = '';
     hasFarms.data.message.forEach((farm) => {
       userFarms.push(farm.id);
-      farmList += `\n${farm.id}. ${farm_name}`;
+      farmList += `\n${farm.id}. ${farm.farm_name}`;
     });
-    message = `${con()} ${menus.updateListedProduce.chooseFarm} ${farmList}`;
+    message = `${con()} ${menus.chooseFarm} ${farmList}`;
   }
-  const farmID = parseInt(text.split('*')[1], 10);
+  const farmID = parseInt(text.split('*')[2], 10);
 
-  if (textvalue === 2 && userFarms.includes(farmID)) {
+  if (textvalue === 3 && userFarms.includes(farmID)) {
     // message = `${con()} What produce do you want to update the quantity ${productList}`;
-    message = `${con()} ${menus.updateListedProduce.actionToTake} ${
-      menus.updateListedProduce.updateQuantity
-    } ${menus.updateListedProduce.listForSale}`;
-  } else if (textvalue === 3 && text.split('*')[2] === '1') {
+    message = `${con()} ${menus.actionToTake} ${
+      menus.updateQuantity
+    } ${menus.listForSale}`;
+  } else if (textvalue === 4 && text.split('*')[3] === '1') {
     const list = await showProductsInFarm(farmID);
     message = `${con()} ${
-      menus.updateListedProduce.chooseProduceToUpdateQuantity
+      menus.chooseProduceToUpdateQuantity
     }${list}`;
-  } else if (textvalue === 3 && text.split('*')[2] === '2') {
+  } else if (textvalue === 4 && text.split('*')[3] === '2') {
     const list = await showProductsInFarm(farmID);
-    message = `${con()} ${menus.updateListedProduce.itemToSell}  ${list}`;
-  } else if (textvalue === 4 && text.split('*')[2] === '1') {
-    message = `${con()} ${menus.updateListedProduce.itemQuantity}`;
-  } else if (textvalue === 4 && text.split('*')[2] === '2') {
-    message = `${con()} ${menus.updateListedProduce.bagsForSale}`;
-  } else if (textvalue === 5 && text.split('*')[2] === '1') {
-    const updatedQuantity = text.split('*')[4];
-    const productID = parseInt(text.split('*')[3], 10);
+    message = `${con()} ${menus.itemToSell}  ${list}`;
+  } else if (textvalue === 5 && text.split('*')[3] === '1') {
+    message = `${con()} ${menus.itemQuantity}`;
+  } else if (textvalue === 5 && text.split('*')[3] === '2') {
+    message = `${con()} ${menus.bagsForSale}`;
+  } else if (textvalue === 6 && text.split('*')[3] === '1') {
+    const updatedQuantity = text.split('*')[5];
+    const productID = parseInt(text.split('*')[4], 10);
     let retreivedIDs = await retreiveCachedItems(client, ['productIDs']);
     retreivedIDs = JSON.parse(retreivedIDs[0]);
     const productIdentity = retreivedIDs.find(
@@ -412,11 +410,11 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
 
     const updatedProduce = await updateListedProduct(productID, data);
     if (updatedProduce.status === 200) {
-      message = `${end()} ${menus.updateListedProduce.success}`;
+      message = `${end()} ${menus.successfullUpdate}`;
     } else {
-      message = `${end()}${updatedProduce}`;
+      message = `${end()}${menus.updateFailed}`;
     }
-  } else if (textvalue === 5 && text.split('*')[2] === '2') {
+  } else if (textvalue === 6 && text.split('*')[3] === '2') {
     const farmProductID = text.split('*')[3];
     const quantity = text.split('*')[4];
     const data = {
@@ -426,9 +424,9 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
     };
     const response = await listProductForSale(data);
     if (response.status === 200) {
-      message = `${end()} ${menus.updateListedProduce.forSaleSuccess}`;
+      message = `${end()} ${menus.forSaleSuccess}`;
     } else {
-      message = `${end()} ${menus.updateListedProduce.forSaleFailure}`;
+      message = `${end()} ${menus.forSaleFailure}`;
     }
   }
 

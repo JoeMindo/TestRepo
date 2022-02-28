@@ -576,6 +576,10 @@ export const strings = {
     en: 'Updated successfully',
     sw: 'Imesasishwa kwa mafanikio',
   },
+  updateFailed: {
+    en: 'Failed to update',
+    sw: 'Haikuweza kusasisha',
+  },
   forSaleSuccess: {
     en: 'Produce is now available for sale',
     sw: 'Bidhaa sasa inapatikana kwa mauzo',
