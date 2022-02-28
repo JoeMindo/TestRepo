@@ -299,37 +299,36 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
   let message = '';
   const items = await retreiveCachedItems(client, ['user_id']);
   const userID = parseInt(items[0], 10);
-  console.log('The user ID is', userID);
   const hasFarms = await getUserFarms(userID);
   console.log('The farmer farms', hasFarms.data);
   if (hasFarms.status === 404) {
-    message = 'CON Please register a farm first';
+    message = `${con()} ${menus.noFarms}`;
   } else if (hasFarms.status === 200) {
     let farmList = '';
     hasFarms.data.message.forEach((farm) => {
-      farmList += `\n${farm.id}. ${farm_name}`;
+      farmList += `\n${farm.id}. ${farm.farm_name}`;
     });
-    message = `CON Which farm do you want to add products to? ${farmList}`;
-    if (textValue === 2) {
-      client.set('farm_id', parseInt(text.split('*')[1], 10));
+    message = `${con()} ${menus.chooseFarm}  ${farmList}`;
+    if (textValue === 3) {
+      client.set('farm_id', parseInt(text.split('*')[2], 10));
       const menuPrompt = `${con()} ${
-        menus.chooseFarm
+        menus.category
       }${await fetchCategories()}`;
       message = menuPrompt;
-    } else if (textValue === 3) {
-      const categoryId = parseInt(text.split('*')[2], 10);
+    } else if (textValue === 4) {
+      const categoryId = parseInt(text.split('*')[3], 10);
       client.set('category_id', categoryId);
       const products = await fetchProducts(categoryId);
       const menuPrompt = `${con()} ${menus.productToAdd} \n ${products}`;
       message = menuPrompt;
-    } else if (textValue === 4) {
-      const productId = parseInt(text.split('*')[3], 10);
+    } else if (textValue === 5) {
+      const productId = parseInt(text.split('*')[4], 10);
       client.set('product_id', productId);
       // TODO: This should be a dynamic prompt
       const menuPrompt = `${con()} ${menus.quantityOfHarvest}`;
       message = menuPrompt;
-    } else if (textValue === 5) {
-      const availableQuantity = text.split('*')[4];
+    } else if (textValue === 6) {
+      const availableQuantity = text.split('*')[5];
       // TODO: Add product
       const productData = await retreiveCachedItems(client, [
         'farm_id',
@@ -344,9 +343,9 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
       console.log('The product data', addingProduct);
 
       if (addingProduct.status === 200) {
-        message = `${end()} ${menus.success}`;
+        message = `${end()} ${menus.productAddedSuccessfully}`;
       } else {
-        message = `${end()} ${addingProduct.data.message}`;
+        message = `${end()} ${menus.productAddedFailure}`;
       }
     }
   }
