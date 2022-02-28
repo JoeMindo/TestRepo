@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable import/prefer-default-export */
-import menus from './menuoptions.js';
+
 import checkFarmerSelection from '../users/farmer/farmerselection.js';
 import checkBuyerSelection from '../users/buyer/buyerselection.js';
 
@@ -14,7 +14,7 @@ const end = () => 'END';
  * @param textToShow - the text to show in the menu
  * @returns The message to be sent to the user.
  */
-export const promptToShow = (response, textToShow) => {
+export const promptToShow = (response, textToShow, menus) => {
   let message = '';
   let menuPrompt = '';
   menuPrompt += response;
@@ -53,7 +53,7 @@ and prints out the question id and question name.
  * @param section - 'sections' or 'questions'
  * @returns The response from the server.
  */
-export const responsePrompt = (response, section) => {
+export const responsePrompt = (response, section, menus) => {
   let message = '';
   let menuPrompt = 'CON ';
 
@@ -61,12 +61,12 @@ export const responsePrompt = (response, section) => {
     response.data.message.forEach((item) => {
       menuPrompt += `${item.id}. ${item.section_name}\n`;
     });
-    message = promptToShow(menuPrompt, 'kycsections');
+    message = promptToShow(menuPrompt, 'kycsections', menus);
   } else if (response.status === 200 && section === 'questions') {
     response.data.message.forEach((item) => {
       menuPrompt += `${item.id}. ${item.metric_name}\n`;
     });
-    message = promptToShow(menuPrompt, 'kycmetrics');
+    message = promptToShow(menuPrompt, 'kycmetrics', menus);
   } else {
     message = `${end()} ${menus.somethingWentWrong}`;
   }

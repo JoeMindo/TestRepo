@@ -219,16 +219,17 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
  */
 export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
   let message;
-  if (textValue === 1) {
+  if (textValue === 2) {
     const farmerMetrics = await getFarmerMetricSections();
-    message = responsePrompt(farmerMetrics, 'sections');
-  } else if (textValue === 2) {
-    const sectionId = parseInt(text.split('*')[1], 10);
+    message = responsePrompt(farmerMetrics, 'sections', menus);
+    console.log('The message here is', message);
+  } else if (textValue === 3) {
+    const sectionId = parseInt(text.split('*')[2], 10);
     client.set('sectionId', sectionId);
     const questions = await getQuestionsPerSection(sectionId);
-    message = responsePrompt(questions, 'questions');
-  } else if (textValue === 3) {
-    const questionId = parseInt(text.split('*')[2], 10);
+    message = responsePrompt(questions, 'questions', menus);
+  } else if (textValue === 4) {
+    const questionId = parseInt(text.split('*')[3], 10);
     client.set('questionId', questionId);
     const answersPerQuestion = await getAnswersPerQuestion(questionId);
 
@@ -249,8 +250,8 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
     } else {
       message = `${end()} ${menus.answerNotAvailable}`;
     }
-  } else if (textValue === 4) {
-    const userAnswers = text.split('*')[3];
+  } else if (textValue === 5) {
+    const userAnswers = text.split('*')[4];
     if (userAnswers === '0') {
       message = `${con()} ${menus.typeAnswer}`;
       // res.send(message);
@@ -266,7 +267,7 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
 
       message = `${con()} ${menus.proceed}`;
     }
-  } else if (textValue === 5) {
+  } else if (textValue === 6) {
     if (text.split('*')[3] === '0') {
       setToCache(text, 4, client, 'answers');
     }
@@ -283,9 +284,9 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
     };
     const updateKYC = await addFarmerKYC(kycInfo, results[0]);
     if (updateKYC.status === 200) {
-      message = `${end()} ${menus.success}`;
+      message = `${end()} ${menus.kycSuccess}`;
     } else {
-      message = `${end()} ${menus.failure}`;
+      message = `${end()} ${menus.kycFailure}`;
     }
   }
   return message;
