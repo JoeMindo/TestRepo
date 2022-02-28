@@ -1,4 +1,4 @@
-import strings from './strings.js';
+import strings from './src/menus/strings.js';
 
 const getStrings = (string, lang) => {
   const res = {};

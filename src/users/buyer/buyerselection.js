@@ -3,9 +3,9 @@ import { renderBuyerMenus, con } from '../../menus/rendermenu.js';
 import * as groupOrderMenus from '../../orders/groupOrder.js';
 import { showAvailableProducts } from '../../products/renderProducts.js';
 import { retreiveCachedItems } from '../../core/services.js';
+import menus from '../../menus/menuoptions.js';
 import client from '../../server.js';
 import { cartOperations } from '../../cart/cartoperations.js';
-import { menus } from '../../menus/menuoptions.js';
 import { numberWithinRange } from '../../helpers.js';
 import { renderOrders } from '../../orders/unitOrder.js';
 

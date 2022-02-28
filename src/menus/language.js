@@ -1,8 +1,12 @@
+/* eslint-disable import/no-cycle */
 import { con } from './rendermenu.js';
-import { menus } from './menuoptions.js';
+import { strings } from './strings.js';
 
-const selectLanguage = () => {
-  const message = `${con()}{${menus.language.selectLanguage}}`;
-  return message;
+const selectLanguage = () => `${con()} ${strings.language.en}`;
+export const getStrings = (string, lang) => {
+  const res = {};
+  Object.entries(string).forEach(([key, value]) => res[key] = !value[lang] && typeof value === 'object' ? getStrings(value, lang) : value[lang]);
+  return res;
 };
+
 export default selectLanguage;

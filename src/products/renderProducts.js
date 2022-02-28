@@ -8,7 +8,7 @@ import {
 } from './productmanagement.js';
 import { con, end } from '../menus/rendermenu.js';
 import { BASEURL } from '../core/urls.js';
-import { menus } from '../menus/menuoptions.js';
+import menus from '../menus/menuoptions.js';
 import {
   cartOperations,
   askForQuantity,
@@ -58,7 +58,9 @@ export const renderOffers = (offers, offersArray, client) => {
 
     client.set('groupOffersArray', JSON.stringify(offersArray));
   });
-  const message = `${con()} ${menus.renderProducts.chooseOneToBuy} ${offeringText}`;
+  const message = `${con()} ${
+    menus.renderProducts.chooseOneToBuy
+  } ${offeringText}`;
   return message;
 };
 export const renderProductCategories = async () => {
@@ -115,7 +117,9 @@ export const renderOfferings = async (client, id) => {
       client.set('offersArray', JSON.stringify(offersArray));
     });
 
-    message = `${con()} ${menus.renderProducts.askForOptionSelection} ${offeringText}`;
+    message = `${con()} ${
+      menus.renderProducts.askForOptionSelection
+    } ${offeringText}`;
   } else {
     message = `${con()} ${menus.renderProducts.productNotAvailable}`;
     message += menus.footer;
@@ -143,7 +147,11 @@ export const showAvailableProducts = async (client, textValue, text) => {
     message = checkGroupAndIndividualPrice(
       offeringStatus[`${offeringStatus.length - 1}`][`${selection}`],
     );
-  } else if (textValue === 5 && numberWithinRange(text, 4) === 'valid' && text.split('*')[4] === '1') {
+  } else if (
+    textValue === 5
+    && numberWithinRange(text, 4) === 'valid'
+    && text.split('*')[4] === '1'
+  ) {
     message = askForQuantity();
   } else if (
     textValue === 6

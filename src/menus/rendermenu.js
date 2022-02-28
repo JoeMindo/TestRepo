@@ -1,7 +1,12 @@
 /* eslint-disable import/no-cycle */
-import { menus } from './menuoptions.js';
-import usernameValidation, { numberValidation, IdValidation } from '../helpers.js';
+import menus from './menuoptions.js';
+import usernameValidation, {
+  numberValidation,
+  IdValidation,
+} from '../helpers.js';
 import { registerUser } from '../core/usermanagement.js';
+import { getStrings } from './language.js';
+import strings from './strings.js';
 
 export const con = () => 'CON';
 export const end = () => 'END';
@@ -19,56 +24,57 @@ from the menus.register object. If it isn't, it returns the message 'CON Invalid
  * }
  */
 export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
-  if (textValue === 1 && text.length === 0) {
-    let menuPrompt = `${con()} ${menus.registration}${menus.register.firstname}`;
+  console.log(menus);
+  if (textValue === 1 && text !== '') {
+    let menuPrompt = `${con()} ${menus.registration} ${menus.firstname}`;
     menuPrompt += menus.footer;
     message = menuPrompt;
-  } else if (textValue === 1) {
-    const validationResponse = usernameValidation(text, 0);
-    if (validationResponse === 'valid') {
-      let menuPrompt = `${con()} ${menus.register.lastname}`;
-      menuPrompt += menus.footer;
-      message = menuPrompt;
-    } else {
-      message = `${end()} ${validationResponse}`;
-    }
   } else if (textValue === 2) {
     const validationResponse = usernameValidation(text, 1);
     if (validationResponse === 'valid') {
-      let menuPrompt = `${con()} ${menus.register.idNumber}`;
+      let menuPrompt = `${con()} ${menus.lastname}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 3) {
-    const validationResponse = IdValidation(text);
+    const validationResponse = usernameValidation(text, 2);
     if (validationResponse === 'valid') {
-      let menuPrompt = `${con()} ${menus.register.gender}`;
+      let menuPrompt = `${con()} ${menus.idNumber}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 4) {
-    const validationResponse = numberValidation(text, 3);
+    const validationResponse = IdValidation(text);
     if (validationResponse === 'valid') {
-      let menuPrompt = `${con()} ${menus.register.password}`;
+      let menuPrompt = `${con()} ${menus.gender}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 5) {
-    let menuPrompt = `${con()} ${menus.register.confirmPassword}`;
-    menuPrompt += menus.footer;
-    message = menuPrompt;
+    const validationResponse = numberValidation(text, 4);
+    if (validationResponse === 'valid') {
+      let menuPrompt = `${con()} ${menus.password}`;
+      menuPrompt += menus.footer;
+      message = menuPrompt;
+    } else {
+      message = `${end()} ${validationResponse}`;
+    }
   } else if (textValue === 6) {
-    let menuPrompt = `${con()} ${menus.register.role}`;
+    let menuPrompt = `${con()} ${menus.confirmPassword}`;
     menuPrompt += menus.footer;
     message = menuPrompt;
   } else if (textValue === 7) {
-    const validationResponse = numberValidation(text, 6);
+    let menuPrompt = `${con()} ${menus.role}`;
+    menuPrompt += menus.footer;
+    message = menuPrompt;
+  } else if (textValue === 8) {
+    const validationResponse = numberValidation(text, 7);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.submitDetails}`;
       menuPrompt += menus.footer;
@@ -76,27 +82,28 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
     } else {
       message = `${end()} ${validationResponse}`;
     }
-  } else if (textValue === 8 && text.split('*')[7] === '1') {
+  } else if (textValue === 9 && text.split('*')[8] === '1') {
     const userDetails = {
-      first_name: text.split('*')[0],
-      last_name: text.split('*')[1],
-      id_no: text.split('*')[2],
-      gender: text.split('*')[3],
-      password: text.split('*')[4],
-      password_confirmation: text.split('*')[5],
-      role_id: text.split('*')[6],
+      first_name: text.split('*')[1],
+      last_name: text.split('*')[2],
+      id_no: text.split('*')[3],
+      gender: text.split('*')[4],
+      password: text.split('*')[5],
+      password_confirmation: text.split('*')[6],
+      role_id: text.split('*')[7],
     };
     const registrationResponse = await registerUser(userDetails, phoneNumber);
     console.log('This response is', registrationResponse.data.data);
-    const role = registrationResponse.status === 200 ? registrationResponse.data.data.role_id
+    const role = registrationResponse.status === 200
+      ? registrationResponse.data.data.role_id
       : null;
 
     if (role === null) {
-      message = `${con()} ${menus.register.couldNotAssignRole}`;
+      message = `${con()} ${menus.couldNotAssignRole}`;
     } else if (role === '1') {
-      message = `${con()} ${menus.register.successFarmer}`;
+      message = `${con()} ${menus.successFarmer}`;
     } else if (role === '2') {
-      message = `${con()} ${menus.register.successBuyer}`;
+      message = `${con()} ${menus.successBuyer}`;
     }
   }
   return message;
@@ -117,19 +124,19 @@ export const renderLoginMenus = () => {
  * This function renders the menus for the farmer.
  * @returns A string that is the message that is displayed to the user.
  */
-export const renderFarmerMenus = () => {
-  let menuPrompt = `${con()} ${menus.farmer.updateLocation}`;
-  menuPrompt += menus.farmer.addFarmDetails;
-  menuPrompt += menus.farmer.addProduct;
-  menuPrompt += menus.farmer.updateDetails;
-  menuPrompt += menus.farmer.updateListedProduce;
+export const renderFarmerMenus = (menus) => {
+  let menuPrompt = `${con()} ${menus.updateLocation}`;
+  menuPrompt += menus.addFarmDetails;
+  menuPrompt += menus.addProduct;
+  menuPrompt += menus.updateDetails;
+  menuPrompt += menus.updateListedProduce;
   menuPrompt += menus.more;
   message = menuPrompt;
   return message;
 };
 
 export const renderLocationOptions = () => {
-  const menuPrompt = `${con()} ${menus.farmer.addFarmLocationOption}`;
+  const menuPrompt = `${con()} ${menus.addFarmLocationOption}`;
   message = menuPrompt;
   return message;
 };
@@ -138,14 +145,14 @@ export const renderLocationOptions = () => {
  * @returns A string that is the message that is being displayed to the user.
  */
 export const renderFarmerMenusLevelTwo = () => {
-  let menuPrompt = `${con()} ${menus.farmer.joinGroup}`;
-  menuPrompt += `${menus.farmer.myFarms}`;
+  let menuPrompt = `${con()} ${menus.joinGroup}`;
+  menuPrompt += `${menus.myFarms}`;
   message = menuPrompt;
   return message;
 };
 
 export const renderCropCalendarMenus = () => {
-  const menuPrompt = `${con()} ${menus.farmer.cropCalendarMenus}`;
+  const menuPrompt = `${con()} ${menus.cropCalendarMenus}`;
   message = menuPrompt;
   return message;
 };
@@ -154,10 +161,10 @@ export const renderCropCalendarMenus = () => {
  * @returns A string that is the message that is to be sent to the user.
  */
 export const renderBuyerMenus = () => {
-  let menuPrompt = `${con()} ${menus.buyermenu.viewProducts}\n`;
-  menuPrompt += `${menus.buyermenu.myCart}\n`;
-  menuPrompt += `${menus.buyermenu.myOrders}\n`;
-  menuPrompt += `${menus.buyermenu.groupOrder}\n`;
+  let menuPrompt = `${con()} ${menus.viewProducts}\n`;
+  menuPrompt += `${menus.myCart}\n`;
+  menuPrompt += `${menus.myOrders}\n`;
+  menuPrompt += `${menus.groupOrder}\n`;
   menuPrompt += menus.footer;
   message = menuPrompt;
   return message;

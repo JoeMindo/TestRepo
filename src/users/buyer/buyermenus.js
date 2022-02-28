@@ -1,7 +1,6 @@
-import {
-  fetchCategories,
-} from '../../products/productmanagement.js';
-import { menus } from '../../menus/menuoptions.js';
+/* eslint-disable import/no-cycle */
+import { fetchCategories } from '../../products/productmanagement.js';
+import menus from '../../menus/menuoptions.js';
 
 let message = '';
 const con = () => 'CON';
@@ -35,9 +34,9 @@ export const renderProductCategories = async () => {
     const response = await fetchCategories();
 
     if (response) {
-      message = `${con()} ${menus.miscellaneous.category}\n ${response}`;
+      message = `${con()} ${menus.category}\n ${response}`;
     } else {
-      message = `${end()} ${menus.renderProducts.couldNotFetchCategories}`;
+      message = `${end()} ${menus.couldNotFetchCategories}`;
     }
     return message;
   } catch (err) {
@@ -46,14 +45,14 @@ export const renderProductCategories = async () => {
 };
 
 export const askForQuantity = () => {
-  message = `${con()} ${menus.cartOperations.quantityToBuy}`;
+  message = `${con()} ${menus.quantityToBuy}`;
   message += menus.footer;
   return message;
 };
 // Array of offers should be cached
 
 export const chooseCenter = (administrativeID) => {
-  let message = `${con()} ${menus.buyermenu.centerForPicking}`;
+  let message = `${con()} ${menus.centerForPicking}`;
   const center = centersMapping[`${administrativeID}`];
   message += `1. ${center}`;
   return message;

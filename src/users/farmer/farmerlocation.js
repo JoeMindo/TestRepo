@@ -1,15 +1,21 @@
+/* eslint-disable import/no-cycle */
 import { getLocations, getRegions } from './listlocations.js';
-import { menus } from '../../menus/menuoptions.js';
 import { retreiveCachedItems } from '../../core/services.js';
 
 const con = () => 'CON';
 
-export const fetchLocalityDetails = async (client, locality, id = null) => {
+export const fetchLocalityDetails = async (
+  client,
+  locality,
+  menus,
+  id = null,
+
+) => {
   let results;
   if (locality === 'region') {
     const regions = await getRegions();
     if (regions.status === 500) {
-      results = `${con()} ${menus.miscellaneous.serverError}`;
+      results = `${con()} ${menus.serverError}`;
     }
     const list = await regions;
     results = list.items;
@@ -52,7 +58,7 @@ export const fetchLocalityDetails = async (client, locality, id = null) => {
     userLocationSelection = parseInt(userLocationSelection, 10);
     client.set('userLocationSelection', userLocationSelection);
   } else {
-    results = `${con()} ${menus.miscellaneous.dataNotFound}`;
+    results = `${con()} ${menus.dataNotFound}`;
   }
   return results;
 };
@@ -64,33 +70,34 @@ export const fetchLocalityDetails = async (client, locality, id = null) => {
  * @param [id=null] - The id of the locality to be updated.
  * @returns The prompt is returned.
  */
-export const promptToGive = async (client, locality, id = null) => {
+export const promptToGive = async (client, locality, menus, id = null) => {
   let prompt;
   if (locality === 'region') {
-    const results = await fetchLocalityDetails(client, 'region');
-    prompt = `${con()} ${menus.updateLocation[0]}`;
+    const results = await fetchLocalityDetails(client, 'region', menus);
+    prompt = `${con()} ${menus.selectRegion}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'county') {
-    const results = await fetchLocalityDetails(client, 'county', id);
-    prompt = `${con()} ${menus.updateLocation[1]}`;
+    const results = await fetchLocalityDetails(client, 'county', menus, id);
+    console.log('The county prompt is', menus.selectCounty);
+    prompt = `${con()} ${menus.selectCounty}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'subcounty') {
-    const results = await fetchLocalityDetails(client, 'subcounty', id);
-    prompt = `${con()} ${menus.updateLocation[2]}`;
+    const results = await fetchLocalityDetails(client, 'subcounty', menus, id);
+    prompt = `${con()} ${menus.selectSubCounty}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'location') {
-    const results = await fetchLocalityDetails(client, 'location', id);
+    const results = await fetchLocalityDetails(client, 'location', menus, id);
     console.log('The location menu results', results);
-    prompt = `${con()} ${menus.updateLocation[3]}`;
+    prompt = `${con()} ${menus.selectLocation}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'area') {
-    const results = await fetchLocalityDetails(client, 'area', id);
+    const results = await fetchLocalityDetails(client, 'area', menus, id);
     console.log('The are location ids', results);
-    prompt = `${con()} ${menus.updateLocation[4]}`;
+    prompt = `${con()} ${menus.area}`;
     prompt += menus.footer;
   }
   return prompt;

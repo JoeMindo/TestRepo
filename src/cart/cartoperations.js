@@ -3,9 +3,9 @@
 import { retreiveCachedItems } from '../core/services.js';
 import client from '../server.js';
 import { con, end } from '../menus/rendermenu.js';
-import { menus } from '../menus/menuoptions.js';
 import makebasicOrder from '../orders/unitOrder.js';
 import makePayment from '../payment/payment.js';
+import menus from '../menus/menuoptions.js';
 import { itemSelection } from '../products/productmanagement.js';
 
 export const offersArray = [];
@@ -19,7 +19,7 @@ let message;
  * @returns The message variable.
  */
 export const askForNumber = () => {
-  message = `${con()} ${menus.cartOperations.askForNumber}`;
+  message = `${con()} ${menus.askForNumber}`;
   return message;
 };
 /**
@@ -27,7 +27,7 @@ export const askForNumber = () => {
  * @returns A string
  */
 export const askForQuantity = () => {
-  message = `${con()} ${menus.cartOperations.quantityToBuy}`;
+  message = `${con()} ${menus.quantityToBuy}`;
   return message;
 };
 /**
@@ -108,9 +108,9 @@ export const addToCart = async (client, itemsObject, totalPriceObject) => {
         }
       }
     });
-    message = `${con()} ${menus.cartOperations.successfullyAddItemsTocart}`;
+    message = `${con()} ${menus.successfullyAddItemsTocart}`;
   } else {
-    message = `${con()} ${menus.cartOperations.noItemsAddedToCart}`;
+    message = `${con()} ${menus.noItemsAddedToCart}`;
   }
   return message;
 };
@@ -126,9 +126,9 @@ export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
   if (itemsObject && totalPriceObject) {
     cartItems.push(itemsObject);
     client.set('cartItems', JSON.stringify(cartItems));
-    message = `${con()} ${menus.cartOperations.cartItemsUpdatedSuccessfully}`;
+    message = `${con()} ${menus.cartItemsUpdatedSuccessfully}`;
   } else {
-    message = `${con()} ${menus.cartOperations.noItemSelectedToUpdate}`;
+    message = `${con()} ${menus.noItemSelectedToUpdate}`;
   }
   message += menus.footer;
   return message;
@@ -141,9 +141,9 @@ export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
  */
 export const updateType = async (type) => {
   if (type === 'remove') {
-    message = `${con()} ${menus.cartOperations.askForItemToRemove}`;
+    message = `${con()} ${menus.askForItemToRemove}`;
   } else {
-    message = `${con()} ${menus.cartOperations.askForItemToUpdate}`;
+    message = `${con()} ${menus.askForItemToUpdate}`;
   }
   const cartItems = await showCartItems(client);
 
@@ -166,10 +166,10 @@ export const removeItemFromCart = async (id) => {
         const indexOfItem = cartItems.indexOf(item);
         cartItems.splice(indexOfItem, 1);
         client.set('cartItems', JSON.stringify(cartItems));
-        message = `${con()} ${menus.cartOperations.itemRemovedSuccessfully}`;
+        message = `${con()} ${menus.itemRemovedSuccessfully}`;
         message += menus.footer;
       } else {
-        message = `${con()} ${menus.cartOperations.itemNotFound}`;
+        message = `${con()} ${menus.itemNotFound}`;
       }
     });
     return message;
@@ -200,7 +200,7 @@ export const changeQuantity = async (client, amount, object, id) => {
     newCartItems.push(oldObject);
 
     client.set('cartItems', JSON.stringify(newCartItems));
-    message = `${end()} ${menus.cartOperations.updatedSuccessfully}`;
+    message = `${end()} ${menus.updatedSuccessfully}`;
     return message;
   } catch (err) {
     throw new Error(err);
@@ -230,9 +230,9 @@ export const findItemToChangeQuantity = async (client, id) => {
     cartItems.forEach((item) => {
       if (item.id === id) {
         itemToUpdate = item;
-        message = `${con()} ${menus.cartOperations.updatedQuantityToBuy}`;
+        message = `${con()} ${menus.updatedQuantityToBuy}`;
       } else {
-        message = `${con()} ${menus.cartOperations.itemNotFound}`;
+        message = `${con()} ${menus.itemNotFound}`;
       }
     });
     return {
@@ -252,7 +252,7 @@ export const findItemToChangeQuantity = async (client, id) => {
 export const displayTotalCost = async (client) => {
   try {
     const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
-    message = `${con()} ${menus.cartOperations.paymentPrompt} ${chargeToUser}\n ${menus.miscellaneous.yes}`;
+    message = `${con()} ${menus.paymentPrompt} ${chargeToUser}\n ${menus.yes}`;
     message += menus.footer;
   } catch (error) {
     throw new Error(error);
@@ -279,15 +279,15 @@ export const displayCartItems = async (client) => {
     if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
       fetchCartItems = JSON.parse(fetchCartItems);
       fetchCartItems.forEach((item) => {
-        prompt += `${item.id}. ${item.product} ${menus.miscellaneous.from} ${item.farmName} ${menus.miscellaneous.grade}: ${item.grade} ${menus.miscellaneous.atKES} ${item.totalCost}\n`;
+        prompt += `${item.id}. ${item.product} ${menus.from} ${item.farmName} ${menus.grade}: ${item.grade} ${menus.atKES} ${item.totalCost}\n`;
       });
       const availableTotal = fetchCartItems.reduce(
         (total, obj) => obj.totalCost + total,
         0,
       );
-      message = `${con()} ${menus.cartOperations.yourCartItems} ${prompt} ${menus.miscellaneous.total} ${availableTotal}\n ${menus.cartOperations.checkoutAndUpdate}`;
+      message = `${con()} ${menus.yourCartItems} ${prompt} ${menus.total} ${availableTotal}\n ${menus.checkoutAndUpdate}`;
     } else if (fetchCartItems[0] === null) {
-      message = `${con()} ${menus.cartOperations.noItemsInCart}`;
+      message = `${con()} ${menus.noItemsInCart}`;
       message += menus.footer;
     }
     return message;
@@ -297,14 +297,14 @@ export const displayCartItems = async (client) => {
 };
 export const updateCart = async (operation, id = null) => {
   if (operation === 'firstscreen') {
-    message = `${con()} ${menus.cartOperations.operation}`;
+    message = `${con()} ${menus.operation}`;
     message += menus.footer;
   } else if (operation === 'removeItem') {
     message = await removeItemFromCart(id);
   } else if (operation === 'updateItemCount') {
     message = await findItemToChangeQuantity(id);
   } else {
-    message = `${end()} ${menus.cartOperations.itemNotFound}`;
+    message = `${end()} ${menus.itemNotFound}`;
   }
   return message;
 };

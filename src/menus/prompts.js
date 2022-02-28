@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable import/prefer-default-export */
-import { menus } from './menuoptions.js';
+import menus from './menuoptions.js';
 import checkFarmerSelection from '../users/farmer/farmerselection.js';
 import checkBuyerSelection from '../users/buyer/buyerselection.js';
 
@@ -19,23 +19,23 @@ export const promptToShow = (response, textToShow) => {
   let menuPrompt = '';
   menuPrompt += response;
   if (textToShow === 'productcategories') {
-    message = `${con()} ${menus.miscellaneous.category}`;
+    message = `${con()} ${menus.category}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'products') {
-    message = `${con()} ${menus.miscellaneous.product}`;
+    message = `${con()} ${menus.product}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycsections') {
-    message = `${con()} ${menus.miscellaneous.kycsection}`;
+    message = `${con()} ${menus.kycsection}`;
     message = menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycmetrics') {
-    message = `${con()} ${menus.miscellaneous.kycmetrics}`;
+    message = `${con()} ${menus.kycmetrics}`;
     message = menuPrompt;
     message += menus.footer;
   } else {
-    message = `${con()} ${menus.farm.chooseOffering}`;
+    message = `${con()} ${menus.chooseOffering}`;
     message += menuPrompt;
     message += menus.footer;
   }
@@ -68,7 +68,7 @@ export const responsePrompt = (response, section) => {
     });
     message = promptToShow(menuPrompt, 'kycmetrics');
   } else {
-    message = `${end()} ${menus.miscellaneous.somethingWentWrong}`;
+    message = `${end()} ${menus.somethingWentWrong}`;
   }
   return message;
 };

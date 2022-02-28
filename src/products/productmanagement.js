@@ -1,7 +1,7 @@
+/* eslint-disable import/no-cycle */
 import axios from 'axios';
 import { BASEURL } from '../core/urls.js';
 import { retreiveCachedItems } from '../core/services.js';
-import { menus } from '../menus/menuoptions.js';
 import { con } from '../menus/rendermenu.js';
 
 const optionProducts = [];
@@ -16,7 +16,9 @@ export const itemSelection = {};
  */
 async function fetchCategories() {
   let results = '';
-  const response = await axios.get(`${BASEURL}/ussd/prodcategories`).catch((err) => err.response);
+  const response = await axios
+    .get(`${BASEURL}/ussd/prodcategories`)
+    .catch((err) => err.response);
 
   if (response.status === 200) {
     response.data.data.data.forEach((category) => {
@@ -29,7 +31,9 @@ async function fetchCategories() {
 
 async function fetchProducts(id) {
   let results = '';
-  const response = await axios.get(`${BASEURL}/ussd/prodcategories`).catch((err) => err.response);
+  const response = await axios
+    .get(`${BASEURL}/ussd/prodcategories`)
+    .catch((err) => err.response);
   response.data.data.data.forEach((item) => {
     item.products.forEach((description) => {
       if (description.category_id === id) {
@@ -47,7 +51,7 @@ const fetchFarmOfferings = async (id) => {
     response.data.forEach((item) => {
       item.farm_products.forEach((farmItem) => {
         if (farmItem.product_id === id) {
-          farmOfferings += `${farmItem.farm_id}. ${menus.productmanagement.unitsAvailable} ${farmItem.units} ${menus.productmanagement.gradeOfItems} ${farmItem.grade}\n `;
+          farmOfferings += `${farmItem.farm_id}. ${menus.unitsAvailable} ${farmItem.units} ${menus.gradeOfItems} ${farmItem.grade}\n `;
         }
       });
     });
@@ -58,20 +62,20 @@ const fetchFarmOfferings = async (id) => {
 };
 
 const addProduct = async (productdata) => {
-  const newProduct = axios.post(
-    `${BASEURL}/ussd/farmproduct/save`,
-    productdata,
-  ).catch((err) => err.response);
+  const newProduct = axios
+    .post(`${BASEURL}/ussd/farmproduct/save`, productdata)
+    .catch((err) => err.response);
   return newProduct;
 };
 const productsInFarm = async (farmID) => {
-  const products = await axios.get(`${BASEURL}/ussd/farmproducts/farm/${farmID}`).catch((err) => err.response);
+  const products = await axios
+    .get(`${BASEURL}/ussd/farmproducts/farm/${farmID}`)
+    .catch((err) => err.response);
   return products;
 };
 const updateListedProduct = async (id, data) => {
-  const updatedProduce = await axios.post(
-    `${BASEURL}/ussd/farmproduct/update/${id}`, data,
-  )
+  const updatedProduce = await axios
+    .post(`${BASEURL}/ussd/farmproduct/update/${id}`, data)
     .catch((err) => err.response);
   return updatedProduce;
 };
@@ -89,7 +93,9 @@ const getSpecificProduct = async (id) => {
   }
 };
 const listProductForSale = async (data) => {
-  const response = await axios.post(`${BASEURL}/ussd/farmproductcatalog/save`, data).catch((err) => err.response);
+  const response = await axios
+    .post(`${BASEURL}/ussd/farmproductcatalog/save`, data)
+    .catch((err) => err.response);
   return response;
 };
 export const confirmQuantityWithPrice = async (
@@ -108,7 +114,7 @@ export const confirmQuantityWithPrice = async (
   availableUnits = buyerSelection[0].availableUnits;
 
   if (userQuantity > availableUnits) {
-    message = `${con()} ${menus.productmanagement.amountIsHigher}`;
+    message = `${con()} ${menus.amountIsHigher}`;
   } else {
     if (status === 'unit') {
       pricePoint = parseInt(buyerSelection[0].unitPrice, 10);
@@ -118,7 +124,7 @@ export const confirmQuantityWithPrice = async (
 
     const total = userQuantity * pricePoint;
 
-    const prompt = `${buyerSelection[0].product} ${menus.miscellaneous.from} ${buyerSelection[0].farmName} ${menus.miscellaneous.grade} ${buyerSelection[0].grade} at ${pricePoint}`;
+    const prompt = `${buyerSelection[0].product} ${menus.from} ${buyerSelection[0].farmName} ${menus.grade} ${buyerSelection[0].grade} at ${pricePoint}`;
 
     itemSelection.id = parseInt(`${buyerSelection[0].id}`, 10);
     itemSelection.product = `${buyerSelection[0].product}`;
@@ -129,7 +135,9 @@ export const confirmQuantityWithPrice = async (
     itemSelection.userQuantity = parseInt(`${userQuantity}`, 10);
     itemSelection.unitPrice = pricePoint;
     itemSelection.totalCost = total;
-    message = `${con()} ${menus.miscellaneous.buy} ${prompt}\n ${menus.miscellaneous.total} ${total}\n ${menus.cartOperations.addToCart}`;
+    message = `${con()} ${menus.buy} ${prompt}\n ${menus.total} ${total}\n ${
+      menus.cartOperations.addToCart
+    }`;
   }
   return message;
 };

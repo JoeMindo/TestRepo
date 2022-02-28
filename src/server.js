@@ -5,12 +5,15 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import redis from 'redis';
+import store from 'store';
 import bluebird from 'bluebird';
 import { ussdRouter } from 'ussd-router';
 import { checkIfUserExists } from './core/usermanagement.js';
 import { renderRegisterMenu } from './menus/rendermenu.js';
 import checkFarmerSelection from './users/farmer/farmerselection.js';
 import checkBuyerSelection from './users/buyer/buyerselection.js';
+import selectLanguage, { getStrings } from './menus/language.js';
+import { languageChooser } from './helpers.js';
 
 const port = process.env.PORT || 3032;
 
@@ -21,6 +24,7 @@ const client = redis.createClient({
   port: 19100,
   password: 'T6SXoEq1tyztu6oLYGpSO2cbE2dE1gDH',
 });
+// eslint-disable-next-line import/no-mutable-exports
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 
@@ -61,16 +65,22 @@ app.post('/ussd', async (req, res) => {
   const textValue = text.split('*').length;
   console.log('The text value is', textValue);
   let message;
-  const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
-  if (response.exists && response.role === 'BUYER') {
-    client.set('user_Id', response.user_id);
-    message = await checkBuyerSelection(textValue, text);
-  } else if (response.exists && response.role === 'FARMER') {
-    client.set('user_id', response.user_id);
-    message = await checkFarmerSelection(text, 0);
-  } else if (!response.exists) {
-    message = await renderRegisterMenu(textValue, text, req.body.phoneNumber);
-    console.log('The registration response', message);
+  if (text === '') {
+    message = selectLanguage();
+  } else {
+    const userLanguage = languageChooser(text.split('*')[0]);
+    store.set('language', userLanguage);
+    const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
+    if (response.exists && response.role === 'BUYER') {
+      client.set('user_Id', response.user_id);
+      message = await checkBuyerSelection(textValue, text);
+    } else if (response.exists && response.role === 'FARMER') {
+      client.set('user_id', response.user_id);
+      message = await checkFarmerSelection(text, 0, userLanguage);
+    } else if (!response.exists) {
+      message = await renderRegisterMenu(textValue, text, req.body.phoneNumber);
+      console.log('The registration response', message);
+    }
   }
 
   res.send(message);

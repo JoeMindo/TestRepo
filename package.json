@@ -8,8 +8,7 @@
     "test": "c8 --all mocha --timeout 10000 --exit --require @babel/register test/**/*.js",
     "start": "node --experimental-json-modules src/server.js",
     "dev": "nodemon src/server.js",
-    "fix": 
-      "eslint --fix src/**/*.js",
+    "fix": "eslint --fix src/**/*.js",
     "coverage": "nyc report —-reporter=text-lcov | coveralls"
   },
   "repository": {
@@ -72,6 +71,7 @@
     "morgan": "^1.10.0",
     "nyc": "^15.1.0",
     "redis": "^3.1.2",
+    "store": "^2.0.12",
     "ussd-router": "^0.1.6",
     "uuid": "^8.3.2"
   }

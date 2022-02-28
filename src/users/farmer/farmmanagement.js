@@ -6,7 +6,6 @@ import { BASEURL } from '../../core/urls.js';
 import { promptToGive } from './farmerlocation.js';
 import { numberWithinRange } from '../../helpers.js';
 import { end, con } from '../../menus/rendermenu.js';
-import { menus } from '../../menus/menuoptions.js';
 import { isTextOnly } from './farmermenus.js';
 import { retreiveCachedItems } from '../../core/services.js';
 
@@ -174,7 +173,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'county', regionId);
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 4) {
     const validRange = numberWithinRange(text, 1);
@@ -183,7 +182,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'subcounty', countyId);
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 5) {
     const validRange = numberWithinRange(text, 1);
@@ -192,29 +191,29 @@ export const inputFarmLocation = async (textValue, text, client) => {
       const menuPrompt = await promptToGive(client, 'location', subcountyId);
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 6) {
-    let menuPrompt = `${con()} ${menus.addfarmDetails[0]}`;
+    let menuPrompt = `${con()} ${menus[0]}`;
     menuPrompt += menus.footer;
     message = menuPrompt;
   } else if (textValue === 7) {
     if (isTextOnly(text.split('*')[6]) === true) {
-      let menuPrompt = `${con()} ${menus.addfarmDetails[1]}`;
+      let menuPrompt = `${con()} ${menus[1]}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
       client.set('farm_name', text.split('*')[6]);
     } else {
-      message = `${con()} ${menus.miscellaneous.invalidInput}`;
+      message = `${con()} ${menus.invalidInput}`;
     }
   } else if (textValue === 8) {
     if (isTextOnly(text.split('*')[7]) === true) {
-      let menuPrompt = `${con()} ${menus.addfarmDetails[4]}`;
+      let menuPrompt = `${con()} ${menus[4]}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
       client.set('farm_location', text.split('*')[7]);
     } else {
-      message = `${con()} ${menus.miscellaneous.invalidInput}`;
+      message = `${con()} ${menus.invalidInput}`;
     }
   } else if (textValue === 9) {
     client.set('farm_size', parseInt(text.split('*')[8], 10));
@@ -238,7 +237,7 @@ export const inputFarmLocation = async (textValue, text, client) => {
     const responseForAddingFarm = await addFarm(postDetails);
     console.log('The response for adding the farm', responseForAddingFarm);
     if (responseForAddingFarm.status === 200) {
-      const menuPrompt = `${end()} ${menus.addfarmDetails.success}`;
+      const menuPrompt = `${end()} ${menus.success}`;
       message = menuPrompt;
       client.set('farm_id', responseForAddingFarm.data.farm_id);
     } else {
@@ -281,13 +280,13 @@ export const renderProductsInFarm = async (farmId) => {
   const response = await fetchProduceInFarms(farmId);
   if (response.status === 200) {
     if (response.data.message.length > 0) {
-      const menuPrompt = `${con()} ${menus.farm.listedProduce}`;
+      const menuPrompt = `${con()} ${menus.listedProduce}`;
       message = menuPrompt;
       response.data.message.forEach((element, index) => {
         message += `${index}. ${element.product_name}\n`;
       });
     } else {
-      message = `${con()} ${menus.farmer.noProduce}`;
+      message = `${con()} ${menus.noProduce}`;
     }
   }
   return message;
@@ -309,7 +308,7 @@ export const renderFarmerFarms = async (userId) => {
     });
     message = menuPrompt;
   } else {
-    message = `${con()} ${menus.farm.noFarms}`;
+    message = `${con()} ${menus.noFarms}`;
   }
   return message;
 };

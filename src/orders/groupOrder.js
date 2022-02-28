@@ -3,9 +3,9 @@ import axios from 'axios';
 import { retreiveCachedItems } from '../core/services.js';
 import { renderOffers, renderProducts } from '../products/renderProducts.js';
 import client from '../server.js';
-
+import menus from '../menus/menuoptions.js';
 import { BASEURL } from '../core/urls.js';
-import { menus } from '../menus/menuoptions.js';
+
 import {
   askForQuantity,
   renderProductCategories,
@@ -38,9 +38,9 @@ message is "CON Group To Join". The message is then concatenated with the footer
 export const actionToTake = async (state) => {
   let message = '';
   if (state === false) {
-    message = `CON ${menus.buyermenu.createGroup}`;
+    message = `CON ${menus.createGroup}`;
   } else if (typeof state === 'number') {
-    message = `CON ${menus.buyermenu.groupToJoin}`;
+    message = `CON ${menus.groupToJoin}`;
   }
   message += menus.footer;
   return message;
@@ -55,7 +55,7 @@ export const createGroup = async (groupdata) => {
   const response = await axios.post(`${BASEURL}/ussd/saveusergroup`, groupdata);
   return response.data.status;
 };
-export const requestGroupName = () => `${con()} ${menus.groupOrder.requestName}`;
+export const requestGroupName = () => `${con()} ${menus.requestName}`;
 /**
  * This function is used to create a group.
  * @param status - The status of the group creation.
@@ -64,9 +64,9 @@ export const requestGroupName = () => `${con()} ${menus.groupOrder.requestName}`
 export const groupCreationMessage = (status) => {
   let message;
   if (status === 'success') {
-    message = `${con()} ${menus.groupOrder.groupCreatedSuccess}`;
+    message = `${con()} ${menus.groupCreatedSuccess}`;
   } else {
-    message = `${con()} ${menus.groupOrder.couldNotCreateGroup}`;
+    message = `${con()} ${menus.couldNotCreateGroup}`;
   }
   message += menus.footer;
   return message;

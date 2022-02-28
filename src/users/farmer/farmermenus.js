@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
-import { menus } from '../../menus/menuoptions.js';
 import client from '../../server.js';
 import { addLocation, isLocationPresent } from '../../core/usermanagement.js';
 import { retreiveCachedItems, setToCache } from '../../core/services.js';
@@ -29,7 +28,10 @@ import {
 
 import { responsePrompt } from '../../menus/prompts.js';
 import { promptToGive } from './farmerlocation.js';
-import { renderFarmerMenusLevelTwo, renderLocationOptions } from '../../menus/rendermenu.js';
+import {
+  renderFarmerMenusLevelTwo,
+  renderLocationOptions,
+} from '../../menus/rendermenu.js';
 import { numberWithinRange } from '../../helpers.js';
 
 const con = () => 'CON';
@@ -42,7 +44,7 @@ const questionanswers = {};
  * @param farmID - The ID of the farm that you want to see the products in.
  * @returns A string of all the products in the farm.
  */
-export const showProductsInFarm = async (farmID) => {
+export const showProductsInFarm = async (farmID, menus) => {
   const products = await productsInFarm(farmID);
   console.log('The products in this farm are:', products);
   const productIDs = [];
@@ -59,54 +61,60 @@ export const showProductsInFarm = async (farmID) => {
     });
     return productList;
   }
-  return `${menus.farm.noProductsInFarm}`;
+  return `${menus.noProductsInFarm}`;
 };
 
 /**
  * This function is used to update the user's location.
  */
-export const renderUpdateLocationMenu = async (textValue, text) => {
+export const renderUpdateLocationMenu = async (textValue, text, menus) => {
   let message;
-  if (textValue === 1) {
-    const menuPrompt = await promptToGive(client, 'region');
+  if (textValue === 2) {
+    const menuPrompt = await promptToGive(client, 'region', menus);
     message = menuPrompt;
-  } else if (textValue === 2) {
-    const validRange = numberWithinRange(text, 1);
-    if (validRange === 'valid') {
-      const regionId = parseInt(text.split('*')[1], 10);
-      const menuPrompt = await promptToGive(client, 'county', regionId);
-      message = menuPrompt;
-    } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
-    }
   } else if (textValue === 3) {
-    const validRange = numberWithinRange(text, 2);
+    const validRange = numberWithinRange(text, 2, menus);
     if (validRange === 'valid') {
-      const countyId = parseInt(text.split('*')[2], 10);
-      const menuPrompt = await promptToGive(client, 'subcounty', countyId);
+      const regionId = parseInt(text.split('*')[2], 10);
+      const menuPrompt = await promptToGive(
+        client,
+        'county',
+        menus,
+        regionId,
+
+      );
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 4) {
-    const validRange = numberWithinRange(text, 3);
+    const validRange = numberWithinRange(text, 3, menus);
     if (validRange === 'valid') {
-      const subcountyId = parseInt(text.split('*')[3], 10);
-      const menuPrompt = await promptToGive(client, 'location', subcountyId);
+      const countyId = parseInt(text.split('*')[3], 10);
+      const menuPrompt = await promptToGive(client, 'subcounty', menus, countyId);
       message = menuPrompt;
     } else {
-      message = `${end()}${menus.miscellaneous.outOfRange}`;
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 5) {
-    const validRange = numberWithinRange(text, 4);
+    const validRange = numberWithinRange(text, 4, menus);
     if (validRange === 'valid') {
-      const menuPrompt = await promptToGive(client, 'area');
+      const subcountyId = parseInt(text.split('*')[4], 10);
+      const menuPrompt = await promptToGive(client, 'location', menus, subcountyId);
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.miscellaneous.outOfRange}`;
+      message = `${end()}${menus.outOfRange}`;
+    }
+  } else if (textValue === 6) {
+    const validRange = numberWithinRange(text, 5, menus);
+    if (validRange === 'valid') {
+      const menuPrompt = await promptToGive(client, 'area', menus);
+      message = menuPrompt;
+    } else {
+      message = `${end()} ${menus.outOfRange}`;
     }
   } else {
-    client.set('userArea', text.split('*')[5]);
+    client.set('userArea', text.split('*')[6]);
 
     const postLocationDetails = await retreiveCachedItems(client, [
       'userSubCountySelection',
@@ -125,10 +133,10 @@ export const renderUpdateLocationMenu = async (textValue, text) => {
     console.log('The response is', response);
 
     if (response.status === 200) {
-      const menuPrompt = `${end()} ${menus.updateLocation.success}`;
+      const menuPrompt = `${end()} ${menus.locationUpdateOk}`;
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.updateLocation.failure},`;
+      message = `${end()} ${menus.locationUpdateFailed},`;
       message += menus.footer;
     }
   }
@@ -138,7 +146,7 @@ export const renderUpdateLocationMenu = async (textValue, text) => {
 /**
  * This function is used to render the menu for adding farm details.
  */
-export const renderAddFarmDetailsMenu = async (textValue, text) => {
+export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
   let message;
   const userID = await retreiveCachedItems(client, ['user_id']);
   const locationDetailsPresent = await isLocationPresent(userID[0]);
@@ -147,21 +155,21 @@ export const renderAddFarmDetailsMenu = async (textValue, text) => {
     if (textValue === 1) {
       message = renderLocationOptions();
     } else if (textValue === 2 && text.split('*')[1] === '1') {
-      let menuPrompt = `${con()} ${menus.addfarmDetails[0]}`;
+      let menuPrompt = `${con()} ${menus[0]}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else if (textValue === 3 && text.split('*')[1] === '1') {
       if (isTextOnly(text.split('*')[2]) === true) {
-        let menuPrompt = `${con()} ${menus.addfarmDetails[1]}`;
+        let menuPrompt = `${con()} ${menus[1]}`;
         menuPrompt += menus.footer;
         message = menuPrompt;
         client.set('farm_name', text.split('*')[2]);
       } else {
-        message = `${con()} ${menus.miscellaneous.invalidInput}`;
+        message = `${con()} ${menus.invalidInput}`;
       }
     } else if (textValue === 4 && text.split('*')[1] === '1') {
       client.set('farm_location', text.split('*')[3]);
-      let menuPrompt = `${con()} ${menus.addfarmDetails[4]}`;
+      let menuPrompt = `${con()} ${menus[4]}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else if (textValue === 5 && text.split('*')[1] === '1') {
@@ -183,18 +191,19 @@ export const renderAddFarmDetailsMenu = async (textValue, text) => {
       const responseForAddingFarm = await addFarm(postDetails);
 
       if (responseForAddingFarm.status === 200) {
-        const menuPrompt = `${end()} ${menus.addfarmDetails.success}`;
+        const menuPrompt = `${end()} ${menus.success}`;
         message = menuPrompt;
-        client.set('farm_id', responseForAddingFarm.data.farm_id);
+        client.set('farm_id', responseForAddingFarm.data_id);
       } else {
         const menuPrompt = `${end()} ${responseForAddingFarm.data.message}`;
         message = menuPrompt;
       }
-    } if (text.split('*')[1] === '2') {
+    }
+    if (text.split('*')[1] === '2') {
       message = await inputFarmLocation(textValue, text, client);
     }
   } else {
-    message = `${con()} ${menus.addfarmDetails.noLocation}`;
+    message = `${con()} ${menus.noLocation}`;
   }
 
   return message;
@@ -204,7 +213,7 @@ export const renderAddFarmDetailsMenu = async (textValue, text) => {
  * This function is used to update the user's details.(KYC)
  * The above code is a function that takes in a text value and text and returns a message.
  */
-export const renderFarmerUpdateDetailsMenu = async (textValue, text) => {
+export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
   let message;
   if (textValue === 1) {
     const farmerMetrics = await getFarmerMetricSections();
@@ -229,17 +238,17 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text) => {
           questionanswers.question_id = answer.question_id;
         },
       );
-      message = `${con()} ${menus.kycgathering.selectAResponse}`;
+      message = `${con()} ${menus.selectAResponse}`;
       message += menuPrompt;
       message += '\n#. Other';
       message += menus.footer;
     } else {
-      message = `${end()} ${menus.kycgathering.answerNotAvailable}`;
+      message = `${end()} ${menus.answerNotAvailable}`;
     }
   } else if (textValue === 4) {
     const userAnswers = text.split('*')[3];
     if (userAnswers === '0') {
-      message = `${con()} ${menus.kycgathering.typeAnswer}`;
+      message = `${con()} ${menus.typeAnswer}`;
       // res.send(message);
     } else {
       const userAnswersArray = userAnswers.split(' ');
@@ -251,7 +260,7 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text) => {
       });
       client.set('answers', answers);
 
-      message = `${con()} ${menus.miscellaneous.proceed}`;
+      message = `${con()} ${menus.proceed}`;
     }
   } else if (textValue === 5) {
     if (text.split('*')[3] === '0') {
@@ -270,9 +279,9 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text) => {
     };
     const updateKYC = await addFarmerKYC(kycInfo, results[0]);
     if (updateKYC.status === 200) {
-      message = `${end()} ${menus.kycgathering.success}`;
+      message = `${end()} ${menus.success}`;
     } else {
-      message = `${end()} ${menus.kycgathering.failure}`;
+      message = `${end()} ${menus.failure}`;
     }
   }
   return message;
@@ -282,7 +291,7 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text) => {
  * This function is used to render the menu for adding a product to a farm
  * We have a function that takes in a text value and a text value and returns a message.
  */
-export const renderFarmerAddProductMenu = async (textValue, text) => {
+export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
   let message = '';
   const items = await retreiveCachedItems(client, ['user_id']);
   const userID = parseInt(items[0], 10);
@@ -294,24 +303,26 @@ export const renderFarmerAddProductMenu = async (textValue, text) => {
   } else if (hasFarms.status === 200) {
     let farmList = '';
     hasFarms.data.message.forEach((farm) => {
-      farmList += `\n${farm.id}. ${farm.farm_name}`;
+      farmList += `\n${farm.id}. ${farm_name}`;
     });
     message = `CON Which farm do you want to add products to? ${farmList}`;
     if (textValue === 2) {
       client.set('farm_id', parseInt(text.split('*')[1], 10));
-      const menuPrompt = `${con()} ${menus.addProductToFarm.chooseFarm}${await fetchCategories()}`;
+      const menuPrompt = `${con()} ${
+        menus.chooseFarm
+      }${await fetchCategories()}`;
       message = menuPrompt;
     } else if (textValue === 3) {
       const categoryId = parseInt(text.split('*')[2], 10);
       client.set('category_id', categoryId);
       const products = await fetchProducts(categoryId);
-      const menuPrompt = `${con()} ${menus.addProductToFarm.productToAdd} \n ${products}`;
+      const menuPrompt = `${con()} ${menus.productToAdd} \n ${products}`;
       message = menuPrompt;
     } else if (textValue === 4) {
       const productId = parseInt(text.split('*')[3], 10);
       client.set('product_id', productId);
       // TODO: This should be a dynamic prompt
-      const menuPrompt = `${con()} ${menus.addProductToFarm.quantityOfHarvest}`;
+      const menuPrompt = `${con()} ${menus.quantityOfHarvest}`;
       message = menuPrompt;
     } else if (textValue === 5) {
       const availableQuantity = text.split('*')[4];
@@ -329,7 +340,7 @@ export const renderFarmerAddProductMenu = async (textValue, text) => {
       console.log('The product data', addingProduct);
 
       if (addingProduct.status === 200) {
-        message = `${end()} ${menus.addProductToFarm.success}`;
+        message = `${end()} ${menus.success}`;
       } else {
         message = `${end()} ${addingProduct.data.message}`;
       }
@@ -344,7 +355,7 @@ export const renderFarmerAddProductMenu = async (textValue, text) => {
  * @param userID - the user's ID
  * @returns None
  */
-export const renderUpdateListedProduceMenu = async (textvalue, text) => {
+export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
   let userID = await retreiveCachedItems(client, ['user_id']);
   userID = parseInt(userID, 10);
   const hasFarms = await getUserFarms(userID);
@@ -353,12 +364,12 @@ export const renderUpdateListedProduceMenu = async (textvalue, text) => {
 
   let message = '';
   if (hasFarms.status === 404) {
-    message = `${con()} ${menus.updateListedProduce.farmNotFound}`;
+    message = `${con()} ${menus.updateListedProduceNotFound}`;
   } else if (hasFarms.status === 200) {
     let farmList = '';
     hasFarms.data.message.forEach((farm) => {
       userFarms.push(farm.id);
-      farmList += `\n${farm.id}. ${farm.farm_name}`;
+      farmList += `\n${farm.id}. ${farm_name}`;
     });
     message = `${con()} ${menus.updateListedProduce.chooseFarm} ${farmList}`;
   }
@@ -366,10 +377,14 @@ export const renderUpdateListedProduceMenu = async (textvalue, text) => {
 
   if (textvalue === 2 && userFarms.includes(farmID)) {
     // message = `${con()} What produce do you want to update the quantity ${productList}`;
-    message = `${con()} ${menus.updateListedProduce.actionToTake} ${menus.updateListedProduce.updateQuantity} ${menus.updateListedProduce.listForSale}`;
+    message = `${con()} ${menus.updateListedProduce.actionToTake} ${
+      menus.updateListedProduce.updateQuantity
+    } ${menus.updateListedProduce.listForSale}`;
   } else if (textvalue === 3 && text.split('*')[2] === '1') {
     const list = await showProductsInFarm(farmID);
-    message = `${con()} ${menus.updateListedProduce.chooseProduceToUpdateQuantity}${list}`;
+    message = `${con()} ${
+      menus.updateListedProduce.chooseProduceToUpdateQuantity
+    }${list}`;
   } else if (textvalue === 3 && text.split('*')[2] === '2') {
     const list = await showProductsInFarm(farmID);
     message = `${con()} ${menus.updateListedProduce.itemToSell}  ${list}`;
@@ -416,7 +431,7 @@ export const renderUpdateListedProduceMenu = async (textvalue, text) => {
   return message;
 };
 
-export const secondLevelMenu = async (textValue, text) => {
+export const secondLevelMenu = async (textValue, text, menus) => {
   let message;
   const selection = text.split('*')[1];
   if (textValue === 1) {

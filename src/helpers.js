@@ -1,47 +1,47 @@
 /* eslint-disable import/no-cycle */
-import { menus } from './menus/menuoptions.js';
 
-const usernameValidation = (text, index) => {
+const usernameValidation = (text, index, menus) => {
   const username = text.split('*')[`${index}`];
   const regex = /^[a-zA-Z]*$/;
   if (username.length < 3) {
-    return `${menus.helpers.userNameTooShort}`;
-  } if (!regex.test(username)) {
-    return `${menus.helpers.usernameOnlyLetters}`;
+    return `${menus.userNameTooShort}`;
   }
-  return `${menus.helpers.valid}`;
+  if (!regex.test(username)) {
+    return `${menus.usernameOnlyLetters}`;
+  }
+  return `${menus.valid}`;
 };
-export const IdValidation = (text) => {
+export const IdValidation = (text, menus) => {
   const id = text.split('*')[2];
   const regex = /^[0-9]*$/;
   if (id.length < 8) {
-    return `${menus.helpers.idTooShort}`;
+    return `${menus.idTooShort}`;
   }
   if (!regex.test(id)) {
-    return `${menus.helpers.idOnlyNumbers}`;
+    return `${menus.idOnlyNumbers}`;
   }
-  return `${menus.helpers.valid}`;
+  return `${menus.valid}`;
 };
-export const numberValidation = (text, index) => {
+export const numberValidation = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    return `${menus.helpers.chooseListedOptions}`;
+    return `${menus.chooseListedOptions}`;
   }
-  return `${menus.helpers.valid}`;
+  return `${menus.valid}`;
 };
 
-export const numberWithinRange = (text, index) => {
+export const numberWithinRange = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    return `${menus.helpers.outOfRange}`;
+    return `${menus.outOfRange}`;
   }
-  return `${menus.helpers.valid}`;
+  return `${menus.valid}`;
 };
 
 export const languageChooser = (option) => {
-  const language = option === '1' ? 'English' : 'Swahili';
+  const language = option === '1' ? 'en' : 'sw';
   return language;
 };
 
