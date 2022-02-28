@@ -161,34 +161,34 @@ export const joinGroup = async (groupID, userId) => {
  * @param client - The client object
  * @returns A string.
  */
-export const inputFarmLocation = async (textValue, text, client) => {
+export const inputFarmLocation = async (textValue, text, client, menus) => {
   let message;
   if (textValue === 2) {
-    const menuPrompt = await promptToGive(client, 'region');
+    const menuPrompt = await promptToGive(client, 'region', menus);
     message = menuPrompt;
   } else if (textValue === 3) {
-    const validRange = numberWithinRange(text, 1);
+    const validRange = numberWithinRange(text, 2);
     if (validRange === 'valid') {
       const regionId = parseInt(text.split('*')[2], 10);
-      const menuPrompt = await promptToGive(client, 'county', regionId);
+      const menuPrompt = await promptToGive(client, 'county', menus, regionId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 4) {
-    const validRange = numberWithinRange(text, 1);
+    const validRange = numberWithinRange(text, 1, menus);
     if (validRange === 'valid') {
       const countyId = parseInt(text.split('*')[3], 10);
-      const menuPrompt = await promptToGive(client, 'subcounty', countyId);
+      const menuPrompt = await promptToGive(client, 'subcounty', menus, countyId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 5) {
-    const validRange = numberWithinRange(text, 1);
+    const validRange = numberWithinRange(text, 1, menus);
     if (validRange === 'valid') {
       const subcountyId = parseInt(text.split('*')[4], 10);
-      const menuPrompt = await promptToGive(client, 'location', subcountyId);
+      const menuPrompt = await promptToGive(client, 'location', menus, subcountyId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;

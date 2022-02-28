@@ -152,28 +152,31 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
   const locationDetailsPresent = await isLocationPresent(userID[0]);
 
   if (locationDetailsPresent === true) {
-    if (textValue === 1) {
-      message = renderLocationOptions();
-    } else if (textValue === 2 && text.split('*')[1] === '1') {
-      let menuPrompt = `${con()} ${menus[0]}`;
+    if (textValue === 2) {
+      message = renderLocationOptions(menus);
+    } else if (textValue === 3 && text.split('*')[2] === '1') {
+      let menuPrompt = `${con()} ${menus.enterFarmName}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
-    } else if (textValue === 3 && text.split('*')[1] === '1') {
-      if (isTextOnly(text.split('*')[2]) === true) {
-        let menuPrompt = `${con()} ${menus[1]}`;
+    } else if (textValue === 4 && text.split('*')[2] === '1') {
+      if (isTextOnly(text.split('*')[3]) === true) {
+        let menuPrompt = `${con()} ${menus.farmArea}`;
         menuPrompt += menus.footer;
         message = menuPrompt;
-        client.set('farm_name', text.split('*')[2]);
+        console.log('The farm name', text.split('*')[3]);
+        client.set('farm_name', text.split('*')[3]);
       } else {
         message = `${con()} ${menus.invalidInput}`;
       }
-    } else if (textValue === 4 && text.split('*')[1] === '1') {
-      client.set('farm_location', text.split('*')[3]);
-      let menuPrompt = `${con()} ${menus[4]}`;
+    } else if (textValue === 5 && text.split('*')[2] === '1') {
+      console.log('The location is', text.split('*')[4]);
+      client.set('farm_location', text.split('*')[4]);
+      let menuPrompt = `${con()} ${menus.farmSize}`;
       menuPrompt += menus.footer;
       message = menuPrompt;
-    } else if (textValue === 5 && text.split('*')[1] === '1') {
-      client.set('farm_size', parseInt(text.split('*')[4], 10));
+    } else if (textValue === 6 && text.split('*')[2] === '1') {
+      console.log('The farm size is', text.split('*')[5]);
+      client.set('farm_size', parseInt(text.split('*')[5], 10));
       const farmDetails = await retreiveCachedItems(client, [
         'farm_name',
         'farm_location',
@@ -189,18 +192,19 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         user_id: farmDetails[4],
       };
       const responseForAddingFarm = await addFarm(postDetails);
+      console.log('The response is', responseForAddingFarm);
 
       if (responseForAddingFarm.status === 200) {
-        const menuPrompt = `${end()} ${menus.success}`;
+        const menuPrompt = `${end()} ${menus.registerFarmSuccess}`;
         message = menuPrompt;
         client.set('farm_id', responseForAddingFarm.data_id);
       } else {
-        const menuPrompt = `${end()} ${responseForAddingFarm.data.message}`;
+        const menuPrompt = `${end()} ${menus.registerFarmFail}`;
         message = menuPrompt;
       }
     }
-    if (text.split('*')[1] === '2') {
-      message = await inputFarmLocation(textValue, text, client);
+    if (text.split('*')[2] === '2') {
+      message = await inputFarmLocation(textValue, text, client, menus);
     }
   } else {
     message = `${con()} ${menus.noLocation}`;

@@ -5,8 +5,6 @@ import usernameValidation, {
   IdValidation,
 } from '../helpers.js';
 import { registerUser } from '../core/usermanagement.js';
-import { getStrings } from './language.js';
-import strings from './strings.js';
 
 export const con = () => 'CON';
 export const end = () => 'END';
@@ -135,7 +133,7 @@ export const renderFarmerMenus = (menus) => {
   return message;
 };
 
-export const renderLocationOptions = () => {
+export const renderLocationOptions = (menus) => {
   const menuPrompt = `${con()} ${menus.addFarmLocationOption}`;
   message = menuPrompt;
   return message;
