@@ -44,7 +44,7 @@ async function fetchProducts(id) {
   return results;
 }
 
-const fetchFarmOfferings = async (id) => {
+const fetchFarmOfferings = async (id, menus) => {
   let farmOfferings = '';
   try {
     const response = await axios.get(`${BASEURL}/ussd/prodcategories`);
@@ -103,6 +103,7 @@ export const confirmQuantityWithPrice = async (
   productID,
   status,
   client,
+  menus
 ) => {
   let availableUnits = 0;
   let pricePoint;

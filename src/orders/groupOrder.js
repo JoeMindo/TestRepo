@@ -3,7 +3,6 @@ import axios from 'axios';
 import { retreiveCachedItems } from '../core/services.js';
 import { renderOffers, renderProducts } from '../products/renderProducts.js';
 import client from '../server.js';
-import menus from '../menus/menuoptions.js';
 import { BASEURL } from '../core/urls.js';
 
 import {
@@ -35,7 +34,7 @@ message is "CON Group To Join". The message is then concatenated with the footer
  * @param state - The state of the user.
  * @returns The message to be sent to the user.
  */
-export const actionToTake = async (state) => {
+export const actionToTake = async (state, menus) => {
   let message = '';
   if (state === false) {
     message = `CON ${menus.createGroup}`;
@@ -55,13 +54,13 @@ export const createGroup = async (groupdata) => {
   const response = await axios.post(`${BASEURL}/ussd/saveusergroup`, groupdata);
   return response.data.status;
 };
-export const requestGroupName = () => `${con()} ${menus.requestName}`;
+export const requestGroupName = (menus) => `${con()} ${menus.requestName}`;
 /**
  * This function is used to create a group.
  * @param status - The status of the group creation.
  * @returns The message that is being returned.
  */
-export const groupCreationMessage = (status) => {
+export const groupCreationMessage = (status, menus) => {
   let message;
   if (status === 'success') {
     message = `${con()} ${menus.groupCreatedSuccess}`;

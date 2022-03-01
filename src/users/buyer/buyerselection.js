@@ -3,53 +3,56 @@ import { renderBuyerMenus, con } from '../../menus/rendermenu.js';
 import * as groupOrderMenus from '../../orders/groupOrder.js';
 import { showAvailableProducts } from '../../products/renderProducts.js';
 import { retreiveCachedItems } from '../../core/services.js';
-import menus from '../../menus/menuoptions.js';
 import client from '../../server.js';
 import { cartOperations } from '../../cart/cartoperations.js';
 import { numberWithinRange } from '../../helpers.js';
 import { renderOrders } from '../../orders/unitOrder.js';
+import { strings } from '../../menus/strings.js';
+import { getStrings } from '../../menus/language.js';
 
 let message;
 
-const checkBuyerSelection = async (textValue, text) => {
-  if (textValue === 1 && text === '') {
-    message = renderBuyerMenus();
+const checkBuyerSelection = async (textValue, text, language) => {
+  const menus = getStrings(strings, language);
+  console.log('The menus are: ', menus);
+  if (textValue === 1) {
+    message = renderBuyerMenus(menus);
   } else {
-    const selection = text.split('*')[0];
-    const isNumber = numberWithinRange(text, 0);
+    const selection = text.split('*')[1];
+    const isNumber = numberWithinRange(text, 1, menus);
     if (isNumber === 'valid') {
       if (selection === '1') {
-        message = await showAvailableProducts(client, textValue, text);
+        message = await showAvailableProducts(client, textValue, text, menus);
       } else if (selection === '2') {
-        if (textValue === 1) {
+        if (textValue === 2) {
           message = await cartOperations(text, 'outer', 0);
-        } else if (textValue === 2 && text.split('*')[1] === '1') {
-          message = await cartOperations(text, 'outer', 1);
-        } else if (textValue === 2 && text.split('*')[1] === '2') {
-          message = await cartOperations(text, 'outer', 1);
-        } else if (textValue === 3 && text.split('*')[1] === '1' && text.split('*')[2] === '1') {
-          message = await cartOperations(text, 'outer', 8);
         } else if (textValue === 3 && text.split('*')[2] === '1') {
-          message = await cartOperations(text, 'outer', 2);
+          message = await cartOperations(text, 'outer', 1);
         } else if (textValue === 3 && text.split('*')[2] === '2') {
+          message = await cartOperations(text, 'outer', 1);
+        } else if (textValue === 4 && text.split('*')[2] === '1' && text.split('*')[3] === '1') {
+          message = await cartOperations(text, 'outer', 8);
+        } else if (textValue === 4 && text.split('*')[3] === '1') {
+          message = await cartOperations(text, 'outer', 2);
+        } else if (textValue === 5 && text.split('*')[4] === '2') {
           message = await cartOperations(text, 'outer', 3);
-        } else if (textValue === 4 && text.split('*')[1] === '1' && text.split('*')[2] === '1') {
+        } else if (textValue === 5 && text.split('*')[4] === '1' && text.split('*')[3] === '1') {
           // TODO: Make payment
           message = await cartOperations(text, 'outer', 9);
-        } else if (textValue === 4 && text.split('*')[2] === '1') {
-          const id = parseInt(text.split('*')[3], 10);
+        } else if (textValue === 5 && text.split('*')[3] === '1') {
+          const id = parseInt(text.split('*')[4], 10);
           message = await cartOperations(text, 'outer', 4, id);
-        } else if (textValue === 4 && text.split('*')[2] === '2') {
-          const id = parseInt(text.split('*')[3], 10);
+        } else if (textValue === 5 && text.split('*')[3] === '2') {
+          const id = parseInt(text.split('*')[4], 10);
           message = await cartOperations(text, 'outer', 5, id);
-        } else if (textValue === 5 && text.split('*')[2] === '1' && text.split('*')[4] === '67') {
+        } else if (textValue === 6 && text.split('*')[3] === '1' && text.split('*')[5] === '67') {
           message = await cartOperations(text, 'outer', 0);
-        } else if (textValue === 5 && text.split('*')[2] === '2') {
-          const id = parseInt(text.split('*')[3], 10);
-          const newQuantity = parseInt(text.split('*')[5], 10);
+        } else if (textValue === 6 && text.split('*')[3] === '2') {
+          const id = parseInt(text.split('*')[4], 10);
+          const newQuantity = parseInt(text.split('*')[6], 10);
           message = await cartOperations(text, 'outer', 6, id, newQuantity);
-        } else if (textValue === 6 && text.split('*')[2] === '2') {
-          const id = parseInt(text.split('*')[3], 10);
+        } else if (textValue === 7 && text.split('*')[3] === '2') {
+          const id = parseInt(text.split('*')[4], 10);
           message = await cartOperations(text, 'outer', 6, id);
         }
       } else if (selection === '3') {

@@ -12,7 +12,7 @@ const usernameValidation = (text, index, menus) => {
   return `${menus.valid}`;
 };
 export const IdValidation = (text, menus) => {
-  const id = text.split('*')[2];
+  const id = text.split('*')[3];
   const regex = /^[0-9]*$/;
   if (id.length < 8) {
     return `${menus.idTooShort}`;

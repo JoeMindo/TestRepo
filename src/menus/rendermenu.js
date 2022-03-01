@@ -1,10 +1,11 @@
 /* eslint-disable import/no-cycle */
-import menus from './menuoptions.js';
 import usernameValidation, {
   numberValidation,
   IdValidation,
 } from '../helpers.js';
 import { registerUser } from '../core/usermanagement.js';
+import { getStrings } from './language.js';
+import { strings } from './strings.js';
 
 export const con = () => 'CON';
 export const end = () => 'END';
@@ -21,14 +22,14 @@ from the menus.register object. If it isn't, it returns the message 'CON Invalid
  *   completedStatus: false,
  * }
  */
-export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
-  console.log(menus);
+export const renderRegisterMenu = async (textValue, text, phoneNumber, language) => {
+  const menus = getStrings(strings, language);
   if (textValue === 1 && text !== '') {
-    let menuPrompt = `${con()} ${menus.registration} ${menus.firstname}`;
+    let menuPrompt = `${con()} ${menus.firstname}`;
     menuPrompt += menus.footer;
     message = menuPrompt;
   } else if (textValue === 2) {
-    const validationResponse = usernameValidation(text, 1);
+    const validationResponse = usernameValidation(text, 1, menus);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.lastname}`;
       menuPrompt += menus.footer;
@@ -37,7 +38,7 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 3) {
-    const validationResponse = usernameValidation(text, 2);
+    const validationResponse = usernameValidation(text, 2, menus);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.idNumber}`;
       menuPrompt += menus.footer;
@@ -46,7 +47,7 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 4) {
-    const validationResponse = IdValidation(text);
+    const validationResponse = IdValidation(text, menus);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.gender}`;
       menuPrompt += menus.footer;
@@ -55,7 +56,7 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
       message = `${end()} ${validationResponse}`;
     }
   } else if (textValue === 5) {
-    const validationResponse = numberValidation(text, 4);
+    const validationResponse = numberValidation(text, 4, menus);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.password}`;
       menuPrompt += menus.footer;
@@ -72,7 +73,7 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
     menuPrompt += menus.footer;
     message = menuPrompt;
   } else if (textValue === 8) {
-    const validationResponse = numberValidation(text, 7);
+    const validationResponse = numberValidation(text, 7, menus);
     if (validationResponse === 'valid') {
       let menuPrompt = `${con()} ${menus.submitDetails}`;
       menuPrompt += menus.footer;
@@ -90,8 +91,9 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
       password_confirmation: text.split('*')[6],
       role_id: text.split('*')[7],
     };
+    console.log('The user details are', userDetails);
     const registrationResponse = await registerUser(userDetails, phoneNumber);
-    console.log('This response is', registrationResponse.data.data);
+    console.log('This response is', registrationResponse.data.errors);
     const role = registrationResponse.status === 200
       ? registrationResponse.data.data.role_id
       : null;
@@ -111,7 +113,7 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber) => {
  * This function renders the login menu prompt.
  * @returns A string that is the prompt for the user to enter their password.
  */
-export const renderLoginMenus = () => {
+export const renderLoginMenus = (menus) => {
   let menuPrompt = `${con()} ${menus.login.password}`;
   menuPrompt += menus.footer;
   message = menuPrompt;

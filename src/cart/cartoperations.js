@@ -5,7 +5,6 @@ import client from '../server.js';
 import { con, end } from '../menus/rendermenu.js';
 import makebasicOrder from '../orders/unitOrder.js';
 import makePayment from '../payment/payment.js';
-import menus from '../menus/menuoptions.js';
 import { itemSelection } from '../products/productmanagement.js';
 
 export const offersArray = [];
@@ -18,7 +17,7 @@ let message;
  * Ask the user for a number.
  * @returns The message variable.
  */
-export const askForNumber = () => {
+export const askForNumber = (menus) => {
   message = `${con()} ${menus.askForNumber}`;
   return message;
 };
@@ -26,7 +25,7 @@ export const askForNumber = () => {
  * Ask the user for the quantity they want to buy.
  * @returns A string
  */
-export const askForQuantity = () => {
+export const askForQuantity = (menus) => {
   message = `${con()} ${menus.quantityToBuy}`;
   return message;
 };
@@ -79,7 +78,7 @@ then the function will create a new cartItems array and add the new item to the 
  * @param totalPriceObject - {
  * @returns The message that is being returned
  */
-export const addToCart = async (client, itemsObject, totalPriceObject) => {
+export const addToCart = async (client, itemsObject, totalPriceObject, menus) => {
   if (itemsObject && totalPriceObject) {
     let existingItems = await retreiveCachedItems(client, ['cartItems']);
     client.exists('cartItems', (err, ok) => {
@@ -122,7 +121,7 @@ export const addToCart = async (client, itemsObject, totalPriceObject) => {
  * @param totalPriceObject - {
  * @returns The message that is being returned.
  */
-export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
+export const confirmNewQuantity = (client, itemsObject, totalPriceObject, menus) => {
   if (itemsObject && totalPriceObject) {
     cartItems.push(itemsObject);
     client.set('cartItems', JSON.stringify(cartItems));
@@ -139,7 +138,7 @@ export const confirmNewQuantity = (client, itemsObject, totalPriceObject) => {
  * @param type - The type of update to perform. Can be 'add' or 'remove'.
  * @returns The message that is being returned.
  */
-export const updateType = async (type) => {
+export const updateType = async (type, menus) => {
   if (type === 'remove') {
     message = `${con()} ${menus.askForItemToRemove}`;
   } else {
@@ -156,7 +155,7 @@ export const updateType = async (type) => {
  * @param id - The id of the item to be removed from the cart
  * @returns The cart items
  */
-export const removeItemFromCart = async (id) => {
+export const removeItemFromCart = async (id, menus) => {
   try {
     let cartItems = await retreiveCachedItems(client, ['cartItems']);
     cartItems = JSON.parse(cartItems);
@@ -186,7 +185,7 @@ export const removeItemFromCart = async (id) => {
  * @param id - The id of the item to be updated
  * @returns A string
  */
-export const changeQuantity = async (client, amount, object, id) => {
+export const changeQuantity = async (client, amount, object, id, menus) => {
   try {
     let cartItems = await retreiveCachedItems(client, ['cartItems']);
     cartItems = JSON.parse(cartItems);
@@ -221,7 +220,7 @@ export const changeQuantity = async (client, amount, object, id) => {
  *   },
  * }
  */
-export const findItemToChangeQuantity = async (client, id) => {
+export const findItemToChangeQuantity = async (client, id, menus) => {
   let itemToUpdate;
   try {
     let cartItems = await retreiveCachedItems(client, ['cartItems']);
@@ -249,7 +248,7 @@ export const findItemToChangeQuantity = async (client, id) => {
  * @param client - The client object that is used to interact with the user
  * @returns The total cost of the items in the cart
  */
-export const displayTotalCost = async (client) => {
+export const displayTotalCost = async (client, menus) => {
   try {
     const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
     message = `${con()} ${menus.paymentPrompt} ${chargeToUser}\n ${menus.yes}`;
@@ -271,7 +270,7 @@ export const updateRequest = (request) => {
   request.text = array.join('*');
   return request;
 };
-export const displayCartItems = async (client) => {
+export const displayCartItems = async (client, menus) => {
   try {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
@@ -295,7 +294,7 @@ export const displayCartItems = async (client) => {
     throw new Error(error);
   }
 };
-export const updateCart = async (operation, id = null) => {
+export const updateCart = async (operation, menus, id = null) => {
   if (operation === 'firstscreen') {
     message = `${con()} ${menus.operation}`;
     message += menus.footer;

@@ -69,16 +69,15 @@ app.post('/ussd', async (req, res) => {
     message = selectLanguage();
   } else {
     const userLanguage = languageChooser(text.split('*')[0]);
-    store.set('language', userLanguage);
     const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
     if (response.exists && response.role === 'BUYER') {
       client.set('user_Id', response.user_id);
-      message = await checkBuyerSelection(textValue, text);
+      message = await checkBuyerSelection(textValue, text, userLanguage);
     } else if (response.exists && response.role === 'FARMER') {
       client.set('user_id', response.user_id);
       message = await checkFarmerSelection(text, 0, userLanguage);
     } else if (!response.exists) {
-      message = await renderRegisterMenu(textValue, text, req.body.phoneNumber);
+      message = await renderRegisterMenu(textValue, text, req.body.phoneNumber, userLanguage);
       console.log('The registration response', message);
     }
   }

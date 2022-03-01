@@ -8,7 +8,6 @@ import {
 } from './productmanagement.js';
 import { con, end } from '../menus/rendermenu.js';
 import { BASEURL } from '../core/urls.js';
-import menus from '../menus/menuoptions.js';
 import {
   cartOperations,
   askForQuantity,
@@ -24,27 +23,27 @@ export const totalCost = {};
 
 export const offeringStatus = [];
 
-export const renderProducts = async (id) => {
+export const renderProducts = async (id, menus) => {
   try {
     const response = await fetchProducts(id);
     if (response) {
-      message = `${con()} ${menus.renderProducts.chooseProduct} ${response}`;
+      message = `${con()} ${menus.chooseProduct} ${response}`;
     } else {
-      message = `${con()} ${menus.renderProducts.couldNotFetch}`;
+      message = `${con()} ${menus.couldNotFetch}`;
     }
     return message;
   } catch (err) {
     throw new Error(err);
   }
 };
-export const renderOffers = (offers, offersArray, client) => {
+export const renderOffers = (offers, offersArray, client, menus) => {
   const status = {};
   let offeringText = '';
   offers.forEach((offer) => {
     const userViewOffers = {};
 
     if (offer.status !== '0') {
-      offeringText += `\n${offer.id}. ${offer.product_name} ${menus.miscellaneous.from} ${offer.farm_name} ${menus.miscellaneous.grade} ${offer.grade} ${menus.miscellaneous.atKES} ${offer.group_price}`;
+      offeringText += `\n${offer.id}. ${offer.product_name} ${menus.miscellaneous.from} ${offer.farm_name} ${menus.grade} ${offer.grade} ${menus.atKES} ${offer.group_price}`;
       userViewOffers.id = `${offer.id}`;
       userViewOffers.product = `${offer.product_name}`;
       userViewOffers.farmName = `${offer.farm_name}`;
@@ -59,37 +58,37 @@ export const renderOffers = (offers, offersArray, client) => {
     client.set('groupOffersArray', JSON.stringify(offersArray));
   });
   const message = `${con()} ${
-    menus.renderProducts.chooseOneToBuy
+    menus.chooseOneToBuy
   } ${offeringText}`;
   return message;
 };
-export const renderProductCategories = async () => {
+export const renderProductCategories = async (menus) => {
   try {
     const response = await fetchCategories();
 
     if (response) {
-      message = `${con()} ${menus.renderProducts.selectCategory} ${response}`;
+      message = `${con()} ${menus.selectCategory} ${response}`;
     } else {
-      message = `${end()} ${menus.renderProducts.couldNotFetchCategories}`;
+      message = `${end()} ${menus.couldNotFetchCategories}`;
     }
     return message;
   } catch (err) {
     throw new Error(err);
   }
 };
-export const checkGroupAndIndividualPrice = (status) => {
+export const checkGroupAndIndividualPrice = (status, menus) => {
   if (status === 'both') {
-    message = `${con()} ${menus.price.selectPrice}`;
+    message = `${con()} ${menus.selectPrice}`;
   } else if (status === 'unit') {
-    message = `${con()} ${menus.price.buyAtUnit}`;
+    message = `${con()} ${menus.buyAtUnit}`;
   } else if (status === 'group') {
-    message = `${con()} ${menus.price.buyAtGroup}`;
+    message = `${con()} ${menus.buyAtGroup}`;
   }
 
   return message;
 };
 
-export const renderOfferings = async (client, id) => {
+export const renderOfferings = async (client, id, menus) => {
   const status = {};
 
   const endpointUrl = `${BASEURL}/ussd/productwithprice/product`;
@@ -118,10 +117,10 @@ export const renderOfferings = async (client, id) => {
     });
 
     message = `${con()} ${
-      menus.renderProducts.askForOptionSelection
+      menus.askForOptionSelection
     } ${offeringText}`;
   } else {
-    message = `${con()} ${menus.renderProducts.productNotAvailable}`;
+    message = `${con()} ${menus.productNotAvailable}`;
     message += menus.footer;
   }
   return {
@@ -130,9 +129,9 @@ export const renderOfferings = async (client, id) => {
   };
 };
 
-export const showAvailableProducts = async (client, textValue, text) => {
+export const showAvailableProducts = async (client, textValue, text, menus) => {
   if (textValue === 1) {
-    message = await renderProductCategories();
+    message = await renderProductCategories(menus);
   } else if (textValue === 2 && numberWithinRange(text, 1) === 'valid') {
     const selection = parseInt(text.split('*')[1], 10);
     message = await renderProducts(selection);

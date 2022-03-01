@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import { fetchCategories } from '../../products/productmanagement.js';
-import menus from '../../menus/menuoptions.js';
 
 let message = '';
 const con = () => 'CON';
@@ -29,7 +28,7 @@ export const priceToUse = (availablePriceType, choice) => {
   return status;
 };
 
-export const renderProductCategories = async () => {
+export const renderProductCategories = async (menus) => {
   try {
     const response = await fetchCategories();
 
@@ -44,14 +43,14 @@ export const renderProductCategories = async () => {
   }
 };
 
-export const askForQuantity = () => {
+export const askForQuantity = (menus) => {
   message = `${con()} ${menus.quantityToBuy}`;
   message += menus.footer;
   return message;
 };
 // Array of offers should be cached
 
-export const chooseCenter = (administrativeID) => {
+export const chooseCenter = (administrativeID, menus) => {
   let message = `${con()} ${menus.centerForPicking}`;
   const center = centersMapping[`${administrativeID}`];
   message += `1. ${center}`;

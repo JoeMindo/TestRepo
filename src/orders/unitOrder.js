@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 import axios from 'axios';
 import { BASEURL } from '../core/urls.js';
-import menus from '../menus/menuoptions.js';
 
 /**
  * It takes in a cartSelections object and sends it to the server.
@@ -23,7 +22,7 @@ export const viewOrders = async (userId) => {
   return response;
 };
 
-export const renderOrders = async (userId) => {
+export const renderOrders = async (userId, menus) => {
   const response = await viewOrders(userId);
   console.log('The orders are: ', response.data.message.data);
   let orders = '';

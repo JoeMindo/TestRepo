@@ -9,4 +9,5 @@ export const getStrings = (string, lang) => {
   return res;
 };
 
+console.log(getStrings(strings, 'en'));
 export default selectLanguage;
