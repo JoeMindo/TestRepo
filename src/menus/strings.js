@@ -399,6 +399,15 @@ export const strings = {
     en: 'Invalid input. Please enter a number within the range.',
     sw: 'Ingizo batili. Tafadhali ingiza nambari ndani ya safu.',
   },
+  orderSuccess: {
+    en: 'Order successful',
+    sw: 'Agizo limefaulu',
+  },
+  orderFailed: {
+    en: 'Order failed',
+    sw: 'Agizo limeshindwa',
+  },
+
   invalidInput: {
     en: 'Invalid input, try again',
     sw: 'Ingizo batili, jaribu tena',

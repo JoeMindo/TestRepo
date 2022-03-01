@@ -321,6 +321,7 @@ export const cartOperations = async (
   text,
   menuLevel,
   level,
+  menus,
   itemId = null,
   index = null,
 ) => {
@@ -337,7 +338,7 @@ export const cartOperations = async (
     (selection === '1' && level === 1)
     || (text.split('*')[7] === '1' && level === 1)
   ) {
-    message = askForNumber();
+    message = askForNumber(menus);
   } else if (selection === '2' && level === 1) {
     message = updateCart('firstscreen');
   } else if (level === 2) {
@@ -400,9 +401,9 @@ export const cartOperations = async (
 
     if (response.status === 200) {
       client.del('cartItems');
-      message = `${end()} ${response.data.message}`;
+      message = `${end()} ${menus.orderSuccess}`;
     } else if (response.data.status === 'error') {
-      message = `${con()} ${response.data.message}`;
+      message = `${con()} ${menus.orderFailed}`;
     }
   } else if (level === 9) {
     message = makePayment();

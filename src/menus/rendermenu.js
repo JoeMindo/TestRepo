@@ -22,7 +22,12 @@ from the menus.register object. If it isn't, it returns the message 'CON Invalid
  *   completedStatus: false,
  * }
  */
-export const renderRegisterMenu = async (textValue, text, phoneNumber, language) => {
+export const renderRegisterMenu = async (
+  textValue,
+  text,
+  phoneNumber,
+  language,
+) => {
   const menus = getStrings(strings, language);
   if (textValue === 1 && text !== '') {
     let menuPrompt = `${con()} ${menus.firstname}`;
@@ -91,9 +96,9 @@ export const renderRegisterMenu = async (textValue, text, phoneNumber, language)
       password_confirmation: text.split('*')[6],
       role_id: text.split('*')[7],
     };
-    console.log('The user details are', userDetails);
+
     const registrationResponse = await registerUser(userDetails, phoneNumber);
-    console.log('This response is', registrationResponse.data.errors);
+
     const role = registrationResponse.status === 200
       ? registrationResponse.data.data.role_id
       : null;

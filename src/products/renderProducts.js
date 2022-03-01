@@ -57,9 +57,7 @@ export const renderOffers = (offers, offersArray, client, menus) => {
 
     client.set('groupOffersArray', JSON.stringify(offersArray));
   });
-  const message = `${con()} ${
-    menus.chooseOneToBuy
-  } ${offeringText}`;
+  const message = `${con()} ${menus.chooseOneToBuy} ${offeringText}`;
   return message;
 };
 export const renderProductCategories = async (menus) => {
@@ -116,9 +114,7 @@ export const renderOfferings = async (client, id, menus) => {
       client.set('offersArray', JSON.stringify(offersArray));
     });
 
-    message = `${con()} ${
-      menus.askForOptionSelection
-    } ${offeringText}`;
+    message = `${con()} ${menus.askForOptionSelection} ${offeringText}`;
   } else {
     message = `${con()} ${menus.productNotAvailable}`;
     message += menus.footer;
@@ -130,54 +126,60 @@ export const renderOfferings = async (client, id, menus) => {
 };
 
 export const showAvailableProducts = async (client, textValue, text, menus) => {
-  if (textValue === 1) {
+  if (textValue === 2) {
     message = await renderProductCategories(menus);
-  } else if (textValue === 2 && numberWithinRange(text, 1) === 'valid') {
-    const selection = parseInt(text.split('*')[1], 10);
-    message = await renderProducts(selection);
-  } else if (textValue === 3 && numberWithinRange(text, 2) === 'valid') {
+  } else if (textValue === 3 && numberWithinRange(text, 2, menus) === 'valid') {
     const selection = parseInt(text.split('*')[2], 10);
-    const result = await renderOfferings(client, selection);
+    message = await renderProducts(selection, menus);
+  } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') {
+    const selection = parseInt(text.split('*')[3], 10);
+    const result = await renderOfferings(client, selection, menus);
     offeringStatus.push(result.status);
 
     message = result.message;
-  } else if (textValue === 4 && numberWithinRange(text, 3) === 'valid') {
-    const selection = parseInt(text.split('*')[3], 10);
+  } else if (textValue === 5 && numberWithinRange(text, 4, menus) === 'valid') {
+    const selection = parseInt(text.split('*')[4], 10);
     message = checkGroupAndIndividualPrice(
       offeringStatus[`${offeringStatus.length - 1}`][`${selection}`],
+      menus,
     );
   } else if (
-    textValue === 5
-    && numberWithinRange(text, 4) === 'valid'
-    && text.split('*')[4] === '1'
-  ) {
-    message = askForQuantity();
-  } else if (
     textValue === 6
-    && parseInt(text.split('*')[5], 10) > 0
-    && numberWithinRange(text, 5) === 'valid'
+    && numberWithinRange(text, 5, menus) === 'valid'
+    && text.split('*')[5] === '1'
   ) {
-    const userQuantity = parseInt(text.split('*')[5], 10);
-    const id = text.split('*')[3];
+    message = askForQuantity(menus);
+  } else if (
+    textValue === 7
+    && parseInt(text.split('*')[6], 10) > 0
+    && numberWithinRange(text, 6, menus) === 'valid'
+  ) {
+    const userQuantity = parseInt(text.split('*')[6], 10);
+    const id = text.split('*')[4];
     const typeOfOffering = offeringStatus[offeringStatus.length - 1];
-    const selection = parseInt(text.split('*')[3], 10);
-    const purchasingOption = text.split('*')[4];
+    const selection = parseInt(text.split('*')[4], 10);
+    const purchasingOption = text.split('*')[5];
     const availablePrice = typeOfOffering[`${selection}`];
     const price = priceToUse(availablePrice, purchasingOption);
-    message = await confirmQuantityWithPrice(userQuantity, id, price, client);
+    message = await confirmQuantityWithPrice(
+      userQuantity,
+      id,
+      price,
+      client,
+      menus,
+    );
   } else if (
     textValue === 7
     && text.split('*')[6] === '1'
-    && numberWithinRange(text, 6) === 'valid'
+    && numberWithinRange(text, 6, menus) === 'valid'
   ) {
     message = await addToCart(client, itemSelection, totalCost);
   } else if (
     textValue === 8
     && text.split('*')[7] === '1'
-    && numberWithinRange(text, 7) === 'valid'
+    && numberWithinRange(text, 7, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 1);
-    console.log('The message at 8 is', message);
+    message = await cartOperations(text, 'inner', 1, menus);
   } else if (
     textValue === 8
     && text.split('*')[7] === '67'
@@ -187,10 +189,9 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   } else if (
     textValue === 9
     && text.split('*')[8] === '1'
-    && numberWithinRange(text, 8) === 'valid'
+    && numberWithinRange(text, 8, menus) === 'valid'
   ) {
     message = await cartOperations(text, 'inner', 8);
-    console.log('The message at 9 is', message);
   } else if (
     textValue === 9
     && text.split('*')[8] === '2'

@@ -103,7 +103,7 @@ export const confirmQuantityWithPrice = async (
   productID,
   status,
   client,
-  menus
+  menus,
 ) => {
   let availableUnits = 0;
   let pricePoint;
@@ -137,7 +137,7 @@ export const confirmQuantityWithPrice = async (
     itemSelection.unitPrice = pricePoint;
     itemSelection.totalCost = total;
     message = `${con()} ${menus.buy} ${prompt}\n ${menus.total} ${total}\n ${
-      menus.cartOperations.addToCart
+      menus.addToCart
     }`;
   }
   return message;

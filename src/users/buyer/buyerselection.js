@@ -14,8 +14,7 @@ let message;
 
 const checkBuyerSelection = async (textValue, text, language) => {
   const menus = getStrings(strings, language);
-  console.log('The menus are: ', menus);
-  if (textValue === 1) {
+  if (textValue === 1 && text !== '') {
     message = renderBuyerMenus(menus);
   } else {
     const selection = text.split('*')[1];

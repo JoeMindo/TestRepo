@@ -179,7 +179,12 @@ export const inputFarmLocation = async (textValue, text, client, menus) => {
     const validRange = numberWithinRange(text, 4, menus);
     if (validRange === 'valid') {
       const countyId = parseInt(text.split('*')[4], 10);
-      const menuPrompt = await promptToGive(client, 'subcounty', menus, countyId);
+      const menuPrompt = await promptToGive(
+        client,
+        'subcounty',
+        menus,
+        countyId,
+      );
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
@@ -188,7 +193,12 @@ export const inputFarmLocation = async (textValue, text, client, menus) => {
     const validRange = numberWithinRange(text, 5, menus);
     if (validRange === 'valid') {
       const subcountyId = parseInt(text.split('*')[5], 10);
-      const menuPrompt = await promptToGive(client, 'location', menus, subcountyId);
+      const menuPrompt = await promptToGive(
+        client,
+        'location',
+        menus,
+        subcountyId,
+      );
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
@@ -225,7 +235,7 @@ export const inputFarmLocation = async (textValue, text, client, menus) => {
       'user_id',
       'userLocationIds',
     ]);
-    console.log('User location ids are', farmDetails[5]);
+
     const postDetails = {
       farm_name: farmDetails[0],
       farm_location: farmDetails[1],
@@ -234,9 +244,9 @@ export const inputFarmLocation = async (textValue, text, client, menus) => {
       user_id: farmDetails[4],
       locationID: farmDetails[5].split(',')[`${text.split('*')[6] - 1}`],
     };
-    console.log('The farm data', postDetails);
+
     const responseForAddingFarm = await addFarm(postDetails);
-    console.log('The response for adding the farm', responseForAddingFarm);
+
     if (responseForAddingFarm.status === 200) {
       const menuPrompt = `${end()} ${menus.registerFarmSuccess}`;
       message = menuPrompt;
@@ -279,7 +289,7 @@ export const fetchProduceInFarms = async (farmId) => {
 export const renderProductsInFarm = async (farmId, menus) => {
   let message;
   const response = await fetchProduceInFarms(farmId);
-  console.log('The response for fetching the produce in a farm', response);
+
   if (response.status === 200) {
     if (response.data.message.length > 0) {
       const menuPrompt = `${con()} ${menus.listedProduce}`;

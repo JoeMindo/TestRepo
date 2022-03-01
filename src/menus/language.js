@@ -5,9 +5,12 @@ import { strings } from './strings.js';
 const selectLanguage = () => `${con()} ${strings.language.en}`;
 export const getStrings = (string, lang) => {
   const res = {};
-  Object.entries(string).forEach(([key, value]) => res[key] = !value[lang] && typeof value === 'object' ? getStrings(value, lang) : value[lang]);
+  Object.entries(string).forEach(
+    ([key, value]) => (res[key] = !value[lang] && typeof value === 'object'
+      ? getStrings(value, lang)
+      : value[lang]),
+  );
   return res;
 };
 
-console.log(getStrings(strings, 'en'));
 export default selectLanguage;

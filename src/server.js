@@ -5,7 +5,6 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import redis from 'redis';
-import store from 'store';
 import bluebird from 'bluebird';
 import { ussdRouter } from 'ussd-router';
 import { checkIfUserExists } from './core/usermanagement.js';
@@ -63,13 +62,14 @@ app.post('/ussd', async (req, res) => {
   const rawtext = req.body.text;
   const text = ussdRouter(rawtext, '0', '00');
   const textValue = text.split('*').length;
-  console.log('The text value is', textValue);
+
   let message;
   if (text === '') {
     message = selectLanguage();
   } else {
     const userLanguage = languageChooser(text.split('*')[0]);
-    const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
+    const response = await checkIfUserExists(req.body.phoneNumber);
+
     if (response.exists && response.role === 'BUYER') {
       client.set('user_Id', response.user_id);
       message = await checkBuyerSelection(textValue, text, userLanguage);
@@ -77,8 +77,12 @@ app.post('/ussd', async (req, res) => {
       client.set('user_id', response.user_id);
       message = await checkFarmerSelection(text, 0, userLanguage);
     } else if (!response.exists) {
-      message = await renderRegisterMenu(textValue, text, req.body.phoneNumber, userLanguage);
-      console.log('The registration response', message);
+      message = await renderRegisterMenu(
+        textValue,
+        text,
+        req.body.phoneNumber,
+        userLanguage,
+      );
     }
   }
 

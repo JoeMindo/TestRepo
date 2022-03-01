@@ -24,7 +24,7 @@ export const viewOrders = async (userId) => {
 
 export const renderOrders = async (userId, menus) => {
   const response = await viewOrders(userId);
-  console.log('The orders are: ', response.data.message.data);
+
   let orders = '';
   response.data.message.data.forEach((order) => {
     orders += `${menus.orderId} ${

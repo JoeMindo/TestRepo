@@ -9,7 +9,6 @@ export const fetchLocalityDetails = async (
   locality,
   menus,
   id = null,
-
 ) => {
   let results;
   if (locality === 'region') {
@@ -79,7 +78,7 @@ export const promptToGive = async (client, locality, menus, id = null) => {
     prompt += menus.footer;
   } else if (locality === 'county') {
     const results = await fetchLocalityDetails(client, 'county', menus, id);
-    console.log('The county prompt is', menus.selectCounty);
+
     prompt = `${con()} ${menus.selectCounty}`;
     prompt += results;
     prompt += menus.footer;
@@ -90,13 +89,13 @@ export const promptToGive = async (client, locality, menus, id = null) => {
     prompt += menus.footer;
   } else if (locality === 'location') {
     const results = await fetchLocalityDetails(client, 'location', menus, id);
-    console.log('The location menu results', results);
+
     prompt = `${con()} ${menus.selectLocation}`;
     prompt += results;
     prompt += menus.footer;
   } else if (locality === 'area') {
     const results = await fetchLocalityDetails(client, 'area', menus, id);
-    console.log('The are location ids', results);
+
     prompt = `${con()} ${menus.area}`;
     prompt += menus.footer;
   }
