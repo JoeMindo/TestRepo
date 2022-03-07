@@ -24,20 +24,20 @@ const checkBuyerSelection = async (textValue, text, language) => {
         message = await showAvailableProducts(client, textValue, text, menus);
       } else if (selection === '2') {
         if (textValue === 2) {
-          message = await cartOperations(text, 'outer', 0);
+          message = await cartOperations(text, 'outer', 0, menus);
         } else if (textValue === 3 && text.split('*')[2] === '1') {
-          message = await cartOperations(text, 'outer', 1);
+          message = await cartOperations(text, 'outer', menus, 1);
         } else if (textValue === 3 && text.split('*')[2] === '2') {
-          message = await cartOperations(text, 'outer', 1);
+          message = await cartOperations(text, 'outer', menus, 1);
         } else if (textValue === 4 && text.split('*')[2] === '1' && text.split('*')[3] === '1') {
-          message = await cartOperations(text, 'outer', 8);
+          message = await cartOperations(text, 'outer', menus, 8);
         } else if (textValue === 4 && text.split('*')[3] === '1') {
-          message = await cartOperations(text, 'outer', 2);
+          message = await cartOperations(text, 'outer', menus, 2);
         } else if (textValue === 5 && text.split('*')[4] === '2') {
-          message = await cartOperations(text, 'outer', 3);
+          message = await cartOperations(text, 'outer', menus, 3);
         } else if (textValue === 5 && text.split('*')[4] === '1' && text.split('*')[3] === '1') {
           // TODO: Make payment
-          message = await cartOperations(text, 'outer', 9);
+          message = await cartOperations(text, 'outer', menus, 9);
         } else if (textValue === 5 && text.split('*')[3] === '1') {
           const id = parseInt(text.split('*')[4], 10);
           message = await cartOperations(text, 'outer', 4, id);

@@ -135,7 +135,6 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     const selection = parseInt(text.split('*')[3], 10);
     const result = await renderOfferings(client, selection, menus);
     offeringStatus.push(result.status);
-
     message = result.message;
   } else if (textValue === 5 && numberWithinRange(text, 4, menus) === 'valid') {
     const selection = parseInt(text.split('*')[4], 10);
@@ -169,75 +168,73 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
       menus,
     );
   } else if (
-    textValue === 7
-    && text.split('*')[6] === '1'
-    && numberWithinRange(text, 6, menus) === 'valid'
-  ) {
-    message = await addToCart(client, itemSelection, totalCost);
-  } else if (
     textValue === 8
     && text.split('*')[7] === '1'
     && numberWithinRange(text, 7, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 1, menus);
-  } else if (
-    textValue === 8
-    && text.split('*')[7] === '67'
-    && numberWithinRange(text, 7) === 'valid'
-  ) {
-    message = await cartOperations(text, 'inner', 0);
+    message = await addToCart(client, itemSelection, totalCost, menus);
   } else if (
     textValue === 9
     && text.split('*')[8] === '1'
-    && numberWithinRange(text, 8, menus) === 'valid'
+    && numberWithinRange(text, 7, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 8);
+    message = await cartOperations(text, 'inner', 1, menus);
   } else if (
     textValue === 9
-    && text.split('*')[8] === '2'
-    && numberWithinRange(text, 8) === 'valid'
+    && text.split('*')[8] === '67'
+    && numberWithinRange(text, 8, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 1);
+    message = await cartOperations(text, 'inner', 0, menus);
   } else if (
     textValue === 10
     && text.split('*')[9] === '1'
-    && numberWithinRange(text, 9) === 'valid'
+    && numberWithinRange(text, 8, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 2);
+    message = await cartOperations(text, 'inner', 1, menus);
   } else if (
     textValue === 10
     && text.split('*')[9] === '2'
-    && numberWithinRange(text, 9) === 'valid'
+    && numberWithinRange(text, 8, menus) === 'valid'
   ) {
-    message = await cartOperations(text, 'inner', 3);
+    message = await cartOperations(text, 'inner', 1, menus);
   } else if (
     textValue === 11
-    && text.split('*')[9] === '1'
-    && numberWithinRange(text, 9) === 'valid'
+    && text.split('*')[10] === '1'
+    && numberWithinRange(text, 10, menus) === 'valid'
   ) {
-    // TODO: Convert to a string
-    const itemID = parseInt(text.split('*')[10], 10);
-    message = await cartOperations(text, 'inner', 4, itemID);
+    message = await cartOperations(text, 'inner', 2, menus);
   } else if (
     textValue === 11
-    && text.split('*')[9] === '2'
-    && numberWithinRange(text, 9) === 'valid'
+    && text.split('*')[10] === '2'
+    && numberWithinRange(text, 10, menus) === 'valid'
   ) {
-    // TODO: Convert to a string
-    const itemID = parseInt(text.split('*')[10], 10);
-    message = await cartOperations(text, 'inner', 5, itemID);
+    message = await cartOperations(text, 'inner', 3, menus);
+  } else if (
+    textValue === 12
+    && text.split('*')[10] === '1'
+    && numberWithinRange(text, 11, menus) === 'valid'
+  ) {
+    const itemID = parseInt(text.split('*')[11], 10);
+    message = await cartOperations(text, 'inner', 4, menus, itemID);
   } else if (
     textValue === 12
     && text.split('*')[10] === '2'
-    && numberWithinRange(text, 10) === 'valid'
+    && numberWithinRange(text, 11, menus) === 'valid'
   ) {
-    const itemID = parseInt(text.split('*')[10], 10);
-    const index = parseInt(text.split('*')[11], 10);
-    // Point A
-
-    message = await cartOperations(text, 'inner', 6, itemID, index);
+    const itemID = parseInt(text.split('*')[11], 10);
+    message = await cartOperations(text, 'inner', 5, menus, itemID);
   } else if (
     textValue === 13
+    && text.split('*')[10] === '2'
+    && numberWithinRange(text, 11, menus) === 'valid'
+  ) {
+    const itemID = parseInt(text.split('*')[11], 10);
+    const index = parseInt(text.split('*')[12], 10);
+    // Point A
+
+    message = await cartOperations(text, 'inner', 6, menus, itemID, index);
+  } else if (
+    textValue === 14
     && text.split('*')[10] === '1'
     && text.split('*')[12] === '67'
   ) {

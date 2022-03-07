@@ -11,7 +11,7 @@ import { checkIfUserExists } from './core/usermanagement.js';
 import { renderRegisterMenu } from './menus/rendermenu.js';
 import checkFarmerSelection from './users/farmer/farmerselection.js';
 import checkBuyerSelection from './users/buyer/buyerselection.js';
-import selectLanguage, { getStrings } from './menus/language.js';
+import selectLanguage from './menus/language.js';
 import { languageChooser } from './helpers.js';
 
 const port = process.env.PORT || 3032;
@@ -62,6 +62,7 @@ app.post('/ussd', async (req, res) => {
   const rawtext = req.body.text;
   const text = ussdRouter(rawtext, '0', '00');
   const textValue = text.split('*').length;
+  console.log('The text value is ', textValue);
 
   let message;
   if (text === '') {
