@@ -99,9 +99,11 @@ export const renderOfferings = async (client, id, menus) => {
   if (productOffering.status === 200) {
     const offers = productOffering.data.message.data;
 
-    offers.forEach((offer) => {
+    offers.forEach((offer, index) => {
       const userViewOffers = {};
-      offeringText += `\n${offer.id}. ${offer.product_name} from ${offer.farm_name} Grade: ${offer.grade}\nKES ${offer.unit_price} `;
+      offeringText += `\n${(index += 1)}. ${offer.product_name} from ${
+        offer.farm_name
+      } Grade: ${offer.grade}\nKES ${offer.unit_price} `;
       userViewOffers.id = `${offer.id}`;
       userViewOffers.product = `${offer.product_name}`;
       userViewOffers.farmName = `${offer.farm_name}`;
