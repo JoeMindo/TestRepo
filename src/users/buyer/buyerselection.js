@@ -76,29 +76,33 @@ const checkBuyerSelection = async (textValue, text, language) => {
       } else if (selection === '3') {
         let userId = await retreiveCachedItems(client, ['user_id']);
         userId = parseInt(userId[0], 10);
-        const result = await renderOrders(userId);
+        const result = await renderOrders(userId, menus);
         message = `${con()} ${result}`;
         message += menus.footer;
       } else if (selection === '4') {
         // const status = await groupOrderMenus.checkIfUserIsInGroup();
-        message = groupOrderMenus.actionToTake(false);
-        if (textValue === 3) {
-          message = groupOrderMenus.requestGroupName();
-        } else if (textValue === 4) {
+        message = groupOrderMenus.actionToTake(false, menus);
+        if (textValue === 2) {
+          message = groupOrderMenus.requestGroupName(menus);
+        } else if (textValue === 3) {
           let userId = await retreiveCachedItems(client, ['user_id']);
           // TODO: Use the userId in place of dean ID
 
           userId = parseInt(userId[0], 10);
           const groupData = {
             dean_id: userId,
-            group_name: text.split('*')[3],
+            group_name: text.split('*')[2],
             group_type: 2,
             status: 1,
           };
           const response = await groupOrderMenus.createGroup(groupData);
-          message = groupOrderMenus.groupCreationMessage(response);
+          message = groupOrderMenus.groupCreationMessage(response, menus);
         } else {
-          message = await groupOrderMenus.groupPricedItems(textValue, text);
+          message = await groupOrderMenus.groupPricedItems(
+            textValue,
+            text,
+            menus,
+          );
         }
       }
     } else {
