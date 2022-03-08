@@ -68,7 +68,7 @@ app.post('/ussd', async (req, res) => {
     message = selectLanguage();
   } else {
     const userLanguage = languageChooser(text.split('*')[0]);
-    const response = await checkIfUserExists(req.body.phoneNumber);
+    const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
 
     if (response.exists && response.role === 'BUYER') {
       client.set('user_Id', response.user_id);
