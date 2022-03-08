@@ -94,7 +94,7 @@ export const renderGroupPricedItems = async (productId) => {
  * @param text - The text that the user sent.
  * @returns The message to be sent to the user.
  */
-export const groupPricedItems = async (textValue, text) => {
+export const groupPricedItems = async (textValue, text, menus) => {
   let message;
   if (textValue === 5) {
     message = await renderProductCategories();

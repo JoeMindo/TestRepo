@@ -1,11 +1,11 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable prefer-destructuring */
-import { retreiveCachedItems } from "../core/services.js";
-import client from "../server.js";
-import { con, end } from "../menus/rendermenu.js";
-import makebasicOrder from "../orders/unitOrder.js";
-import makePayment from "../payment/payment.js";
-import { itemSelection } from "../products/productmanagement.js";
+import { retreiveCachedItems } from '../core/services.js';
+import client from '../server.js';
+import { con, end } from '../menus/rendermenu.js';
+import makebasicOrder from '../orders/unitOrder.js';
+import makePayment from '../payment/payment.js';
+import { itemSelection } from '../products/productmanagement.js';
 
 export const offersArray = [];
 export const cartItems = [];
@@ -40,15 +40,15 @@ status is unit. If the price type is group, then the status is group.
 export const priceToUse = (availablePriceType, choice) => {
   let status;
   if (
-    (availablePriceType === "both" && choice === "1") ||
-    availablePriceType === "unit"
+    (availablePriceType === 'both' && choice === '1')
+    || availablePriceType === 'unit'
   ) {
-    status = "unit";
+    status = 'unit';
   } else if (
-    (availablePriceType === "both" && choice === "2") ||
-    availablePriceType === "group"
+    (availablePriceType === 'both' && choice === '2')
+    || availablePriceType === 'group'
   ) {
-    status = "group";
+    status = 'group';
   }
 
   return status;
@@ -60,8 +60,8 @@ export const priceToUse = (availablePriceType, choice) => {
  * @returns An array of objects.
  */
 export const showCartItems = async (client) => {
-  let prompt = "";
-  let fetchCartItems = await retreiveCachedItems(client, ["cartItems"]);
+  let prompt = '';
+  let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
   fetchCartItems = JSON.parse(fetchCartItems);
   fetchCartItems.forEach((item) => {
     prompt += `${item.id}. ${item.product}, ${item.farmName}, ${item.grade} ${item.totalCost}\n`;
@@ -85,34 +85,33 @@ export const addToCart = async (
   client,
   itemsObject,
   totalPriceObject,
-  menus
+  menus,
 ) => {
   if (itemsObject && totalPriceObject) {
-    let existingItems = await retreiveCachedItems(client, ["cartItems"]);
-    client.exists("cartItems", (err, ok) => {
+    let existingItems = await retreiveCachedItems(client, ['cartItems']);
+    client.exists('cartItems', (err, ok) => {
       if (err) throw err;
       if (ok === 0) {
         cartItems.push(itemsObject);
 
-        client.set("cartItems", JSON.stringify(cartItems));
+        client.set('cartItems', JSON.stringify(cartItems));
       } else if (ok === 1) {
         existingItems = JSON.parse(existingItems);
         // Check if item is already in cart
         const index = existingItems.findIndex(
-          (item) => item.id === itemsObject.id
+          (item) => item.id === itemsObject.id,
         );
 
         if (index === -1) {
           existingItems.push(itemsObject);
-          client.set("cartItems", JSON.stringify(existingItems));
+          client.set('cartItems', JSON.stringify(existingItems));
         } else {
-          const newTotal =
-            existingItems[`${index}`].userQuantity *
-            existingItems[`${index}`].unitPrice;
+          const newTotal = existingItems[`${index}`].userQuantity
+            * existingItems[`${index}`].unitPrice;
           // Increase quantity function
           existingItems[`${index}`].userQuantity += itemsObject.userQuantity;
           existingItems[`${index}`].totalCost = newTotal;
-          client.set("cartItems", JSON.stringify(existingItems));
+          client.set('cartItems', JSON.stringify(existingItems));
         }
       }
     });
@@ -134,11 +133,11 @@ export const confirmNewQuantity = (
   client,
   itemsObject,
   totalPriceObject,
-  menus
+  menus,
 ) => {
   if (itemsObject && totalPriceObject) {
     cartItems.push(itemsObject);
-    client.set("cartItems", JSON.stringify(cartItems));
+    client.set('cartItems', JSON.stringify(cartItems));
     message = `${con()} ${menus.cartItemsUpdatedSuccessfully}`;
   } else {
     message = `${con()} ${menus.noItemSelectedToUpdate}`;
@@ -153,7 +152,7 @@ export const confirmNewQuantity = (
  * @returns The message that is being returned.
  */
 export const updateType = async (type, menus) => {
-  if (type === "remove") {
+  if (type === 'remove') {
     message = `${con()} ${menus.askForItemToRemove}`;
   } else {
     message = `${con()} ${menus.askForItemToUpdate}`;
@@ -169,19 +168,17 @@ export const updateType = async (type, menus) => {
  * @returns The cart items
  */
 export const removeItemFromCart = async (id, menus) => {
-  console.log("The id is", id);
-  let cartItems = await retreiveCachedItems(client, ["cartItems"]).catch(
-    (err) => err
+  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
+    (err) => err,
   );
   cartItems = JSON.parse(cartItems);
-  console.log(cartItems);
+
   cartItems.forEach((item) => {
-    console.log("Do they match", item.id === id);
     if (item.id === id) {
       const indexOfItem = cartItems.indexOf(item);
       cartItems.splice(indexOfItem, 1);
-      console.log("The cart items after", cartItems);
-      client.set("cartItems", JSON.stringify(cartItems));
+
+      client.set('cartItems', JSON.stringify(cartItems));
       message = `${con()} ${menus.itemRemovedSuccessfully}`;
     } else {
       message = `${con()} ${menus.itemNotFound}`;
@@ -199,13 +196,13 @@ export const removeItemFromCart = async (id, menus) => {
  * @returns A string
  */
 export const changeQuantity = async (client, amount, object, id, menus) => {
-  let cartItems = await retreiveCachedItems(client, ["cartItems"]).catch(
-    (err) => err
+  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
+    (err) => err,
   );
   cartItems = JSON.parse(cartItems);
   const newCartItems = [...cartItems];
   const oldObject = object;
-  console.log("Here", oldObject);
+
   const indexToRemove = cartItems.findIndex((x) => x.id === id);
   newCartItems.splice(indexToRemove, 1);
   const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
@@ -213,7 +210,7 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
   oldObject.userQuantity = parseInt(amount, 10);
   newCartItems.push(oldObject);
 
-  client.set("cartItems", JSON.stringify(newCartItems));
+  client.set('cartItems', JSON.stringify(newCartItems));
   message = `${end()} ${menus.updatedSuccessfully}`;
   return message;
 };
@@ -233,16 +230,14 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
  * }
  */
 export const findItemToChangeQuantity = async (client, id, menus) => {
-  console.log("The updateid is", id);
   let itemToUpdate;
 
-  let cartItems = await retreiveCachedItems(client, ["cartItems"]).catch(
-    (err) => err
+  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
+    (err) => err,
   );
 
   cartItems = JSON.parse(cartItems);
   cartItems.forEach((item) => {
-    console.log("Do they match", item.id === id);
     if (item.id === id) {
       itemToUpdate = item;
       message = `${con()} ${menus.updatedQuantityToBuy}`;
@@ -263,7 +258,7 @@ export const findItemToChangeQuantity = async (client, id, menus) => {
  */
 export const displayTotalCost = async (client, menus) => {
   try {
-    const chargeToUser = await retreiveCachedItems(client, ["totalCost"]);
+    const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
     message = `${con()} ${menus.paymentPrompt} ${chargeToUser}\n ${menus.yes}`;
     message += menus.footer;
   } catch (error) {
@@ -278,15 +273,15 @@ export const displayTotalCost = async (client, menus) => {
  * @returns The request object.
  */
 export const updateRequest = (request) => {
-  const array = request.body.text.split("*");
+  const array = request.body.text.split('*');
   array.splice(2, array.length);
-  request.text = array.join("*");
+  request.text = array.join('*');
   return request;
 };
 export const displayCartItems = async (client, menus) => {
   try {
-    let prompt = "";
-    let fetchCartItems = await retreiveCachedItems(client, ["cartItems"]);
+    let prompt = '';
+    let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
 
     if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
       fetchCartItems = JSON.parse(fetchCartItems);
@@ -295,7 +290,7 @@ export const displayCartItems = async (client, menus) => {
       });
       const availableTotal = fetchCartItems.reduce(
         (total, obj) => obj.totalCost + total,
-        0
+        0,
       );
       message = `${con()} ${menus.yourCartItems} ${prompt} ${
         menus.total
@@ -310,11 +305,11 @@ export const displayCartItems = async (client, menus) => {
   }
 };
 export const updateCart = async (operation, menus, id = null) => {
-  if (operation === "firstscreen") {
+  if (operation === 'firstscreen') {
     message = `${con()} ${menus.operation}`;
-  } else if (operation === "removeItem") {
+  } else if (operation === 'removeItem') {
     message = await removeItemFromCart(id, menus);
-  } else if (operation === "updateItemCount") {
+  } else if (operation === 'updateItemCount') {
     message = await findItemToChangeQuantity(id, menus);
   } else {
     message = `${end()} ${menus.itemNotFound}`;
@@ -337,25 +332,25 @@ export const cartOperations = async (
   level,
   menus,
   itemId = null,
-  index = null
+  index = null,
 ) => {
   let selection;
-  if (menuLevel === "inner") {
-    selection = text.split("*")[9];
-  } else if (menuLevel === "outer") {
-    selection = text.split("*")[2];
+  if (menuLevel === 'inner') {
+    selection = text.split('*')[9];
+  } else if (menuLevel === 'outer') {
+    selection = text.split('*')[2];
   }
 
   if (level === 0) {
     message = await displayCartItems(client, menus);
-  } else if (selection === "1" && level === 1) {
+  } else if (selection === '1' && level === 1) {
     message = askForNumber(menus);
-  } else if (selection === "2" && level === 1) {
-    message = updateCart("firstscreen", menus);
+  } else if (selection === '2' && level === 1) {
+    message = updateCart('firstscreen', menus);
   } else if (level === 2) {
-    message = await updateType("remove", menus);
+    message = await updateType('remove', menus);
   } else if (level === 3) {
-    message = await updateType("updateItemCount", menus);
+    message = await updateType('updateItemCount', menus);
   } else if (level === 4) {
     message = await removeItemFromCart(itemId, menus);
   } else if (level === 5) {
@@ -370,10 +365,9 @@ export const cartOperations = async (
     message = confirmNewQuantity(client, itemSelection, totalCost, menus);
   } else if (level === 8) {
     const products = [];
-    const details = await retreiveCachedItems(client, ["user_id", "cartItems"]);
+    const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
 
     const cartItems = JSON.parse(details[1]);
-    console.log("The cart items are", cartItems);
 
     cartItems.forEach((item) => {
       const pickedFields = (({
@@ -406,15 +400,15 @@ export const cartOperations = async (
       centre_id: 5,
       user_id: parseInt(details[0], 10),
       products,
-      order_priority: "medium",
+      order_priority: 'medium',
     };
 
     const response = await makebasicOrder(cartSelections);
 
     if (response.status === 200) {
-      client.del("cartItems");
+      client.del('cartItems');
       message = `${end()} ${menus.orderSuccess}`;
-    } else if (response.data.status === "error") {
+    } else if (response.data.status === 'error') {
       message = `${con()} ${menus.orderFailed}`;
     }
   } else if (level === 9) {
