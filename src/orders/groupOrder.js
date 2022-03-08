@@ -3,13 +3,13 @@ import axios from 'axios';
 import { retreiveCachedItems } from '../core/services.js';
 import { renderOffers, renderProducts } from '../products/renderProducts.js';
 import client from '../server.js';
-
 import { BASEURL } from '../core/urls.js';
-import { menus } from '../menus/menuoptions.js';
+
 import {
   askForQuantity,
   renderProductCategories,
 } from '../users/buyer/buyermenus.js';
+import { con } from '../menus/rendermenu.js';
 
 /**
  * Checks if a user is in a group
@@ -34,12 +34,12 @@ message is "CON Group To Join". The message is then concatenated with the footer
  * @param state - The state of the user.
  * @returns The message to be sent to the user.
  */
-export const actionToTake = async (state) => {
+export const actionToTake = async (state, menus) => {
   let message = '';
   if (state === false) {
-    message = `CON ${menus.buyermenu.createGroup}`;
+    message = `CON ${menus.createGroup}`;
   } else if (typeof state === 'number') {
-    message = `CON ${menus.buyermenu.groupToJoin}`;
+    message = `CON ${menus.groupToJoin}`;
   }
   message += menus.footer;
   return message;
@@ -54,18 +54,18 @@ export const createGroup = async (groupdata) => {
   const response = await axios.post(`${BASEURL}/ussd/saveusergroup`, groupdata);
   return response.data.status;
 };
-export const requestGroupName = () => 'CON What is the name of your group?\n';
+export const requestGroupName = (menus) => `${con()} ${menus.requestName}`;
 /**
- * This function is used to create a CON group.
+ * This function is used to create a group.
  * @param status - The status of the group creation.
  * @returns The message that is being returned.
  */
-export const groupCreationMessage = (status) => {
+export const groupCreationMessage = (status, menus) => {
   let message;
   if (status === 'success') {
-    message = 'CON Group created successfully\n 1. Add items to buy';
+    message = `${con()} ${menus.groupCreatedSuccess}`;
   } else {
-    message = 'CON Could not create group. Try again\n';
+    message = `${con()} ${menus.couldNotCreateGroup}`;
   }
   message += menus.footer;
   return message;
@@ -94,7 +94,7 @@ export const renderGroupPricedItems = async (productId) => {
  * @param text - The text that the user sent.
  * @returns The message to be sent to the user.
  */
-export const groupPricedItems = async (textValue, text) => {
+export const groupPricedItems = async (textValue, text, menus) => {
   let message;
   if (textValue === 5) {
     message = await renderProductCategories();

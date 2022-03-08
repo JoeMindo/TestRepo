@@ -1,39 +1,48 @@
-const usernameValidation = (text, index) => {
+/* eslint-disable import/no-cycle */
+
+const usernameValidation = (text, index, menus) => {
   const username = text.split('*')[`${index}`];
   const regex = /^[a-zA-Z]*$/;
   if (username.length < 3) {
-    return 'Username must be at least 3 characters';
-  } if (!regex.test(username)) {
-    return 'Username must only contain letters and no spaces';
+    return `${menus.userNameTooShort}`;
   }
-  return 'valid';
+  if (!regex.test(username)) {
+    return `${menus.usernameOnlyLetters}`;
+  }
+  return `${menus.valid}`;
 };
-export const IdValidation = (text) => {
-  const id = text.split('*')[2];
+export const IdValidation = (text, menus) => {
+  const id = text.split('*')[3];
   const regex = /^[0-9]*$/;
   if (id.length < 8) {
-    return 'ID number must be at least 8 characters';
+    return `${menus.idTooShort}`;
   }
   if (!regex.test(id)) {
-    return 'ID number must only contain numbers';
+    return `${menus.idOnlyNumbers}`;
   }
-  return 'valid';
+  return `${menus.valid}`;
 };
-export const numberValidation = (text, index) => {
+export const numberValidation = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    return 'Choose option 1 or 2';
+    return `${menus.chooseListedOptions}`;
   }
-  return 'valid';
+  return `${menus.valid}`;
 };
 
-export const numberWithinRange = (text, index) => {
+export const numberWithinRange = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    return 'Out of range! Choose only numbers listed';
+    return `${menus.outOfRange}`;
   }
-  return 'valid';
+  return `${menus.valid}`;
 };
+
+export const languageChooser = (option) => {
+  const language = option === '1' ? 'en' : 'sw';
+  return language;
+};
+
 export default usernameValidation;

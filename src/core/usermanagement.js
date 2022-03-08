@@ -92,21 +92,20 @@ const checkVerification = () => true;
  * }
  */
 const checkIfUserExists = async (phone) => {
-  try {
-    const details = {
-      phone_no: phone,
+  const details = {
+    phone_no: phone,
+  };
+  const response = await axios.post(`${BASEURL}/ussd/isuser`, details).catch((err) => err.response);
+  if (response.data.status === 'success') {
+    return {
+      exists: response.data.message,
+      role: response.data.role,
+      user_id: response.data.userid,
     };
-    const response = await axios.post(`${BASEURL}/ussd/isuser`, details);
-    if (response.data.status === 'success') {
-      return {
-        exists: response.data.message,
-        role: response.data.role,
-        user_id: response.data.userid,
-      };
-    }
-  } catch (err) {
-    return false;
   }
+  return {
+    exists: false,
+  };
 };
 /**
  * Checks if location data is availble for user

@@ -8,7 +8,7 @@
     "test": "c8 --all mocha --timeout 10000 --exit --require @babel/register test/**/*.js",
     "start": "node --experimental-json-modules src/server.js",
     "dev": "nodemon src/server.js",
-    "fix": "./node_modules/.bin/eslint src --fix",
+    "fix": "eslint --fix src/**/*.js",
     "coverage": "nyc report —-reporter=text-lcov | coveralls"
   },
   "repository": {
@@ -44,10 +44,10 @@
     "nock": "^13.2.1",
     "nodemon": "^2.0.13",
     "sinon": "^11.1.2",
-    "stylelint": "^13.13.1",
-    "stylelint-config-standard": "^21.0.0",
-    "stylelint-csstree-validator": "^1.9.0",
-    "stylelint-scss": "^3.21.0",
+    "stylelint": "^14.4.0",
+    "stylelint-config-standard": "^25.0.0",
+    "stylelint-csstree-validator": "^2.0.0",
+    "stylelint-scss": "^4.1.0",
     "supertest": "^6.1.6"
   },
   "dependencies": {
@@ -71,6 +71,7 @@
     "morgan": "^1.10.0",
     "nyc": "^15.1.0",
     "redis": "^3.1.2",
+    "store": "^2.0.12",
     "ussd-router": "^0.1.6",
     "uuid": "^8.3.2"
   }

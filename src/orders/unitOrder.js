@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import axios from 'axios';
 import { BASEURL } from '../core/urls.js';
 
@@ -7,19 +8,30 @@ import { BASEURL } from '../core/urls.js';
  * @returns The response from the server.
  */
 const makebasicOrder = async (cartSelections) => {
-  try {
-    const makeOrderRequest = await axios.post(
-      `${BASEURL}/ussd/savebasicorder`,
-      cartSelections,
-    );
+  const makeOrderRequest = await axios
+    .post(`${BASEURL}/ussd/savebasicorder`, cartSelections)
+    .catch((err) => err.response);
 
-    if (makeOrderRequest.status === 200) {
-      return makeOrderRequest;
-    }
-    return false;
-  } catch (err) {
-    return 'Error';
-  }
+  return makeOrderRequest;
+};
+
+export const viewOrders = async (userId) => {
+  const response = axios
+    .get(`${BASEURL}/ussd/showmyorders/${userId}`)
+    .catch((err) => err.response);
+  return response;
+};
+
+export const renderOrders = async (userId, menus) => {
+  const response = await viewOrders(userId);
+
+  let orders = '';
+  response.data.message.data.forEach((order) => {
+    orders += `${menus.orderId} ${
+      order.order_id.substring(0, 3) + order.order_id.substring(5, 7)
+    }, ${menus.status} ${order.order_status}\n`;
+  });
+  return orders;
 };
 
 export default makebasicOrder;

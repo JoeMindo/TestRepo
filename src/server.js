@@ -7,10 +7,12 @@ import session from 'express-session';
 import redis from 'redis';
 import bluebird from 'bluebird';
 import { ussdRouter } from 'ussd-router';
-import * as menuItems from './menus/rendermenu.js';
-import { registerUser, checkIfUserExists } from './core/usermanagement.js';
+import { checkIfUserExists } from './core/usermanagement.js';
+import { renderRegisterMenu } from './menus/rendermenu.js';
 import checkFarmerSelection from './users/farmer/farmerselection.js';
 import checkBuyerSelection from './users/buyer/buyerselection.js';
+import selectLanguage from './menus/language.js';
+import { languageChooser } from './helpers.js';
 
 const port = process.env.PORT || 3032;
 
@@ -21,6 +23,7 @@ const client = redis.createClient({
   port: 19100,
   password: 'T6SXoEq1tyztu6oLYGpSO2cbE2dE1gDH',
 });
+// eslint-disable-next-line import/no-mutable-exports
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 
@@ -58,52 +61,31 @@ app.use((req, res, next) => {
 app.post('/ussd', async (req, res) => {
   const rawtext = req.body.text;
   const text = ussdRouter(rawtext, '0', '00');
-  // TODO: Migrate this to usermanagement
   const textValue = text.split('*').length;
-  const userStatus = await checkIfUserExists(req.body.phoneNumber);
+
   let message;
-
-  if (userStatus === false) {
-    const menus = menuItems.renderRegisterMenu(textValue, text);
-    let { message } = menus;
-    if (menus.completedStatus === true) {
-      req.session.registration = text.split('*');
-
-      const userDetails = {
-        first_name: req.session.registration[0],
-        last_name: req.session.registration[1],
-        id_no: req.session.registration[2],
-        gender: req.session.registration[3],
-        password: req.session.registration[4],
-        password_confirmation: req.session.registration[5],
-        role_id: req.session.registration[6],
-      };
-
-      const response = await registerUser(
-        userDetails,
-        req.body.phoneNumber,
-      );
-      if (response.status === 200) {
-        message = 'END Success';
-      } else {
-        message = 'END Something went wrong try later!';
-      }
-    }
-    res.send(message);
-  } else if (userStatus.exists === true) {
-    client.set('user_id', userStatus.user_id);
-    if (userStatus.role === 'FARMER') {
-      client.set('role', 'farmer');
-      message = await checkFarmerSelection(text, textValue);
-    } else if (userStatus.role === 'BUYER') {
-      client.set('role', 'buyer');
-      message = await checkBuyerSelection(textValue, text);
-    } else if (userStatus.message === false) {
-      message = 'CON User not found';
-    }
+  if (text === '') {
+    message = selectLanguage();
   } else {
-    message = 'END Something went wrong on our end, try again later';
+    const userLanguage = languageChooser(text.split('*')[0]);
+    const response = await checkIfUserExists(req.body.phoneNumber);
+
+    if (response.exists && response.role === 'BUYER') {
+      client.set('user_Id', response.user_id);
+      message = await checkBuyerSelection(textValue, text, userLanguage);
+    } else if (response.exists && response.role === 'FARMER') {
+      client.set('user_id', response.user_id);
+      message = await checkFarmerSelection(text, 0, userLanguage);
+    } else if (!response.exists) {
+      message = await renderRegisterMenu(
+        textValue,
+        text,
+        req.body.phoneNumber,
+        userLanguage,
+      );
+    }
   }
+
   res.send(message);
 });
 

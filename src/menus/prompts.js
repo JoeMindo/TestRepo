@@ -1,6 +1,9 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable import/prefer-default-export */
-import { menus } from './menuoptions.js';
+
+import checkFarmerSelection from '../users/farmer/farmerselection.js';
+import checkBuyerSelection from '../users/buyer/buyerselection.js';
 
 const con = () => 'CON';
 const end = () => 'END';
@@ -11,28 +14,28 @@ const end = () => 'END';
  * @param textToShow - the text to show in the menu
  * @returns The message to be sent to the user.
  */
-export const promptToShow = (response, textToShow) => {
+export const promptToShow = (response, textToShow, menus) => {
   let message = '';
   let menuPrompt = '';
   menuPrompt += response;
   if (textToShow === 'productcategories') {
-    message = `${con()} Choose a category`;
+    message = `${con()} ${menus.category}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'products') {
-    message = `${con()} Choose a product\n`;
+    message = `${con()} ${menus.product}`;
     message += menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycsections') {
-    message = `${con()} Choose a section to fill`;
+    message = `${con()} ${menus.kycsection}`;
     message = menuPrompt;
     message += menus.footer;
   } else if (textToShow === 'kycmetrics') {
-    message = `${con()} Choose a question to answer`;
+    message = `${con()} ${menus.kycmetrics}`;
     message = menuPrompt;
     message += menus.footer;
   } else {
-    message = `${con()} Choose a farm offering\n`;
+    message = `${con()} ${menus.chooseOffering}`;
     message += menuPrompt;
     message += menus.footer;
   }
@@ -50,7 +53,7 @@ and prints out the question id and question name.
  * @param section - 'sections' or 'questions'
  * @returns The response from the server.
  */
-export const responsePrompt = (response, section) => {
+export const responsePrompt = (response, section, menus) => {
   let message = '';
   let menuPrompt = 'CON ';
 
@@ -58,14 +61,31 @@ export const responsePrompt = (response, section) => {
     response.data.message.forEach((item) => {
       menuPrompt += `${item.id}. ${item.section_name}\n`;
     });
-    message = promptToShow(menuPrompt, 'kycsections');
+    message = promptToShow(menuPrompt, 'kycsections', menus);
   } else if (response.status === 200 && section === 'questions') {
     response.data.message.forEach((item) => {
       menuPrompt += `${item.id}. ${item.metric_name}\n`;
     });
-    message = promptToShow(menuPrompt, 'kycmetrics');
+    message = promptToShow(menuPrompt, 'kycmetrics', menus);
   } else {
-    message = `${end()} Something went wrong, try again later`;
+    message = `${end()} ${menus.somethingWentWrong}`;
   }
   return message;
+};
+
+/**
+ * It checks the user's selection and returns the appropriate response
+ * @param role - The role of the user.
+ * @param text - The text that the user has entered so far.
+ * @param startIndex - The index of the first menu to be shown.
+ * @returns A list of options to be displayed to the user.
+ */
+export const showUserMenus = async (role, text, startIndex) => {
+  let response;
+  if (role === 'farmer') {
+    response = await checkFarmerSelection(text, startIndex);
+  } else if (role === 'buyer') {
+    response = await checkBuyerSelection(text, startIndex);
+  }
+  return response;
 };
