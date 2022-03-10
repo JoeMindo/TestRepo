@@ -45,4 +45,12 @@ export const languageChooser = (option) => {
   return language;
 };
 
+export const createIdsObject = (ids) => {
+  const id = {};
+  ids.forEach((item, index) => {
+    id[`${(index += 1)}`] = item;
+  });
+  return id;
+};
+
 export default usernameValidation;

@@ -56,15 +56,19 @@ and prints out the question id and question name.
 export const responsePrompt = (response, section, menus) => {
   let message = '';
   let menuPrompt = 'CON ';
+  const questionIDS = [];
+  const sectionIDS = [];
 
   if (response.status === 200 && section === 'sections') {
-    response.data.message.forEach((item) => {
-      menuPrompt += `${item.id}. ${item.section_name}\n`;
+    response.data.message.forEach((item, index) => {
+      sectionIDS.push(item.id);
+      menuPrompt += `${(index += 1)}. ${item.section_name}\n`;
     });
     message = promptToShow(menuPrompt, 'kycsections', menus);
   } else if (response.status === 200 && section === 'questions') {
-    response.data.message.forEach((item) => {
-      menuPrompt += `${item.id}. ${item.metric_name}\n`;
+    response.data.message.forEach((item, index) => {
+      questionIDS.push(item.id);
+      menuPrompt += `${(index += 1)}. ${item.metric_name}\n`;
     });
     message = promptToShow(menuPrompt, 'kycmetrics', menus);
   } else {

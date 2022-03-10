@@ -295,11 +295,11 @@ export const renderProductsInFarm = async (farmId, menus) => {
       const menuPrompt = `${con()} ${menus.listedProduce}`;
       message = menuPrompt;
       response.data.message.forEach((element, index) => {
-        message += `${index}. ${element.product_name}\n`;
+        message += `${(index += 1)}. ${element.product_name}\n`;
       });
-    } else {
-      message = `${con()} ${menus.noProduce}`;
     }
+  } else {
+    message = `${con()} ${menus.noProduce}`;
   }
   return message;
 };
@@ -309,18 +309,19 @@ export const renderProductsInFarm = async (farmId, menus) => {
  * @param userId - The id of the user who is logged in.
  * @returns A string.
  */
-export const renderFarmerFarms = async (userId, menus) => {
+export const renderFarmerFarms = async (userId, menus, idsArray) => {
   let message;
   const response = await fetchFarmerFarms(userId);
 
   if (response.status === 200) {
     let menuPrompt = `${con()} ${menus.viewFarms}`;
-    response.data.message.forEach((farm) => {
-      menuPrompt += `${farm.id}. ${farm.farm_name}\n`;
+    response.data.message.forEach((farm, index) => {
+      idsArray.push(farm.id);
+      menuPrompt += `${(index += 1)}. ${farm.farm_name}\n`;
     });
     message = menuPrompt;
   } else {
     message = `${con()} ${menus.noFarms}`;
   }
-  return message;
+  return { message, idsArray };
 };

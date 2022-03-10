@@ -44,22 +44,24 @@ const questionanswers = {};
  * @param farmID - The ID of the farm that you want to see the products in.
  * @returns A string of all the products in the farm.
  */
-export const showProductsInFarm = async (farmID, menus) => {
+export const showProductsInFarm = async (farmID, menus, idsArray) => {
   const products = await productsInFarm(farmID);
 
   const productIDs = [];
   let productList = '';
   if (products.data.status === 'success') {
-    products.data.message.forEach((product) => {
+    products.data.message.forEach((product, index) => {
       const combination = {
         id: product.id,
         prodID: product.product_id,
       };
       productIDs.push(combination);
+      idsArray.push(product.id);
       client.set('productIDs', JSON.stringify(productIDs));
-      productList += `\n${product.id}. ${product.product_name}`;
+
+      productList += `\n${(index += 1)}. ${product.product_name}`;
     });
-    return productList;
+    return { productList, idsArray };
   }
   return `${menus.noProductsInFarm}`;
 };
@@ -193,11 +195,10 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         user_id: farmDetails[4],
       };
       const responseForAddingFarm = await addFarm(postDetails);
-
       if (responseForAddingFarm.status === 200) {
         const menuPrompt = `${end()} ${menus.registerFarmSuccess}`;
         message = menuPrompt;
-        client.set('farm_id', responseForAddingFarm.data_id);
+        client.set('farm_id', responseForAddingFarm.data.farm_id);
       } else {
         const menuPrompt = `${end()} ${menus.registerFarmFail}`;
         message = menuPrompt;
@@ -297,6 +298,7 @@ export const renderFarmerUpdateDetailsMenu = async (textValue, text, menus) => {
  */
 export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
   let message = '';
+  const farmIDs = [];
   const items = await retreiveCachedItems(client, ['user_id']);
   const userID = parseInt(items[0], 10);
   const hasFarms = await getUserFarms(userID);
@@ -305,12 +307,15 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
     message = `${con()} ${menus.noFarms}`;
   } else if (hasFarms.status === 200) {
     let farmList = '';
-    hasFarms.data.message.forEach((farm) => {
-      farmList += `\n${farm.id}. ${farm.farm_name}`;
+    hasFarms.data.message.forEach((farm, index) => {
+      farmIDs.push(farm.id);
+      farmList += `\n${(index += 1)}. ${farm.farm_name}`;
     });
     message = `${con()} ${menus.chooseFarm}  ${farmList}`;
     if (textValue === 3) {
-      client.set('farm_id', parseInt(text.split('*')[2], 10));
+      const farmID = farmIDs[parseInt(text.split('*')[2], 10) - 1];
+
+      client.set('farm_id', farmID);
       const menuPrompt = `${con()} ${menus.category}${await fetchCategories()}`;
       message = menuPrompt;
     } else if (textValue === 4) {
@@ -365,37 +370,46 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
     message = `${con()} ${menus.updateListedProduceNotFound}`;
   } else if (hasFarms.status === 200) {
     let farmList = '';
-    hasFarms.data.message.forEach((farm) => {
+    hasFarms.data.message.forEach((farm, index) => {
       userFarms.push(farm.id);
-      farmList += `\n${farm.id}. ${farm.farm_name}`;
+      farmList += `\n${(index += 1)}. ${farm.farm_name}`;
     });
-    message = `${con()} ${menus.chooseFarm} ${farmList}`;
+    message = `${con()} ${menus.chooseFarmToUpdateProduce} ${farmList}`;
   }
-  const farmID = parseInt(text.split('*')[2], 10);
+  const farmID = userFarms[parseInt(text.split('*')[2], 10) - 1];
 
   if (textvalue === 3 && userFarms.includes(farmID)) {
-    // message = `${con()} What produce do you want to update the quantity ${productList}`;
     message = `${con()} ${menus.actionToTake} ${menus.updateQuantity} ${
       menus.listForSale
     }`;
   } else if (textvalue === 4 && text.split('*')[3] === '1') {
-    const list = await showProductsInFarm(farmID);
-    message = `${con()} ${menus.chooseProduceToUpdateQuantity}${list}`;
+    const products = await showProductsInFarm(farmID, menus, []);
+    message = `${con()} ${menus.chooseProduceToUpdateQuantity} ${
+      products.productList
+    }`;
+    client.set('update_product_id', products.idsArray[0]);
   } else if (textvalue === 4 && text.split('*')[3] === '2') {
-    const list = await showProductsInFarm(farmID);
-    message = `${con()} ${menus.itemToSell}  ${list}`;
+    const products = await showProductsInFarm(farmID, menus, []);
+    client.set('sale_product_id', products.idsArray[0]);
+    message = `${con()} ${menus.itemToSell}  ${products.productList}`;
   } else if (textvalue === 5 && text.split('*')[3] === '1') {
     message = `${con()} ${menus.itemQuantity}`;
   } else if (textvalue === 5 && text.split('*')[3] === '2') {
     message = `${con()} ${menus.bagsForSale}`;
   } else if (textvalue === 6 && text.split('*')[3] === '1') {
     const updatedQuantity = text.split('*')[5];
-    const productID = parseInt(text.split('*')[4], 10);
+    let productID = await retreiveCachedItems(client, [
+      'update_product_id',
+      'sale_product_id',
+    ]);
+    productID = parseInt(productID.filter((item) => item !== null)[0], 10);
+
     let retreivedIDs = await retreiveCachedItems(client, ['productIDs']);
     retreivedIDs = JSON.parse(retreivedIDs[0]);
     const productIdentity = retreivedIDs.find(
       (product) => product.id === productID,
     );
+
     const data = {
       farm_id: farmID,
       product_id: productIdentity.prodID,
@@ -409,7 +423,12 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
       message = `${end()}${menus.updateFailed}`;
     }
   } else if (textvalue === 6 && text.split('*')[3] === '2') {
-    const farmProductID = text.split('*')[3];
+    let productID = await retreiveCachedItems(client, [
+      'update_product_id',
+      'sale_product_id',
+    ]);
+    productID = parseInt(productID.filter((item) => item !== null)[0], 10);
+    const farmProductID = productID;
     const quantity = text.split('*')[4];
     const data = {
       farm_product_id: farmProductID,
@@ -417,6 +436,7 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
       grade: '3',
     };
     const response = await listProductForSale(data);
+
     if (response.status === 200) {
       message = `${end()} ${menus.forSaleSuccess}`;
     } else {
