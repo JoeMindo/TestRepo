@@ -115,7 +115,6 @@ export const renderOfferings = async (client, id, menus) => {
     message = `${con()} ${menus.askForOptionSelection} ${offeringText}`;
   } else {
     message = `${con()} ${menus.productNotAvailable}`;
-    message += menus.footer;
   }
   return {
     message,

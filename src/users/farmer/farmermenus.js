@@ -304,7 +304,7 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
   const hasFarms = await getUserFarms(userID);
 
   if (hasFarms.status === 404) {
-    message = `${con()} ${menus.noFarms}`;
+    message = `${con()} ${menus.noFarm}`;
   } else if (hasFarms.status === 200) {
     let farmList = "";
     hasFarms.data.message.forEach((farm, index) => {
@@ -372,7 +372,7 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
   const userFarms = [];
   let message = "";
   if (hasFarms.status === 404) {
-    message = `${con()} ${menus.updateListedProduceNotFound}`;
+    message = `${con()} ${menus.noFarm}`;
   } else if (hasFarms.status === 200) {
     let farmList = "";
     hasFarms.data.message.forEach((farm, index) => {
@@ -433,6 +433,7 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
       "sale_product_id",
     ]);
     productID = parseInt(productID.filter((item) => item !== null)[0], 10);
+    console.log("The product ID", productID);
     const farmProductID = productID;
     const quantity = text.split("*")[4];
     const data = {
@@ -470,8 +471,10 @@ export const secondLevelMenu = async (textValue, text, menus) => {
   } else if (selection === "7") {
     const userID = await retreiveCachedItems(client, ["user_id"]);
     const farms = await renderFarmerFarms(userID[0], menus, []);
+    console.log("The farms", farms);
     if (textValue === 3) {
       message = farms.message;
+      console.log("The message here is", message);
     } else if (textValue === 4) {
       const farmID = farms.idsArray[parseInt(text.split("*")[3], 10) - 1];
       message = await renderProductsInFarm(farmID, menus);
