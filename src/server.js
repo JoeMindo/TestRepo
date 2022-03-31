@@ -23,7 +23,6 @@ const client = redis.createClient({
   port: 19100,
   password: 'T6SXoEq1tyztu6oLYGpSO2cbE2dE1gDH',
 });
-// eslint-disable-next-line import/no-mutable-exports
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 
@@ -69,7 +68,6 @@ app.post('/ussd', async (req, res) => {
   } else {
     const userLanguage = languageChooser(text.split('*')[0]);
     const response = await checkIfUserExists(req.body.phoneNumber.substring(1));
-
     if (response.exists && response.role === 'BUYER') {
       client.set('user_Id', response.user_id);
       message = await checkBuyerSelection(textValue, text, userLanguage);

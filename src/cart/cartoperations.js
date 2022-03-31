@@ -59,14 +59,17 @@ export const priceToUse = (availablePriceType, choice) => {
  * @param client - The client object that is used to interact with the database.
  * @returns An array of objects.
  */
-export const showCartItems = async (client) => {
+export const showCartItems = async (client, idsArray) => {
   let prompt = '';
   let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
   fetchCartItems = JSON.parse(fetchCartItems);
-  fetchCartItems.forEach((item) => {
-    prompt += `${item.id}. ${item.product}, ${item.farmName}, ${item.grade} ${item.totalCost}\n`;
+  fetchCartItems.forEach((item, index) => {
+    idsArray.push(item.id);
+    prompt += `${(index += 1)}. ${item.product}, ${item.farmName}, ${
+      item.grade
+    } ${item.totalCost}\n`;
   });
-  return prompt;
+  return { prompt, idsArray };
 };
 
 /**
@@ -157,9 +160,9 @@ export const updateType = async (type, menus) => {
   } else {
     message = `${con()} ${menus.askForItemToUpdate}`;
   }
-  const cartItems = await showCartItems(client);
-
-  message += cartItems;
+  const response = await showCartItems(client, []);
+  client.set('idToUpdate', JSON.stringify(response.idsArray));
+  message += response.prompt;
   return message;
 };
 /**
@@ -202,7 +205,6 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
   cartItems = JSON.parse(cartItems);
   const newCartItems = [...cartItems];
   const oldObject = object;
-
   const indexToRemove = cartItems.findIndex((x) => x.id === id);
   newCartItems.splice(indexToRemove, 1);
   const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
@@ -285,8 +287,10 @@ export const displayCartItems = async (client, menus) => {
 
     if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
       fetchCartItems = JSON.parse(fetchCartItems);
-      fetchCartItems.forEach((item) => {
-        prompt += `${item.id}. ${item.product} ${menus.from} ${item.farmName} ${menus.grade}: ${item.grade} ${menus.atKES} ${item.totalCost}\n`;
+      fetchCartItems.forEach((item, index) => {
+        prompt += `${(index += 1)}. ${item.product} ${menus.from} ${
+          item.farmName
+        } ${menus.grade}: ${item.grade} ${menus.atKES} ${item.totalCost}\n`;
       });
       const availableTotal = fetchCartItems.reduce(
         (total, obj) => obj.totalCost + total,

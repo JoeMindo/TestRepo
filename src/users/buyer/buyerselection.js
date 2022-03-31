@@ -47,10 +47,14 @@ const checkBuyerSelection = async (textValue, text, language) => {
           // TODO: Make payment
           message = await cartOperations(text, 'outer', 9, menus);
         } else if (textValue === 5 && text.split('*')[3] === '1') {
-          const id = parseInt(text.split('*')[4], 10);
+          let ids = await retreiveCachedItems(client, ['idToUpdate']);
+          ids = JSON.parse(ids[0]);
+          const id = ids[parseInt(text.split('*')[4], 10) - 1];
           message = await cartOperations(text, 'outer', 4, menus, id);
         } else if (textValue === 5 && text.split('*')[3] === '2') {
-          const id = parseInt(text.split('*')[4], 10);
+          let ids = await retreiveCachedItems(client, ['idToUpdate']);
+          ids = JSON.parse(ids[0]);
+          const id = ids[parseInt(text.split('*')[4], 10) - 1];
           message = await cartOperations(text, 'outer', 5, menus, id);
         } else if (
           textValue === 6

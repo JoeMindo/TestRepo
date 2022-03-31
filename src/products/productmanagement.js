@@ -29,19 +29,20 @@ async function fetchCategories() {
   return results;
 }
 
-async function fetchProducts(id) {
+async function fetchProducts(id, idsArray) {
   let results = '';
   const response = await axios
     .get(`${BASEURL}/ussd/prodcategories`)
     .catch((err) => err.response);
   response.data.data.data.forEach((item) => {
-    item.products.forEach((description) => {
+    item.products.forEach((description, index) => {
       if (description.category_id === id) {
-        results += `${description.id}. ${description.product_name}\n `;
+        idsArray.push(description.id);
+        results += `${(index += 1)}. ${description.product_name}\n `;
       }
     });
   });
-  return results;
+  return { results, idsArray };
 }
 
 const fetchFarmOfferings = async (id, menus) => {

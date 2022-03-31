@@ -22,7 +22,6 @@ export const strings = {
   idNumber: {
     en: 'Enter your ID number\n',
     sw: 'Weka namba ya kitambulisho\n',
-
   },
   gender: {
     en: 'What is the gender\n1. Male\n2. Female',
@@ -309,7 +308,6 @@ export const strings = {
   updatedSuccessfully: {
     en: 'Updated successfully\n',
     sw: 'Imesasishwa kwa ufanisi\n',
-
   },
   updatedQuantityToBuy: {
     en: 'What is the quantity you want?\n',
@@ -528,7 +526,6 @@ export const strings = {
   kycSuccess: {
     en: 'Thank you for your submission',
     sw: 'Asante kwa kutuma ujumbe wako',
-
   },
   kycFailure: {
     en: 'Could not submit answers, try again later',
@@ -643,6 +640,13 @@ export const strings = {
     en: 'Kiswahili',
     sw: 'Kiswahili',
   },
-
+  changeLocationDetails: {
+    en: 'Change location details',
+    sw: 'Badilisha maelezo ya eneo',
+  },
+  updateLocationDetailsSuccess: {
+    en: 'Location details updated successfully',
+    sw: 'Maelezo ya eneo imesasishwa kwa mafanikio',
+  },
 };
 export default strings;

@@ -24,17 +24,13 @@ export const totalCost = {};
 export const offeringStatus = [];
 
 export const renderProducts = async (id, menus) => {
-  try {
-    const response = await fetchProducts(id);
-    if (response) {
-      message = `${con()} ${menus.chooseProduct} ${response}`;
-    } else {
-      message = `${con()} ${menus.couldNotFetch}`;
-    }
-    return message;
-  } catch (err) {
-    throw new Error(err);
+  const response = await fetchProducts(id, []).catch((err) => err.response);
+  if (response.results) {
+    message = `${con()} ${menus.chooseProduct} ${response.results}`;
+  } else {
+    message = `${con()} ${menus.couldNotFetch}`;
   }
+  return message;
 };
 export const renderOffers = (offers, offersArray, client, menus) => {
   const status = {};
@@ -99,9 +95,11 @@ export const renderOfferings = async (client, id, menus) => {
   if (productOffering.status === 200) {
     const offers = productOffering.data.message.data;
 
-    offers.forEach((offer) => {
+    offers.forEach((offer, index) => {
       const userViewOffers = {};
-      offeringText += `\n${offer.id}. ${offer.product_name} from ${offer.farm_name} Grade: ${offer.grade}\nKES ${offer.unit_price} `;
+      offeringText += `\n${(index += 1)}. ${offer.product_name} from ${
+        offer.farm_name
+      } Grade: ${offer.grade}\nKES ${offer.unit_price} `;
       userViewOffers.id = `${offer.id}`;
       userViewOffers.product = `${offer.product_name}`;
       userViewOffers.farmName = `${offer.farm_name}`;
@@ -117,7 +115,6 @@ export const renderOfferings = async (client, id, menus) => {
     message = `${con()} ${menus.askForOptionSelection} ${offeringText}`;
   } else {
     message = `${con()} ${menus.productNotAvailable}`;
-    message += menus.footer;
   }
   return {
     message,
