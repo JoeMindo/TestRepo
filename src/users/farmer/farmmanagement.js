@@ -312,7 +312,6 @@ export const renderProductsInFarm = async (farmId, menus) => {
 export const renderFarmerFarms = async (userId, menus, idsArray) => {
   let message;
   const response = await fetchFarmerFarms(userId);
-  console.log('The response aps', response);
 
   if (response.status === 200) {
     let menuPrompt = `${con()} ${menus.viewFarms}`;

@@ -128,7 +128,7 @@ const isLocationPresent = async (id) => {
   return false;
 };
 
-const updateLocationDetails = async (locationData, id) => {
+const updateLocationDetails = async (locationData) => {
   const path = `${BASEURL}/ussd/updatelocation`;
   const locationResponse = await postrequest(locationData, path).catch(
     (err) => err.response,

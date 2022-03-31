@@ -205,7 +205,6 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
   cartItems = JSON.parse(cartItems);
   const newCartItems = [...cartItems];
   const oldObject = object;
-  console.log('The old object', oldObject);
   const indexToRemove = cartItems.findIndex((x) => x.id === id);
   newCartItems.splice(indexToRemove, 1);
   const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);

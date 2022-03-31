@@ -2,11 +2,7 @@
 /* eslint-disable import/extensions */
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import client from '../../server.js';
-import {
-  addLocation,
-  isLocationPresent,
-  updateLocationDetails,
-} from '../../core/usermanagement.js';
+import { addLocation, isLocationPresent } from '../../core/usermanagement.js';
 import { retreiveCachedItems, setToCache } from '../../core/services.js';
 import {
   fetchCategories,
@@ -31,7 +27,7 @@ import {
 } from './farmmanagement.js';
 
 import { responsePrompt } from '../../menus/prompts.js';
-import { promptToGive, changeUserLocation } from './farmerlocation.js';
+import { promptToGive } from './farmerlocation.js';
 import {
   renderFarmerMenusLevelTwo,
   renderLocationOptions,
@@ -437,7 +433,6 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
       'sale_product_id',
     ]);
     productID = parseInt(productID.filter((item) => item !== null)[0], 10);
-    console.log('The product ID', productID);
     const farmProductID = productID;
     const quantity = text.split('*')[4];
     const data = {
@@ -475,17 +470,15 @@ export const secondLevelMenu = async (textValue, text, menus) => {
   } else if (selection === '7') {
     const userID = await retreiveCachedItems(client, ['user_id']);
     const farms = await renderFarmerFarms(userID[0], menus, []);
-    console.log('The farms', farms);
     if (textValue === 3) {
       message = farms.message;
-      console.log('The message here is', message);
     } else if (textValue === 4) {
       const farmID = farms.idsArray[parseInt(text.split('*')[3], 10) - 1];
       message = await renderProductsInFarm(farmID, menus);
     }
   } else if (selection === '8') {
     // const userID = await retreiveCachedItems(client, ["user_id"]);
-    const response = await changeLocationDetails();
+    // const response = await changeLocationDetails();
   }
   message += menus.footer;
   return message;
