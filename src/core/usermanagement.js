@@ -30,7 +30,9 @@ const registerUser = async (regdata, phone) => {
     password_confirmation: regdata.password_confirmation,
     gender: regdata.gender,
   };
-  const response = await axios.post(path, postdata).catch((err) => err.response);
+  const response = await axios
+    .post(path, postdata)
+    .catch((err) => err.response);
   return response;
 };
 
@@ -62,7 +64,9 @@ locationData object as the body and the id as the path.
  */
 const addLocation = async (locationData, id) => {
   const path = `${BASEURL}/ussd/geoarea/${id}`;
-  const locationResponse = await postrequest(locationData, path).catch((err) => err.response);
+  const locationResponse = await postrequest(locationData, path).catch(
+    (err) => err.response,
+  );
   return locationResponse;
 };
 
@@ -95,7 +99,9 @@ const checkIfUserExists = async (phone) => {
   const details = {
     phone_no: phone,
   };
-  const response = await axios.post(`${BASEURL}/ussd/isuser`, details).catch((err) => err.response);
+  const response = await axios
+    .post(`${BASEURL}/ussd/isuser`, details)
+    .catch((err) => err.response);
   if (response.data.status === 'success') {
     return {
       exists: response.data.message,
@@ -113,11 +119,21 @@ const checkIfUserExists = async (phone) => {
  * @returns The location of the user.
  */
 const isLocationPresent = async (id) => {
-  const response = await axios.get(`${BASEURL}/ussd/checklocationdetails/${id}`).catch((err) => err.response);
+  const response = await axios
+    .get(`${BASEURL}/ussd/checklocationdetails/${id}`)
+    .catch((err) => err.response);
   if (response.status === 200) {
     return true;
   }
   return false;
+};
+
+const updateLocationDetails = async (locationData, id) => {
+  const path = `${BASEURL}/ussd/updatelocation`;
+  const locationResponse = await postrequest(locationData, path).catch(
+    (err) => err.response,
+  );
+  return locationResponse;
 };
 
 export {
@@ -129,4 +145,5 @@ export {
   checkVerification,
   checkIfUserExists,
   isLocationPresent,
+  updateLocationDetails,
 };

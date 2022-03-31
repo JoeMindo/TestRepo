@@ -61,6 +61,7 @@ app.post('/ussd', async (req, res) => {
   const rawtext = req.body.text;
   const text = ussdRouter(rawtext, '0', '00');
   const textValue = text.split('*').length;
+  console.log('The text value is', textValue);
 
   let message;
   if (text === '') {

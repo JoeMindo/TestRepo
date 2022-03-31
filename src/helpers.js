@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 
 const usernameValidation = (text, index, menus, stringToDelete, client) => {
-  const username = text.split("*")[`${index}`];
+  const username = text.split('*')[`${index}`];
   const regex = /^[a-zA-Z]*$/;
   if (username.length < 3) {
     return `${menus.userNameTooShort}`;
@@ -13,7 +13,7 @@ const usernameValidation = (text, index, menus, stringToDelete, client) => {
   return `${menus.valid}`;
 };
 export const IdValidation = (text, menus, stringToDelete, client) => {
-  const id = text.split("*")[3];
+  const id = text.split('*')[3];
   const regex = /^[0-9]*$/;
   if (id.length < 8) {
     return `${menus.idTooShort}`;
@@ -29,9 +29,9 @@ export const numberValidation = (
   index,
   menus,
   stringToDelete,
-  client
+  client,
 ) => {
-  const number = text.split("*")[`${index}`];
+  const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
     client.del(stringToDelete);
@@ -45,9 +45,9 @@ export const numberWithinRange = (
   index,
   menus,
   stringToDelete,
-  client
+  client,
 ) => {
-  const number = text.split("*")[`${index}`];
+  const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
     client.del(stringToDelete);
@@ -57,7 +57,7 @@ export const numberWithinRange = (
 };
 
 export const languageChooser = (option) => {
-  const language = option === "1" ? "en" : "sw";
+  const language = option === '1' ? 'en' : 'sw';
   return language;
 };
 
