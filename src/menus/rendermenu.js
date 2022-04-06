@@ -151,7 +151,7 @@ export const renderLocationOptions = (menus) => {
  */
 export const renderFarmerMenusLevelTwo = (menus) => {
   let menuPrompt = `${con()} ${menus.joinGroup}`;
-  menuPrompt += `${menus.myFarms}`;
+  menuPrompt += `${menus.myFarms}\n`;
   menuPrompt += `${menus.changeLocationDetails}`;
   message = menuPrompt;
   return message;

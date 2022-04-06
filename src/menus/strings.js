@@ -641,8 +641,8 @@ export const strings = {
     sw: 'Kiswahili',
   },
   changeLocationDetails: {
-    en: 'Change location details',
-    sw: 'Badilisha maelezo ya eneo',
+    en: '8.Change location details',
+    sw: '8.Badilisha maelezo ya eneo',
   },
   updateLocationDetailsSuccess: {
     en: 'Location details updated successfully',
