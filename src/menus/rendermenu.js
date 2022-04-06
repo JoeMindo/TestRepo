@@ -170,7 +170,6 @@ export const renderBuyerMenus = (menus) => {
   let menuPrompt = `${con()} ${menus.viewProducts}\n`;
   menuPrompt += `${menus.myCart}\n`;
   menuPrompt += `${menus.myOrders}\n`;
-  menuPrompt += `${menus.groupOrder}\n`;
   menuPrompt += menus.footer;
   message = menuPrompt;
   return message;

@@ -27,6 +27,10 @@ export const strings = {
     en: 'What is the gender\n1. Male\n2. Female',
     sw: 'Jinsia yako ni gani\n1. Mwanaume\n2. Mwanamke',
   },
+  noOrders: {
+    en: 'No Orders found',
+    sw: 'Hakuna Maagizo yaliyopatikana',
+  },
   password: {
     en: 'Enter your password',
     sw: 'Weka nenosiri lako',
