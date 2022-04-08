@@ -111,7 +111,7 @@ export const confirmQuantityWithPrice = async (
   let message;
   let offers = await retreiveCachedItems(client, ["offersArray"]);
   offers = JSON.parse(offers);
-  console.log("The offers array is", offers);
+
   const buyerSelection = offers.filter((item) => item.id === productID);
   availableUnits = buyerSelection.availableUnits;
 

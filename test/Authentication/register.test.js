@@ -114,7 +114,7 @@ describe("Registration", () => {
       phoneNumber,
       language
     );
-    console.log("The response is", response);
+
     expect(response).to.equal("CON Enter your first name\n\n 00. Back 0.Home");
   });
   it("second menu level should be to ask the last name", async () => {
@@ -164,7 +164,7 @@ describe("Registration", () => {
     const language = "en";
     const menus = getStrings(strings, language);
     const validationResponse = numberValidation(text, 4, menus);
-    console.log("The validaton response is", validationResponse);
+
     const phoneNumber = "+254719939291";
 
     const response = await renderRegisterMenu(

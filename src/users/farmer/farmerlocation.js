@@ -20,7 +20,7 @@ export const fetchLocalityDetails = async (
       results = `${con()} ${menus.serverError}`;
     }
     const list = await regions;
-    console.log("The list here is", list);
+
     results = list.items;
   } else if (locality === "county") {
     const regionId = id;
@@ -59,7 +59,7 @@ export const fetchLocalityDetails = async (
     const locationIds = await retreiveCachedItems(client, ["userLocationIds"]);
 
     let userLocationSelection = locationIds[0].split(",")[`${(id -= 1)}`];
-    console.log("The user location selection", userLocationSelection);
+
     userLocationSelection = parseInt(userLocationSelection, 10);
     client.set("userLocationSelection", userLocationSelection);
   } else {
@@ -174,7 +174,7 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
       "userLocationSelection",
       "user_id",
     ]);
-    console.log("The post location details are", postLocationDetails);
+
     const postDetails = {
       user_id: parseInt(postLocationDetails[3], 10),
       county_id: postLocationDetails[0],
@@ -184,7 +184,6 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
     };
 
     const response = await updateLocation(postDetails);
-    console.log("The api response is", response);
 
     if (response.status === 200) {
       const menuPrompt = `${end()} ${menus.locationUpdateOk}`;

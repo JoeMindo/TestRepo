@@ -477,7 +477,7 @@ export const secondLevelMenu = async (textValue, text, menus) => {
     }
   } else if (selection === "8") {
     const response = await changeUserLocation(textValue, text, client, menus);
-    console.log("The response here is", response);
+
     message = response;
   }
   message += menus.footer;

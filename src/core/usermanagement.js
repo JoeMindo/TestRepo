@@ -1,14 +1,14 @@
 /* eslint-disable consistent-return */
-import axios from "axios";
-import { postrequest } from "./services.js";
-import { BASEURL } from "./urls.js";
+import axios from 'axios';
+import { postrequest } from './services.js';
+import { BASEURL } from './urls.js';
 
 const clearData = (details) => {
-  details.name = "";
-  details.Id = "";
-  details.phone = "";
-  details.password = "";
-  details.role = "";
+  details.name = '';
+  details.Id = '';
+  details.phone = '';
+  details.password = '';
+  details.role = '';
   return details;
 };
 /**
@@ -65,7 +65,7 @@ locationData object as the body and the id as the path.
 const addLocation = async (locationData, id) => {
   const path = `${BASEURL}/ussd/geoarea/${id}`;
   const locationResponse = await postrequest(locationData, path).catch(
-    (err) => err.response
+    (err) => err.response,
   );
   return locationResponse;
 };
@@ -73,7 +73,7 @@ const addLocation = async (locationData, id) => {
 const updateLocation = async (locationData) => {
   const path = `${BASEURL}/ussd/updatelocation/`;
   const locationResponse = await postrequest(locationData, path).catch(
-    (err) => err.response
+    (err) => err.response,
   );
   return locationResponse;
 };
@@ -110,7 +110,7 @@ const checkIfUserExists = async (phone) => {
   const response = await axios
     .post(`${BASEURL}/ussd/isuser`, details)
     .catch((err) => err.response);
-  if (response.data.status === "success") {
+  if (response.data.status === 'success') {
     return {
       exists: response.data.message,
       role: response.data.role,
@@ -139,7 +139,7 @@ const isLocationPresent = async (id) => {
 const updateLocationDetails = async (locationData) => {
   const path = `${BASEURL}/ussd/updatelocation`;
   const locationResponse = await postrequest(locationData, path).catch(
-    (err) => err.response
+    (err) => err.response,
   );
   return locationResponse;
 };
