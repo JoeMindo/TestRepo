@@ -15,6 +15,7 @@ import {
   addToCart,
 } from '../cart/cartoperations.js';
 import { numberWithinRange } from '../helpers.js';
+import { retreiveCachedItems } from '../core/services.js';
 
 let message;
 export const offersArray = [];
@@ -133,41 +134,32 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     const result = await renderOfferings(client, selection, menus);
     offeringStatus.push(result.status);
     message = result.message;
-  } else if (textValue === 5 && numberWithinRange(text, 4, menus) === 'valid') {
-    const selection = parseInt(text.split('*')[4], 10);
-    message = checkGroupAndIndividualPrice(
-      offeringStatus[`${offeringStatus.length - 1}`][`${selection}`],
-      menus,
-    );
   } else if (
-    textValue === 6
-    && numberWithinRange(text, 5, menus) === 'valid'
-    && text.split('*')[5] === '1'
+    textValue === 5
+    && numberWithinRange(text, 4, menus) === 'valid'
   ) {
     message = askForQuantity(menus);
   } else if (
-    textValue === 7
-    && parseInt(text.split('*')[6], 10) > 0
-    && numberWithinRange(text, 6, menus) === 'valid'
+    textValue === 6
+    && parseInt(text.split('*')[5], 10) > 0
+    && numberWithinRange(text, 5, menus) === 'valid'
   ) {
-    const userQuantity = parseInt(text.split('*')[6], 10);
-    const id = text.split('*')[4];
-    const typeOfOffering = offeringStatus[offeringStatus.length - 1];
-    const selection = parseInt(text.split('*')[4], 10);
-    const purchasingOption = text.split('*')[5];
-    const availablePrice = typeOfOffering[`${selection}`];
-    const price = priceToUse(availablePrice, purchasingOption);
+    const userQuantity = parseInt(text.split('*')[5], 10);
+    const productOffersIDs = await retreiveCachedItems(client, ['offersArray']);
+    const productOffers = JSON.parse(productOffersIDs);
+    const productOffer = productOffers.find((offer) => offer.id === text.split('*')[5]);
+    const productOfferID = productOffer.id;
     message = await confirmQuantityWithPrice(
       userQuantity,
-      id,
-      price,
+      productOfferID,
+      'unit',
       client,
       menus,
     );
   } else if (
-    textValue === 8
-    && text.split('*')[7] === '1'
-    && numberWithinRange(text, 7, menus) === 'valid'
+    textValue === 7
+    && text.split('*')[6] === '1'
+    && numberWithinRange(text, 6, menus) === 'valid'
   ) {
     message = await addToCart(client, itemSelection, totalCost, menus);
   } else if (

@@ -1,17 +1,13 @@
-// export const createKeysObject = (ids) => {
-//   const id = {};
-//   ids.forEach((item, index) => {
-//     id[`${(index += 1)}`] = item;
-//   });
-//   return id;
-// };
+const array = [
+  {
+    id: '2',
+    product: 'Tomatoes',
+    farmName: 'SimplestFarm',
+    grade: '3',
+    product_id: '1',
+    availableUnits: '2',
+    unitPrice: '600.00',
+  },
+];
 
-// export const getIds = (object) => {
-//   const ids = [];
-//   Object.values(object).forEach((item) => {
-//     ids.push(item);
-//   });
-//   return ids;
-// };
-//The following comment was made on the live share
-//This is a comment on the live share
+console.log(array.find((offers) => offers.id === '2'));
