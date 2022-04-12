@@ -147,8 +147,7 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     const userQuantity = parseInt(text.split('*')[5], 10);
     const productOffersIDs = await retreiveCachedItems(client, ['offersArray']);
     const productOffers = JSON.parse(productOffersIDs);
-    const productOffer = productOffers.find((offer) => offer.id === text.split('*')[5]);
-    const productOfferID = productOffer.id;
+    const productOfferID = productOffers[parseInt(text.split('*')[4], 10) - 1].id;
     message = await confirmQuantityWithPrice(
       userQuantity,
       productOfferID,
@@ -163,15 +162,15 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   ) {
     message = await addToCart(client, itemSelection, totalCost, menus);
   } else if (
-    textValue === 9
-    && text.split('*')[8] === '1'
-    && numberWithinRange(text, 7, menus) === 'valid'
+    textValue === 8
+    && text.split('*')[7] === '1'
+    && numberWithinRange(text, 6, menus) === 'valid'
   ) {
     message = await cartOperations(text, 'inner', 1, menus);
   } else if (
-    textValue === 9
-    && text.split('*')[8] === '67'
-    && numberWithinRange(text, 8, menus) === 'valid'
+    textValue === 8
+    && text.split('*')[7] === '67'
+    && numberWithinRange(text, 7, menus) === 'valid'
   ) {
     message = await cartOperations(text, 'inner', 0, menus);
   } else if (

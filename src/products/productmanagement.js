@@ -1,8 +1,8 @@
 /* eslint-disable import/no-cycle */
-import axios from "axios";
-import { BASEURL } from "../core/urls.js";
-import { retreiveCachedItems } from "../core/services.js";
-import { con } from "../menus/rendermenu.js";
+import axios from 'axios';
+import { BASEURL } from '../core/urls.js';
+import { retreiveCachedItems } from '../core/services.js';
+import { con } from '../menus/rendermenu.js';
 
 const optionProducts = [];
 export const offersArray = [];
@@ -15,7 +15,7 @@ export const itemSelection = {};
  * @returns The categories are being returned as a string.
  */
 async function fetchCategories() {
-  let results = "";
+  let results = '';
   const response = await axios
     .get(`${BASEURL}/ussd/prodcategories`)
     .catch((err) => err.response);
@@ -30,7 +30,7 @@ async function fetchCategories() {
 }
 
 async function fetchProducts(id, idsArray) {
-  let results = "";
+  let results = '';
   const response = await axios
     .get(`${BASEURL}/ussd/prodcategories`)
     .catch((err) => err.response);
@@ -46,7 +46,7 @@ async function fetchProducts(id, idsArray) {
 }
 
 const fetchFarmOfferings = async (id, menus) => {
-  let farmOfferings = "";
+  let farmOfferings = '';
   try {
     const response = await axios.get(`${BASEURL}/ussd/prodcategories`);
     response.data.forEach((item) => {
@@ -84,7 +84,7 @@ const getSpecificProduct = async (id) => {
   try {
     const specificProduct = await axios.get(`${BASEURL}/ussd/products/all`);
     const filteredItems = specificProduct.data.filter((item) => item.id === id);
-    let respose = "";
+    let respose = '';
     filteredItems.forEach((filteredItem) => {
       respose += `${filteredItem.id}. ${filteredItem.product_name}`;
     });
@@ -104,21 +104,22 @@ export const confirmQuantityWithPrice = async (
   productID,
   status,
   client,
-  menus
+  menus,
 ) => {
   let availableUnits = 0;
   let pricePoint;
   let message;
-  let offers = await retreiveCachedItems(client, ["offersArray"]);
+  let offers = await retreiveCachedItems(client, ['offersArray']);
   offers = JSON.parse(offers);
 
-  const buyerSelection = offers.filter((item) => item.id === productID);
+  const buyerSelection = offers.find((item) => item.id === productID);
+  console.log('The buyer selection', buyerSelection);
   availableUnits = buyerSelection.availableUnits;
 
   if (userQuantity > availableUnits) {
     message = `${con()} ${menus.amountIsHigher}`;
   } else {
-    if (status === "unit") {
+    if (status === 'unit') {
       pricePoint = parseInt(buyerSelection.unitPrice, 10);
     }
 
