@@ -174,27 +174,22 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   ) {
     message = await cartOperations(text, 'inner', 0, menus);
   } else if (
+    textValue === 9
+    && text.split('*')[8] === '1'
+    && numberWithinRange(text, 7, menus) === 'valid'
+  ) {
+    // TODO: Add the payment method function here
+    message = 'CON Payment goes here';
+  } else if (
     textValue === 10
     && text.split('*')[9] === '1'
-    && numberWithinRange(text, 8, menus) === 'valid'
-  ) {
-    message = await cartOperations(text, 'inner', 1, menus);
-  } else if (
-    textValue === 10
-    && text.split('*')[9] === '2'
-    && numberWithinRange(text, 8, menus) === 'valid'
-  ) {
-    message = await cartOperations(text, 'inner', 1, menus);
-  } else if (
-    textValue === 11
-    && text.split('*')[10] === '1'
-    && numberWithinRange(text, 10, menus) === 'valid'
+    && numberWithinRange(text, 9, menus) === 'valid'
   ) {
     message = await cartOperations(text, 'inner', 2, menus);
   } else if (
-    textValue === 11
-    && text.split('*')[10] === '2'
-    && numberWithinRange(text, 10, menus) === 'valid'
+    textValue === 10
+    && text.split('*')[9] === '2'
+    && numberWithinRange(text, 9, menus) === 'valid'
   ) {
     message = await cartOperations(text, 'inner', 3, menus);
   } else if (
