@@ -229,11 +229,11 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
 
     message = await cartOperations(text, 'inner', 6, menus, itemID, index);
   } else if (
-    textValue === 13
+    textValue === 12
     && text.split('*')[9] === '1'
     && text.split('*')[11] === '67'
   ) {
-    message = await cartOperations(text, 'inner', 0);
+    message = await cartOperations(text, 'inner', 0, menus);
   } else {
     message = `${con()} Invalid input`;
   }
