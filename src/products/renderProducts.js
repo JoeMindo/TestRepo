@@ -11,7 +11,7 @@ import { BASEURL } from '../core/urls.js';
 import {
   cartOperations,
   askForQuantity,
-  priceToUse,
+  updateCart,
   addToCart,
 } from '../cart/cartoperations.js';
 import { numberWithinRange } from '../helpers.js';
@@ -180,6 +180,8 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   ) {
     // TODO: Add the payment method function here
     message = 'CON Payment goes here';
+  } else if (textValue === 9 && text.split('*')[7] === '67' && text.split('*')[8] === '2') {
+    message = await updateCart('firstscreen', menus);
   } else if (
     textValue === 10
     && text.split('*')[9] === '1'
@@ -193,33 +195,43 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   ) {
     message = await cartOperations(text, 'inner', 3, menus);
   } else if (
-    textValue === 12
-    && text.split('*')[10] === '1'
-    && numberWithinRange(text, 11, menus) === 'valid'
+    textValue === 11
+    && text.split('*')[9] === '1'
+    && numberWithinRange(text, 10, menus) === 'valid'
   ) {
-    const itemID = parseInt(text.split('*')[11], 10);
+    const cartItems = await retreiveCachedItems(client, ['cartItems']);
+    const cartItemsArray = JSON.parse(cartItems);
+    const itemID = cartItemsArray[parseInt(text.split('*')[10], 10) - 1].id;
     message = await cartOperations(text, 'inner', 4, menus, itemID);
   } else if (
-    textValue === 12
-    && text.split('*')[10] === '2'
-    && numberWithinRange(text, 11, menus) === 'valid'
+    textValue === 11
+    && text.split('*')[9] === '2'
+    && numberWithinRange(text, 10, menus) === 'valid'
   ) {
-    const itemID = parseInt(text.split('*')[11], 10);
+    const cartItems = await retreiveCachedItems(client, ['cartItems']);
+    const cartItemsArray = JSON.parse(cartItems);
+    console.log('The cart items array', cartItemsArray);
+    const itemID = cartItemsArray[parseInt(text.split('*')[10], 10) - 1].id;
+    console.log('The item id', itemID);
     message = await cartOperations(text, 'inner', 5, menus, itemID);
   } else if (
-    textValue === 13
-    && text.split('*')[10] === '2'
+    textValue === 12
+    && text.split('*')[9] === '2'
     && numberWithinRange(text, 11, menus) === 'valid'
   ) {
-    const itemID = parseInt(text.split('*')[11], 10);
-    const index = parseInt(text.split('*')[12], 10);
+    const cartItems = await retreiveCachedItems(client, ['cartItems']);
+    const cartItemsArray = JSON.parse(cartItems);
+
+    const itemID = cartItemsArray[parseInt(text.split('*')[10], 10) - 1].id;
+
+    const index = parseInt(text.split('*')[11], 10);
     // Point A
 
     message = await cartOperations(text, 'inner', 6, menus, itemID, index);
   } else if (
-    textValue === 14
-    && text.split('*')[10] === '1'
-    && text.split('*')[12] === '67'
+    textValue === 13
+    && text.split('*')[9] === '1'
+    && text.split('*')[11] === '67'
   ) {
     message = await cartOperations(text, 'inner', 0);
   } else {

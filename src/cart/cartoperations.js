@@ -232,21 +232,20 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
  * }
  */
 export const findItemToChangeQuantity = async (client, id, menus) => {
-  let itemToUpdate;
-
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
     (err) => err,
   );
 
   cartItems = JSON.parse(cartItems);
-  cartItems.forEach((item) => {
-    if (item.id === id) {
-      itemToUpdate = item;
-      message = `${con()} ${menus.updatedQuantityToBuy}`;
-    } else {
-      message = `${con()} ${menus.itemNotFound}`;
-    }
-  });
+  console.log('Here', cartItems);
+  console.log('At this point the ID', id);
+  const itemToUpdate = cartItems.find((x) => x.id === id);
+  if (itemToUpdate) {
+    message = `${con()} ${menus.updatedQuantityToBuy}`;
+  } else {
+    message = `${con()} ${menus.itemNotFound}`;
+  }
+
   return {
     message,
     itemToUpdate,
