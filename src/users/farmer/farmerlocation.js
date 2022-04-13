@@ -1,20 +1,20 @@
 /* eslint-disable import/no-cycle */
-import { getLocations, getRegions } from "./listlocations.js";
-import { retreiveCachedItems } from "../../core/services.js";
-import { numberWithinRange } from "../../helpers.js";
-import { updateLocation } from "../../core/usermanagement.js";
+import { getLocations, getRegions } from './listlocations.js';
+import { retreiveCachedItems } from '../../core/services.js';
+import { numberWithinRange } from '../../helpers.js';
+import { updateLocation } from '../../core/usermanagement.js';
 
-const con = () => "CON";
-const end = () => "END";
+const con = () => 'CON';
+const end = () => 'END';
 
 export const fetchLocalityDetails = async (
   client,
   locality,
   menus,
-  id = null
+  id = null,
 ) => {
   let results;
-  if (locality === "region") {
+  if (locality === 'region') {
     const regions = await getRegions();
     if (regions.status === 500) {
       results = `${con()} ${menus.serverError}`;
@@ -22,46 +22,46 @@ export const fetchLocalityDetails = async (
     const list = await regions;
 
     results = list.items;
-  } else if (locality === "county") {
+  } else if (locality === 'county') {
     const regionId = id;
-    const counties = await getLocations("counties", regionId, "county_name");
+    const counties = await getLocations('counties', regionId, 'county_name');
     const list = await counties;
 
-    client.set("usercountyIds", list.ids.toString());
+    client.set('usercountyIds', list.ids.toString());
     results = list.items;
-  } else if (locality === "subcounty") {
-    const countyIds = await retreiveCachedItems(client, ["usercountyIds"]);
-    let userCountySelection = countyIds[0].split(",")[`${(id -= 1)}`];
+  } else if (locality === 'subcounty') {
+    const countyIds = await retreiveCachedItems(client, ['usercountyIds']);
+    let userCountySelection = countyIds[0].split(',')[`${(id -= 1)}`];
     userCountySelection = parseInt(userCountySelection, 10);
-    client.set("userCountySelection", userCountySelection);
+    client.set('userCountySelection', userCountySelection);
     const subcounties = await getLocations(
-      "subcounties",
+      'subcounties',
       userCountySelection,
-      "sub_county_name"
+      'sub_county_name',
     );
-    client.set("userSubcountyIds", subcounties.ids.toString());
+    client.set('userSubcountyIds', subcounties.ids.toString());
     results = subcounties.items;
-  } else if (locality === "location") {
+  } else if (locality === 'location') {
     const subcountyIds = await retreiveCachedItems(client, [
-      "userSubcountyIds",
+      'userSubcountyIds',
     ]);
-    let userSubcountySelection = subcountyIds[0].split(",")[`${(id -= 1)}`];
+    let userSubcountySelection = subcountyIds[0].split(',')[`${(id -= 1)}`];
     userSubcountySelection = parseInt(userSubcountySelection, 10);
-    client.set("userSubCountySelection", userSubcountySelection);
+    client.set('userSubCountySelection', userSubcountySelection);
     const locations = await getLocations(
-      "locations",
+      'locations',
       userSubcountySelection,
-      "location_name"
+      'location_name',
     );
-    client.set("userLocationIds", locations.ids.toString());
+    client.set('userLocationIds', locations.ids.toString());
     results = locations.items;
-  } else if (locality === "area") {
-    const locationIds = await retreiveCachedItems(client, ["userLocationIds"]);
+  } else if (locality === 'area') {
+    const locationIds = await retreiveCachedItems(client, ['userLocationIds']);
 
-    let userLocationSelection = locationIds[0].split(",")[`${(id -= 1)}`];
+    let userLocationSelection = locationIds[0].split(',')[`${(id -= 1)}`];
 
     userLocationSelection = parseInt(userLocationSelection, 10);
-    client.set("userLocationSelection", userLocationSelection);
+    client.set('userLocationSelection', userLocationSelection);
   } else {
     results = `${con()} ${menus.dataNotFound}`;
   }
@@ -77,32 +77,32 @@ export const fetchLocalityDetails = async (
  */
 export const promptToGive = async (client, locality, menus, id = null) => {
   let prompt;
-  if (locality === "region") {
-    const results = await fetchLocalityDetails(client, "region", menus);
+  if (locality === 'region') {
+    const results = await fetchLocalityDetails(client, 'region', menus);
     prompt = `${con()} ${menus.selectRegion}`;
     prompt += results;
-    prompt += menus.footer;
-  } else if (locality === "county") {
-    const results = await fetchLocalityDetails(client, "county", menus, id);
+   
+  } else if (locality === 'county') {
+    const results = await fetchLocalityDetails(client, 'county', menus, id);
 
     prompt = `${con()} ${menus.selectCounty}`;
     prompt += results;
-    prompt += menus.footer;
-  } else if (locality === "subcounty") {
-    const results = await fetchLocalityDetails(client, "subcounty", menus, id);
+    
+  } else if (locality === 'subcounty') {
+    const results = await fetchLocalityDetails(client, 'subcounty', menus, id);
     prompt = `${con()} ${menus.selectSubCounty}`;
     prompt += results;
-    prompt += menus.footer;
-  } else if (locality === "location") {
-    const results = await fetchLocalityDetails(client, "location", menus, id);
+    
+  } else if (locality === 'location') {
+    const results = await fetchLocalityDetails(client, 'location', menus, id);
 
     prompt = `${con()} ${menus.selectLocation}`;
     prompt += results;
     prompt += menus.footer;
-  } else if (locality === "area") {
-    await fetchLocalityDetails(client, "area", menus, id);
+  } else if (locality === 'area') {
+    await fetchLocalityDetails(client, 'area', menus, id);
     prompt = `${con()} ${menus.area}`;
-    prompt += menus.footer;
+    
   }
   return prompt;
 };
@@ -118,26 +118,26 @@ export const promptToGive = async (client, locality, menus, id = null) => {
 export const changeUserLocation = async (textValue, text, client, menus) => {
   let message;
   if (textValue === 3) {
-    const menuPrompt = await promptToGive(client, "region", menus);
+    const menuPrompt = await promptToGive(client, 'region', menus);
     message = menuPrompt;
   } else if (textValue === 4) {
     const validRange = numberWithinRange(text, 3, menus);
-    if (validRange === "valid") {
-      const regionId = parseInt(text.split("*")[3], 10);
-      const menuPrompt = await promptToGive(client, "county", menus, regionId);
+    if (validRange === 'valid') {
+      const regionId = parseInt(text.split('*')[3], 10);
+      const menuPrompt = await promptToGive(client, 'county', menus, regionId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 5) {
     const validRange = numberWithinRange(text, 4, menus);
-    if (validRange === "valid") {
-      const countyId = parseInt(text.split("*")[4], 10);
+    if (validRange === 'valid') {
+      const countyId = parseInt(text.split('*')[4], 10);
       const menuPrompt = await promptToGive(
         client,
-        "subcounty",
+        'subcounty',
         menus,
-        countyId
+        countyId,
       );
       message = menuPrompt;
     } else {
@@ -145,13 +145,13 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
     }
   } else if (textValue === 6) {
     const validRange = numberWithinRange(text, 5, menus);
-    if (validRange === "valid") {
-      const subcountyId = parseInt(text.split("*")[5], 10);
+    if (validRange === 'valid') {
+      const subcountyId = parseInt(text.split('*')[5], 10);
       const menuPrompt = await promptToGive(
         client,
-        "location",
+        'location',
         menus,
-        subcountyId
+        subcountyId,
       );
       message = menuPrompt;
     } else {
@@ -159,20 +159,20 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
     }
   } else if (textValue === 7) {
     const validRange = numberWithinRange(text, 6, menus);
-    if (validRange === "valid") {
-      const locationId = parseInt(text.split("*")[6], 10);
-      const menuPrompt = await promptToGive(client, "area", menus, locationId);
+    if (validRange === 'valid') {
+      const locationId = parseInt(text.split('*')[6], 10);
+      const menuPrompt = await promptToGive(client, 'area', menus, locationId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
     }
   } else if (textValue === 8) {
-    client.set("userArea", text.split("*")[6]);
+    client.set('userArea', text.split('*')[6]);
     const postLocationDetails = await retreiveCachedItems(client, [
-      "userCountySelection",
-      "userSubCountySelection",
-      "userLocationSelection",
-      "user_id",
+      'userCountySelection',
+      'userSubCountySelection',
+      'userLocationSelection',
+      'user_id',
     ]);
 
     const postDetails = {
@@ -180,7 +180,7 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
       county_id: postLocationDetails[0],
       sub_county_id: postLocationDetails[1],
       location_id: postLocationDetails[2],
-      area: text.split("*")[6],
+      area: text.split('*')[6],
     };
 
     const response = await updateLocation(postDetails);
