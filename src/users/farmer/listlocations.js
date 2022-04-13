@@ -10,7 +10,9 @@ export const getRegions = async () => {
   let menuItems = '';
   const menuIDs = [];
 
-  const regionsResult = await axios.get(`${BASEURL}/ussd/regions/`).catch((err) => err.response);
+  const regionsResult = await axios
+    .get(`${BASEURL}/ussd/regions/`)
+    .catch((err) => err.response);
   if (regionsResult.status === 200) {
     regionsResult.data.message.forEach((location) => {
       regions.push(location);

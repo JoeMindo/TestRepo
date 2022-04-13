@@ -24,14 +24,16 @@ export const viewOrders = async (userId) => {
 
 export const renderOrders = async (userId, menus) => {
   const response = await viewOrders(userId);
-
   let orders = '';
-  response.data.message.data.forEach((order) => {
-    orders += `${menus.orderId} ${
-      order.order_id.substring(0, 3) + order.order_id.substring(5, 7)
-    }, ${menus.status} ${order.order_status}\n`;
-  });
-  return orders;
+  if (Array.isArray(response.data.message)) {
+    response.data.message.data.forEach((order) => {
+      orders += `${menus.orderId} ${
+        order.order_id.substring(0, 3) + order.order_id.substring(5, 7)
+      }, ${menus.status} ${order.order_status}\n`;
+    });
+    return orders;
+  }
+  return `${menus.noOrders}`;
 };
 
 export default makebasicOrder;

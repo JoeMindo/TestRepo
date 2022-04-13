@@ -18,11 +18,7 @@ const port = process.env.PORT || 3032;
 
 const app = express();
 
-const client = redis.createClient({
-  host: 'redis-19100.c251.east-us-mz.azure.cloud.redislabs.com',
-  port: 19100,
-  password: 'T6SXoEq1tyztu6oLYGpSO2cbE2dE1gDH',
-});
+const client = redis.createClient({ host: 'redis-19100.c251.east-us-mz.azure.cloud.redislabs.com', port: 19100, password: 'T6SXoEq1tyztu6oLYGpSO2cbE2dE1gDH' });
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 
@@ -37,21 +33,13 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
-app.use(
-  session({
-    resave: true,
-    secret: '123456',
-    path: '/',
-    saveUninitialized: true,
-  }),
-);
+app.use(session({
+  resave: true, secret: '123456', path: '/', saveUninitialized: true,
+}));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, POST, GET, PATCH, DELETE',
-  );
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
@@ -75,12 +63,7 @@ app.post('/ussd', async (req, res) => {
       client.set('user_id', response.user_id);
       message = await checkFarmerSelection(text, 0, userLanguage);
     } else if (!response.exists) {
-      message = await renderRegisterMenu(
-        textValue,
-        text,
-        req.body.phoneNumber,
-        userLanguage,
-      );
+      message = await renderRegisterMenu(textValue, text, req.body.phoneNumber, userLanguage);
     }
   }
 

@@ -3,18 +3,26 @@ import nock from 'nock';
 import { describe, it } from 'mocha';
 import { BASEURL } from '../../src/core/urls.js';
 import {
-  availableGroups, location, locationNotFound, joinGroupOk, userAlreadyInGroup,
+  availableGroups,
+  location,
+  locationNotFound,
+  joinGroupOk,
+  userAlreadyInGroup,
 } from './farmerResponses.js';
-import { getLocationID, joinGroup, showGroups } from '../../src/users/farmer/farmmanagement.js';
+import {
+  getLocationID,
+  joinGroup,
+  showGroups,
+} from '../../src/users/farmer/farmmanagement.js';
+import { getStrings } from '../../src/menus/language.js';
+import { strings } from '../../src/menus/strings.js';
 
 describe('Farmer groups', () => {
   beforeEach(() => {
     nock(`${BASEURL}`)
       .get('/ussd/getgroupbylocationid/995')
       .reply(200, availableGroups);
-    nock(`${BASEURL}`)
-      .get('/ussd/checklocationdetails/1')
-      .reply(200, location);
+    nock(`${BASEURL}`).get('/ussd/checklocationdetails/1').reply(200, location);
     nock(`${BASEURL}`)
       .get('/ussd/getgroupbylocationid/664')
       .reply(404, locationNotFound);
@@ -27,12 +35,14 @@ describe('Farmer groups', () => {
   });
   it('should be listed depending on a given location', async () => {
     const location = await getLocationID(1);
-    const groups = await showGroups(location.data.locationID);
-    expect(groups).to.equal('CON Choose a group you want to join\n1. XYZ Farmers Group');
+    const menus = getStrings(strings, 'en');
+    const groups = await showGroups(location.data.locationID, menus);
+    expect(groups).to.equal('CON Choose a group to join\n1. XYZ Farmers Group');
   });
   it('should present a message if there are no groups in the location given', async () => {
-    const groups = await showGroups(664);
-    expect(groups).to.equal('CON Sorry, there are no groups available at the moment.');
+    const menus = getStrings(strings, 'en');
+    const groups = await showGroups(664, menus);
+    expect(groups).to.equal('CON No groups found');
   });
   it('should give a success message if a user chooses a particular group to join', async () => {
     const joinGroupSuccess = await joinGroup(995, 1);

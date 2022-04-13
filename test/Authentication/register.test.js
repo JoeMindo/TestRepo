@@ -10,6 +10,8 @@ import {
   registrationFailurePasswordTooShort,
 } from './responses.js';
 import { numberValidation } from '../../src/helpers.js';
+import { strings } from '../../src/menus/strings.js';
+import { getStrings } from '../../src/menus/language.js';
 
 describe('Registration', () => {
   const registrationData = {
@@ -101,82 +103,129 @@ describe('Registration', () => {
       errorsDisplayed.password[0],
     );
   });
-  it('first menu level should be to ask the first name', () => {
-    const text = '';
+  it('first menu level should be to ask the first name', async () => {
+    const text = '1';
     const textValue = 1;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
-      'CON Welcome to Mamlaka\nEnter your first name\n\n 00. Back 0.Home',
+    const phoneNumber = '+254719939291';
+    const language = 'en';
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
     );
+
+    expect(response).to.equal('CON Enter your first name\n\n 00. Back 0.Home');
   });
-  it('second menu level should be to ask the last name', () => {
-    const text = 'Joe';
-    const textValue = 1;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
-      'CON Enter your last name\n\n 00. Back 0.Home',
-    );
-  });
-  it('third menu level should be to ask the ID Number', () => {
-    const text = 'Joe*Mindo';
+  it('second menu level should be to ask the last name', async () => {
+    const text = '1*Joe';
     const textValue = 2;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
-      'CON What is your ID number\n\n 00. Back 0.Home',
+    const phoneNumber = '+254719939291';
+    const language = 'en';
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
     );
+    expect(response).to.equal('CON Enter your last name\n\n 00. Back 0.Home');
   });
-  it('fourth menu level should be to ask the gender', () => {
-    const text = 'Joe*Mindo*54712356';
+  it('third menu level should be to ask the ID Number', async () => {
+    const text = '1*Joe*Mindo';
     const textValue = 3;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
+    const phoneNumber = '+254719939291';
+    const language = 'en';
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
+    expect(response).to.equal('CON Enter your ID number\n\n 00. Back 0.Home');
+  });
+  it('fourth menu level should be to ask the gender', async () => {
+    const text = '1*Joe*Mindo*54712356';
+    const textValue = 4;
+    const phoneNumber = '+254719939291';
+    const language = 'en';
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
+    expect(response).to.equal(
       'CON What is the gender\n1. Male\n2. Female\n 00. Back 0.Home',
     );
   });
-  it('fifth menu level should be to ask the password', () => {
-    const text = 'Joe*Mindo*54712356';
-    const textValue = 4;
-    const validationResponse = numberValidation(text, 3);
-    const response = renderRegisterMenu(textValue, text);
+  it('fifth menu level should be to ask the password', async () => {
+    const text = '1*Joe*Mindo*54712356*1';
+    const textValue = 5;
+    const language = 'en';
+    const menus = getStrings(strings, language);
+    const validationResponse = numberValidation(text, 4, menus);
+
+    const phoneNumber = '+254719939291';
+
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
     if (validationResponse === 'valid') {
-      expect(response.message).to.equal(
-        'CON Enter your password\n 00. Back 0.Home',
-      );
+      expect(response).to.equal('CON Enter your password\n 00. Back 0.Home');
     } else {
-      expect(response.message).to.equal(
-        'END Choose option 1 or 2',
-      );
+      expect(response).to.equal('END Choose option 1 or 2');
     }
   });
-  it('sixth menu level should be to ask the password confirmation', () => {
-    const text = 'Joe*Mindo*54712356*12345678';
-    const textValue = 5;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
-      'CON Confirm your password\n 00. Back 0.Home',
-    );
-  });
-  it('seventh menu level should be to ask for the role', () => {
-    const text = 'Joe*Mindo*54712356*12345678*12345678';
+  it('sixth menu level should be to ask the password confirmation', async () => {
+    const text = '1*Joe*Mindo*54712356*12345678';
     const textValue = 6;
-    const response = renderRegisterMenu(textValue, text);
-    expect(response.message).to.equal(
-      'CON Who are you?\n1. Farmer\n2. Buyer\n 00. Back 0.Home',
+    const language = 'en';
+    const phoneNumber = '+254719939291';
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
+    expect(response).to.equal('CON Confirm your password\n 00. Back 0.Home');
+  });
+  it('seventh menu level should be to ask for the role', async () => {
+    const text = '1*Joe*Mindo*54712356*12345678*12345678';
+    const language = 'en';
+    const phoneNumber = '+254719939291';
+    const textValue = 7;
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
+    expect(response).to.equal(
+      'CON What is your role\n1. Farmer\n2. Buyer\n 00. Back 0.Home',
     );
   });
-  it('last menu level should prompt the user to submit their details', () => {
-    const text = 'Joe*Mindo*54712356*12345678*12345678*1';
-    const textValue = 7;
-    const validationResponse = numberValidation(text, 6);
-    const response = renderRegisterMenu(textValue, text);
+  it('last menu level should prompt the user to submit their details', async () => {
+    const text = '1*Joe*Mindo*54712356*12345678*12345678*1';
+    const textValue = 8;
+    const language = 'en';
+    const phoneNumber = '+254719939291';
+    const menus = getStrings(strings, language);
+    const validationResponse = numberValidation(text, 7, menus);
+    const response = await renderRegisterMenu(
+      textValue,
+      text,
+      phoneNumber,
+      language,
+    );
     if (validationResponse === 'valid') {
-      expect(response.message).to.equal(
+      expect(response).to.equal(
         'CON Submit details?\n 1.Yes\n 00. Back 0.Home',
       );
     } else {
-      expect(response.message).to.equal(
-        'END Choose option 1 or 2',
-      );
+      expect(response).to.equal('END Choose option only the listed options');
     }
   });
 });

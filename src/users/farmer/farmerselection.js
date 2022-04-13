@@ -26,15 +26,27 @@ const checkFarmerSelection = async (text, startIndex, language) => {
         menus,
       );
     } else if (selection === '3') {
-      message = farmerMenus.renderFarmerAddProductMenu(textValue, textToUse, menus);
+      message = farmerMenus.renderFarmerAddProductMenu(
+        textValue,
+        textToUse,
+        menus,
+      );
     } else if (selection === '4') {
-      message = farmerMenus.renderFarmerUpdateDetailsMenu(textValue, textToUse, menus);
+      message = farmerMenus.renderFarmerUpdateDetailsMenu(
+        textValue,
+        textToUse,
+        menus,
+      );
     } else if (selection === '5') {
-      message = farmerMenus.renderUpdateListedProduceMenu(textValue, textToUse, menus);
+      message = farmerMenus.renderUpdateListedProduceMenu(
+        textValue,
+        textToUse,
+        menus,
+      );
     } else if (selection === '98') {
       message = farmerMenus.secondLevelMenu(textValue, textToUse, menus);
     } else {
-      message = `${con()} ${menus.miscellaneous.invalidInput}`;
+      message = `${con()} ${menus.invalidInput}`;
     }
   }
   return message;

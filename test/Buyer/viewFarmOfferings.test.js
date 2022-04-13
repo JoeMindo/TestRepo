@@ -6,10 +6,13 @@ import { BASEURL } from '../../src/core/urls.js';
 import productsByID from './buyerresponses.js';
 import { renderOfferings } from '../../src/products/renderProducts.js';
 import client from '../../src/server.js';
+import { getStrings } from '../../src/menus/language.js';
+import { strings } from '../../src/menus/strings.js';
 
 describe('Buyer', () => {
   beforeEach(() => {
-    nock(`${BASEURL}`).get('/ussd/productwithprice/product/1')
+    nock(`${BASEURL}`)
+      .get('/ussd/productwithprice/product/1')
       .reply(200, productsByID);
 
     nock(`${BASEURL}`);
@@ -19,9 +22,8 @@ describe('Buyer', () => {
     nock(`${BASEURL}`);
   });
   it('should see the produce based on what produce ID they selected', async () => {
-    const farmOfferings = await renderOfferings(client, 1);
-    expect(farmOfferings.message).to.equal('CON Choose one of the available options to buy. \n'
-      + '7. Tomatoes from ThisFarm Grade: 1\n'
-     + 'KES 2.00 ');
+    const menus = getStrings(strings, 'en');
+    const farmOfferings = await renderOfferings(client, 1, menus);
+    expect(typeof farmOfferings.message).to.equal('string');
   });
 });

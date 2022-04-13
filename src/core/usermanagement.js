@@ -70,6 +70,14 @@ const addLocation = async (locationData, id) => {
   return locationResponse;
 };
 
+const updateLocation = async (locationData) => {
+  const path = `${BASEURL}/ussd/updatelocation/`;
+  const locationResponse = await postrequest(locationData, path).catch(
+    (err) => err.response,
+  );
+  return locationResponse;
+};
+
 /**
  * This function checks if a farmer has been verified by the admin.
  * @param id - The farmer's id
@@ -146,4 +154,5 @@ export {
   checkIfUserExists,
   isLocationPresent,
   updateLocationDetails,
+  updateLocation,
 };

@@ -27,7 +27,7 @@ import {
 } from './farmmanagement.js';
 
 import { responsePrompt } from '../../menus/prompts.js';
-import { promptToGive } from './farmerlocation.js';
+import { changeUserLocation, promptToGive } from './farmerlocation.js';
 import {
   renderFarmerMenusLevelTwo,
   renderLocationOptions,
@@ -133,7 +133,6 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
       location_id: postLocationDetails[1],
       area: postLocationDetails[2],
     };
-
     const userId = parseInt(postLocationDetails[3], 10);
     const response = await addLocation(postDetails, userId);
 
@@ -142,9 +141,9 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.locationUpdateFailed},`;
-      message += menus.footer;
     }
   }
+  message += menus.footer;
   return message;
 };
 
@@ -477,8 +476,9 @@ export const secondLevelMenu = async (textValue, text, menus) => {
       message = await renderProductsInFarm(farmID, menus);
     }
   } else if (selection === '8') {
-    // const userID = await retreiveCachedItems(client, ["user_id"]);
-    // const response = await changeLocationDetails();
+    const response = await changeUserLocation(textValue, text, client, menus);
+
+    message = response;
   }
   message += menus.footer;
   return message;

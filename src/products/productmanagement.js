@@ -16,14 +16,16 @@ export const itemSelection = {};
  */
 async function fetchCategories() {
   let results = '';
-  const response = await axios
-    .get(`${BASEURL}/ussd/prodcategories`)
-    .catch((err) => err.response);
+  const response = await axios.get(`${BASEURL}/ussd/prodcategories`).catch((err) => err.response);
 
   if (response.status === 200) {
     response.data.data.data.forEach((category) => {
       optionProducts.push(category.id);
-      results += `\n${category.id}. ${category.category_name}`;
+      results += `\n${
+        category.id
+      }. ${
+        category.category_name
+      }`;
     });
   }
   return results;
@@ -31,14 +33,16 @@ async function fetchCategories() {
 
 async function fetchProducts(id, idsArray) {
   let results = '';
-  const response = await axios
-    .get(`${BASEURL}/ussd/prodcategories`)
-    .catch((err) => err.response);
+  const response = await axios.get(`${BASEURL}/ussd/prodcategories`).catch((err) => err.response);
   response.data.data.data.forEach((item) => {
     item.products.forEach((description, index) => {
       if (description.category_id === id) {
         idsArray.push(description.id);
-        results += `${(index += 1)}. ${description.product_name}\n `;
+        results += `${
+          (index += 1)
+        }. ${
+          description.product_name
+        }\n `;
       }
     });
   });
@@ -52,7 +56,17 @@ const fetchFarmOfferings = async (id, menus) => {
     response.data.forEach((item) => {
       item.farm_products.forEach((farmItem) => {
         if (farmItem.product_id === id) {
-          farmOfferings += `${farmItem.farm_id}. ${menus.unitsAvailable} ${farmItem.units} ${menus.gradeOfItems} ${farmItem.grade}\n `;
+          farmOfferings += `${
+            farmItem.farm_id
+          }. ${
+            menus.unitsAvailable
+          } ${
+            farmItem.units
+          } ${
+            menus.gradeOfItems
+          } ${
+            farmItem.grade
+          }\n `;
         }
       });
     });
@@ -63,21 +77,15 @@ const fetchFarmOfferings = async (id, menus) => {
 };
 
 const addProduct = async (productdata) => {
-  const newProduct = axios
-    .post(`${BASEURL}/ussd/farmproduct/save`, productdata)
-    .catch((err) => err.response);
+  const newProduct = axios.post(`${BASEURL}/ussd/farmproduct/save`, productdata).catch((err) => err.response);
   return newProduct;
 };
 const productsInFarm = async (farmID) => {
-  const products = await axios
-    .get(`${BASEURL}/ussd/farmproducts/farm/${farmID}`)
-    .catch((err) => err.response);
+  const products = await axios.get(`${BASEURL}/ussd/farmproducts/farm/${farmID}`).catch((err) => err.response);
   return products;
 };
 const updateListedProduct = async (id, data) => {
-  const updatedProduce = await axios
-    .post(`${BASEURL}/ussd/farmproduct/update/${id}`, data)
-    .catch((err) => err.response);
+  const updatedProduce = await axios.post(`${BASEURL}/ussd/farmproduct/update/${id}`, data).catch((err) => err.response);
   return updatedProduce;
 };
 const getSpecificProduct = async (id) => {
@@ -86,7 +94,11 @@ const getSpecificProduct = async (id) => {
     const filteredItems = specificProduct.data.filter((item) => item.id === id);
     let respose = '';
     filteredItems.forEach((filteredItem) => {
-      respose += `${filteredItem.id}. ${filteredItem.product_name}`;
+      respose += `${
+        filteredItem.id
+      }. ${
+        filteredItem.product_name
+      }`;
     });
     return respose;
   } catch (err) {
@@ -94,50 +106,71 @@ const getSpecificProduct = async (id) => {
   }
 };
 const listProductForSale = async (data) => {
-  const response = await axios
-    .post(`${BASEURL}/ussd/farmproductcatalog/save`, data)
-    .catch((err) => err.response);
+  const response = await axios.post(`${BASEURL}/ussd/farmproductcatalog/save`, data).catch((err) => err.response);
   return response;
 };
-export const confirmQuantityWithPrice = async (
-  userQuantity,
-  productID,
-  status,
-  client,
-  menus,
-) => {
+export const confirmQuantityWithPrice = async (userQuantity, productID, status, client, menus) => {
   let availableUnits = 0;
   let pricePoint;
   let message;
   let offers = await retreiveCachedItems(client, ['offersArray']);
   offers = JSON.parse(offers);
-  const buyerSelection = offers.filter((item) => item.id === productID);
 
-  availableUnits = buyerSelection[0].availableUnits;
+  const buyerSelection = offers.find((item) => item.id === productID);
+
+  availableUnits = buyerSelection.availableUnits;
 
   if (userQuantity > availableUnits) {
-    message = `${con()} ${menus.amountIsHigher}`;
+    message = `${
+      con()
+    } ${
+      menus.amountIsHigher
+    }`;
   } else {
     if (status === 'unit') {
-      pricePoint = parseInt(buyerSelection[0].unitPrice, 10);
-    } else if (status === 'group') {
-      pricePoint = parseInt(buyerSelection[0].groupPrice, 10);
+      pricePoint = parseInt(buyerSelection.unitPrice, 10);
     }
 
     const total = userQuantity * pricePoint;
 
-    const prompt = `${buyerSelection[0].product} ${menus.from} ${buyerSelection[0].farmName} ${menus.grade} ${buyerSelection[0].grade} at ${pricePoint}`;
+    const prompt = `${
+      buyerSelection.product
+    } ${
+      menus.from
+    } ${
+      buyerSelection.farmName
+    } ${
+      menus.grade
+    } ${
+      buyerSelection.grade
+    } at ${pricePoint}`;
 
-    itemSelection.id = parseInt(`${buyerSelection[0].id}`, 10);
-    itemSelection.product = `${buyerSelection[0].product}`;
-    itemSelection.farmName = `${buyerSelection[0].farmName}`;
-    itemSelection.grade = `${buyerSelection[0].grade}`;
+    itemSelection.id = parseInt(`${
+      buyerSelection.id
+    }`, 10);
+    itemSelection.product = `${
+      buyerSelection.product
+    }`;
+    itemSelection.farmName = `${
+      buyerSelection.farmName
+    }`;
+    itemSelection.grade = `${
+      buyerSelection.grade
+    }`;
     // TODO: This should return an integer
-    itemSelection.product_id = parseInt(`${buyerSelection[0].product_id}`, 10);
+    itemSelection.product_id = parseInt(`${
+      buyerSelection.product_id
+    }`, 10);
     itemSelection.userQuantity = parseInt(`${userQuantity}`, 10);
     itemSelection.unitPrice = pricePoint;
     itemSelection.totalCost = total;
-    message = `${con()} ${menus.buy} ${prompt}\n ${menus.total} ${total}\n ${
+    message = `${
+      con()
+    } ${
+      menus.buy
+    } ${prompt}\n ${
+      menus.total
+    } ${total}\n ${
       menus.addToCart
     }`;
   }

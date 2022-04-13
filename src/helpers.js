@@ -24,33 +24,19 @@ export const IdValidation = (text, menus, stringToDelete, client) => {
   }
   return `${menus.valid}`;
 };
-export const numberValidation = (
-  text,
-  index,
-  menus,
-  stringToDelete,
-  client,
-) => {
+export const numberValidation = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    client.del(stringToDelete);
     return `${menus.chooseListedOptions}`;
   }
   return `${menus.valid}`;
 };
 
-export const numberWithinRange = (
-  text,
-  index,
-  menus,
-  stringToDelete,
-  client,
-) => {
+export const numberWithinRange = (text, index, menus) => {
   const number = text.split('*')[`${index}`];
   const regex = /^\d+$/;
   if (!regex.test(number)) {
-    client.del(stringToDelete);
     return `${menus.outOfRange}`;
   }
   return `${menus.valid}`;
