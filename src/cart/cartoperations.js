@@ -1,11 +1,11 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable prefer-destructuring */
-import { retreiveCachedItems } from '../core/services.js';
+import {retreiveCachedItems} from '../core/services.js';
 import client from '../server.js';
-import { con, end } from '../menus/rendermenu.js';
+import {con, end} from '../menus/rendermenu.js';
 import makebasicOrder from '../orders/unitOrder.js';
 import makePayment from '../payment/payment.js';
-import { itemSelection } from '../products/productmanagement.js';
+import {itemSelection} from '../products/productmanagement.js';
 
 export const offersArray = [];
 export const cartItems = [];
@@ -18,16 +18,24 @@ let message;
  * @returns The message variable.
  */
 export const askForNumber = (menus) => {
-  message = `${con()} ${menus.askForNumber}`;
-  return message;
+    message = `${
+        con()
+    } ${
+        menus.askForNumber
+    }`;
+    return message;
 };
 /**
  * Ask the user for the quantity they want to buy.
  * @returns A string
  */
 export const askForQuantity = (menus) => {
-  message = `${con()} ${menus.quantityToBuy}`;
-  return message;
+    message = `${
+        con()
+    } ${
+        menus.quantityToBuy
+    }`;
+    return message;
 };
 /**
  * If the price type is both, and the user chooses unit, then the status is unit. If the price type
@@ -38,20 +46,14 @@ status is unit. If the price type is group, then the status is group.
  * @returns The price type that is being used.
  */
 export const priceToUse = (availablePriceType, choice) => {
-  let status;
-  if (
-    (availablePriceType === 'both' && choice === '1')
-    || availablePriceType === 'unit'
-  ) {
-    status = 'unit';
-  } else if (
-    (availablePriceType === 'both' && choice === '2')
-    || availablePriceType === 'group'
-  ) {
-    status = 'group';
-  }
+    let status;
+    if ((availablePriceType === 'both' && choice === '1') || availablePriceType === 'unit') {
+        status = 'unit';
+    } else if ((availablePriceType === 'both' && choice === '2') || availablePriceType === 'group') {
+        status = 'group';
+    }
 
-  return status;
+    return status;
 };
 
 /**
@@ -60,16 +62,24 @@ export const priceToUse = (availablePriceType, choice) => {
  * @returns An array of objects.
  */
 export const showCartItems = async (client, idsArray) => {
-  let prompt = '';
-  let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
-  fetchCartItems = JSON.parse(fetchCartItems);
-  fetchCartItems.forEach((item, index) => {
-    idsArray.push(item.id);
-    prompt += `${(index += 1)}. ${item.product}, ${item.farmName}, ${
-      item.grade
-    } ${item.totalCost}\n`;
-  });
-  return { prompt, idsArray };
+    let prompt = '';
+    let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
+    fetchCartItems = JSON.parse(fetchCartItems);
+    fetchCartItems.forEach((item, index) => {
+        idsArray.push(item.id);
+        prompt += `${
+            (index += 1)
+        }. ${
+            item.product
+        }, ${
+            item.farmName
+        }, ${
+            item.grade
+        } ${
+            item.totalCost
+        }\n`;
+    });
+    return {prompt, idsArray};
 };
 
 /**
@@ -84,45 +94,47 @@ export const showCartItems = async (client, idsArray) => {
  * @param menus - The menus object that contains the menu items.
  * @returns The message is being returned.
  */
-export const addToCart = async (
-  client,
-  itemsObject,
-  totalPriceObject,
-  menus,
-) => {
-  if (itemsObject && totalPriceObject) {
-    let existingItems = await retreiveCachedItems(client, ['cartItems']);
-    client.exists('cartItems', (err, ok) => {
-      if (err) throw err;
-      if (ok === 0) {
-        cartItems.push(itemsObject);
+export const addToCart = async (client, itemsObject, totalPriceObject, menus,) => {
+    if (itemsObject && totalPriceObject) {
+        let existingItems = await retreiveCachedItems(client, ['cartItems']);
+        client.exists('cartItems', (err, ok) => {
+            if (err) 
+                throw err;
+            
+            if (ok === 0) {
+                cartItems.push(itemsObject);
 
-        client.set('cartItems', JSON.stringify(cartItems));
-      } else if (ok === 1) {
-        existingItems = JSON.parse(existingItems);
-        // Check if item is already in cart
-        const index = existingItems.findIndex(
-          (item) => item.id === itemsObject.id,
-        );
+                client.set('cartItems', JSON.stringify(cartItems));
+            } else if (ok === 1) {
+                existingItems = JSON.parse(existingItems);
+                // Check if item is already in cart
+                const index = existingItems.findIndex((item) => item.id === itemsObject.id,);
 
-        if (index === -1) {
-          existingItems.push(itemsObject);
-          client.set('cartItems', JSON.stringify(existingItems));
-        } else {
-          const newTotal = existingItems[`${index}`].userQuantity
-            * existingItems[`${index}`].unitPrice;
-          // Increase quantity function
-          existingItems[`${index}`].userQuantity += itemsObject.userQuantity;
-          existingItems[`${index}`].totalCost = newTotal;
-          client.set('cartItems', JSON.stringify(existingItems));
-        }
-      }
-    });
-    message = `${con()} ${menus.successfullyAddItemsTocart}`;
-  } else {
-    message = `${con()} ${menus.noItemsAddedToCart}`;
-  }
-  return message;
+                if (index === -1) {
+                    existingItems.push(itemsObject);
+                    client.set('cartItems', JSON.stringify(existingItems));
+                } else {
+                    const newTotal = existingItems[`${index}`].userQuantity * existingItems[`${index}`].unitPrice;
+                    // Increase quantity function
+                    existingItems[`${index}`].userQuantity += itemsObject.userQuantity;
+                    existingItems[`${index}`].totalCost = newTotal;
+                    client.set('cartItems', JSON.stringify(existingItems));
+                }
+            }
+        });
+        message = `${
+            con()
+        } ${
+            menus.successfullyAddItemsTocart
+        }`;
+    } else {
+        message = `${
+            con()
+        } ${
+            menus.noItemsAddedToCart
+        }`;
+    }
+    return message;
 };
 
 /**
@@ -132,21 +144,23 @@ export const addToCart = async (
  * @param totalPriceObject - {
  * @returns The message that is being returned.
  */
-export const confirmNewQuantity = (
-  client,
-  itemsObject,
-  totalPriceObject,
-  menus,
-) => {
-  if (itemsObject && totalPriceObject) {
-    cartItems.push(itemsObject);
-    client.set('cartItems', JSON.stringify(cartItems));
-    message = `${con()} ${menus.cartItemsUpdatedSuccessfully}`;
-  } else {
-    message = `${con()} ${menus.noItemSelectedToUpdate}`;
-  }
-  message += menus.footer;
-  return message;
+export const confirmNewQuantity = (client, itemsObject, totalPriceObject, menus,) => {
+    if (itemsObject && totalPriceObject) {
+        cartItems.push(itemsObject);
+        client.set('cartItems', JSON.stringify(cartItems));
+        message = `${
+            con()
+        } ${
+            menus.cartItemsUpdatedSuccessfully
+        }`;
+    } else {
+        message = `${
+            con()
+        } ${
+            menus.noItemSelectedToUpdate
+        }`;
+    } message += menus.footer;
+    return message;
 };
 
 /**
@@ -155,15 +169,23 @@ export const confirmNewQuantity = (
  * @returns The message that is being returned.
  */
 export const updateType = async (type, menus) => {
-  if (type === 'remove') {
-    message = `${con()} ${menus.askForItemToRemove}`;
-  } else {
-    message = `${con()} ${menus.askForItemToUpdate}`;
-  }
-  const response = await showCartItems(client, []);
-  client.set('idToUpdate', JSON.stringify(response.idsArray));
-  message += response.prompt;
-  return message;
+    if (type === 'remove') {
+        message = `${
+            con()
+        } ${
+            menus.askForItemToRemove
+        }`;
+    } else {
+        message = `${
+            con()
+        } ${
+            menus.askForItemToUpdate
+        }`;
+    }
+    const response = await showCartItems(client, []);
+    client.set('idToUpdate', JSON.stringify(response.idsArray));
+    message += response.prompt;
+    return message;
 };
 /**
  * Removing Item from cart
@@ -171,23 +193,29 @@ export const updateType = async (type, menus) => {
  * @returns The cart items
  */
 export const removeItemFromCart = async (id, menus) => {
-  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
-    (err) => err,
-  );
-  cartItems = JSON.parse(cartItems);
+    let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err,);
+    cartItems = JSON.parse(cartItems);
 
-  cartItems.forEach((item) => {
-    if (item.id === id) {
-      const indexOfItem = cartItems.indexOf(item);
-      cartItems.splice(indexOfItem, 1);
+    cartItems.forEach((item) => {
+        if (item.id === id) {
+            const indexOfItem = cartItems.indexOf(item);
+            cartItems.splice(indexOfItem, 1);
 
-      client.set('cartItems', JSON.stringify(cartItems));
-      message = `${con()} ${menus.itemRemovedSuccessfully}`;
-    } else {
-      message = `${con()} ${menus.itemNotFound}`;
-    }
-  });
-  return message;
+            client.set('cartItems', JSON.stringify(cartItems));
+            message = `${
+                con()
+            } ${
+                menus.itemRemovedSuccessfully
+            }`;
+        } else {
+            message = `${
+                con()
+            } ${
+                menus.itemNotFound
+            }`;
+        }
+    });
+    return message;
 };
 
 /**
@@ -199,22 +227,24 @@ export const removeItemFromCart = async (id, menus) => {
  * @returns A string
  */
 export const changeQuantity = async (client, amount, object, id, menus) => {
-  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
-    (err) => err,
-  );
-  cartItems = JSON.parse(cartItems);
-  const newCartItems = [...cartItems];
-  const oldObject = object;
-  const indexToRemove = cartItems.findIndex((x) => x.id === id);
-  newCartItems.splice(indexToRemove, 1);
-  const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
-  oldObject.totalCost = newTotalCost;
-  oldObject.userQuantity = parseInt(amount, 10);
-  newCartItems.push(oldObject);
+    let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err,);
+    cartItems = JSON.parse(cartItems);
+    const newCartItems = [... cartItems];
+    const oldObject = object;
+    const indexToRemove = cartItems.findIndex((x) => x.id === id);
+    newCartItems.splice(indexToRemove, 1);
+    const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
+    oldObject.totalCost = newTotalCost;
+    oldObject.userQuantity = parseInt(amount, 10);
+    newCartItems.push(oldObject);
 
-  client.set('cartItems', JSON.stringify(newCartItems));
-  message = `${end()} ${menus.updatedSuccessfully}`;
-  return message;
+    client.set('cartItems', JSON.stringify(newCartItems));
+    message = `${
+        end()
+    } ${
+        menus.updatedSuccessfully
+    }`;
+    return message;
 };
 
 /**
@@ -232,24 +262,27 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
  * }
  */
 export const findItemToChangeQuantity = async (client, id, menus) => {
-  let cartItems = await retreiveCachedItems(client, ['cartItems']).catch(
-    (err) => err,
-  );
+    let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err,);
 
-  cartItems = JSON.parse(cartItems);
-  console.log('Here', cartItems);
-  console.log('At this point the ID', id);
-  const itemToUpdate = cartItems.find((x) => x.id === id);
-  if (itemToUpdate) {
-    message = `${con()} ${menus.updatedQuantityToBuy}`;
-  } else {
-    message = `${con()} ${menus.itemNotFound}`;
-  }
+    cartItems = JSON.parse(cartItems);
 
-  return {
-    message,
-    itemToUpdate,
-  };
+
+    const itemToUpdate = cartItems.find((x) => x.id === id);
+    if (itemToUpdate) {
+        message = `${
+            con()
+        } ${
+            menus.updatedQuantityToBuy
+        }`;
+    } else {
+        message = `${
+            con()
+        } ${
+            menus.itemNotFound
+        }`;
+    }
+
+    return {message, itemToUpdate};
 };
 
 /**
@@ -258,14 +291,20 @@ export const findItemToChangeQuantity = async (client, id, menus) => {
  * @returns The total cost of the items in the cart
  */
 export const displayTotalCost = async (client, menus) => {
-  try {
-    const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
-    message = `${con()} ${menus.paymentPrompt} ${chargeToUser}\n ${menus.yes}`;
-    message += menus.footer;
-  } catch (error) {
-    throw new Error(error);
-  }
-  return message;
+    try {
+        const chargeToUser = await retreiveCachedItems(client, ['totalCost']);
+        message = `${
+            con()
+        } ${
+            menus.paymentPrompt
+        } ${chargeToUser}\n ${
+            menus.yes
+        }`;
+        message += menus.footer;
+    } catch (error) {
+        throw new Error(error);
+    }
+    return message;
 };
 
 /**
@@ -274,50 +313,79 @@ export const displayTotalCost = async (client, menus) => {
  * @returns The request object.
  */
 export const updateRequest = (request) => {
-  const array = request.body.text.split('*');
-  array.splice(2, array.length);
-  request.text = array.join('*');
-  return request;
+    const array = request.body.text.split('*');
+    array.splice(2, array.length);
+    request.text = array.join('*');
+    return request;
 };
 export const displayCartItems = async (client, menus) => {
-  try {
-    let prompt = '';
-    let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
+    try {
+        let prompt = '';
+        let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
 
-    if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
-      fetchCartItems = JSON.parse(fetchCartItems);
-      fetchCartItems.forEach((item, index) => {
-        prompt += `${(index += 1)}. ${item.product} ${menus.from} ${
-          item.farmName
-        } ${menus.grade}: ${item.grade} ${menus.atKES} ${item.totalCost}\n`;
-      });
-      const availableTotal = fetchCartItems.reduce(
-        (total, obj) => obj.totalCost + total,
-        0,
-      );
-      message = `${con()} ${menus.yourCartItems} ${prompt} ${
-        menus.total
-      } ${availableTotal}\n ${menus.checkoutAndUpdate}`;
-    } else if (fetchCartItems[0] === null) {
-      message = `${con()} ${menus.noItemsInCart}`;
-      message += menus.footer;
+        if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
+            fetchCartItems = JSON.parse(fetchCartItems);
+            fetchCartItems.forEach((item, index) => {
+                prompt += `${
+                    (index += 1)
+                }. ${
+                    item.product
+                } ${
+                    menus.from
+                } ${
+                    item.farmName
+                } ${
+                    menus.grade
+                }: ${
+                    item.grade
+                } ${
+                    menus.atKES
+                } ${
+                    item.totalCost
+                }\n`;
+            });
+            const availableTotal = fetchCartItems.reduce((total, obj) => obj.totalCost + total, 0,);
+            message = `${
+                con()
+            } ${
+                menus.yourCartItems
+            } ${prompt} ${
+                menus.total
+            } ${availableTotal}\n ${
+                menus.checkoutAndUpdate
+            }`;
+        } else if (fetchCartItems[0] === null) {
+            message = `${
+                con()
+            } ${
+                menus.noItemsInCart
+            }`;
+            message += menus.footer;
+        }
+        return message;
+    } catch (error) {
+        throw new Error(error);
     }
-    return message;
-  } catch (error) {
-    throw new Error(error);
-  }
 };
 export const updateCart = async (operation, menus, id = null) => {
-  if (operation === 'firstscreen') {
-    message = `${con()} ${menus.operation}`;
-  } else if (operation === 'removeItem') {
-    message = await removeItemFromCart(id, menus);
-  } else if (operation === 'updateItemCount') {
-    message = await findItemToChangeQuantity(id, menus);
-  } else {
-    message = `${end()} ${menus.itemNotFound}`;
-  }
-  return message;
+    if (operation === 'firstscreen') {
+        message = `${
+            con()
+        } ${
+            menus.operation
+        }`;
+    } else if (operation === 'removeItem') {
+        message = await removeItemFromCart(id, menus);
+    } else if (operation === 'updateItemCount') {
+        message = await findItemToChangeQuantity(id, menus);
+    } else {
+        message = `${
+            end()
+        } ${
+            menus.itemNotFound
+        }`;
+    }
+    return message;
 };
 
 /*
@@ -329,95 +397,96 @@ export const updateCart = async (operation, menus, id = null) => {
 6. level 5: If checkout then ask for details and make order
 */
 
-export const cartOperations = async (
-  text,
-  menuLevel,
-  level,
-  menus,
-  itemId = null,
-  index = null,
-) => {
-  let selection;
-  if (menuLevel === 'inner') {
-    selection = text.split('*')[7];
-  } else if (menuLevel === 'outer') {
-    selection = text.split('*')[2];
-  }
-
-  if (level === 0) {
-    message = await displayCartItems(client, menus);
-  } else if (selection === '1' && level === 1) {
-    message = askForNumber(menus);
-  } else if (selection === '2' && level === 1) {
-    message = updateCart('firstscreen', menus);
-  } else if (level === 2) {
-    message = await updateType('remove', menus);
-  } else if (level === 3) {
-    message = await updateType('updateItemCount', menus);
-  } else if (level === 4) {
-    message = await removeItemFromCart(itemId, menus);
-  } else if (level === 5) {
-    const response = await findItemToChangeQuantity(client, itemId, menus);
-    message = response.message;
-  } else if (level === 6) {
-    const response = await findItemToChangeQuantity(client, itemId, menus);
-
-    const item = response.itemToUpdate;
-    message = changeQuantity(client, index, item, itemId, menus);
-  } else if (level === 7) {
-    message = confirmNewQuantity(client, itemSelection, totalCost, menus);
-  } else if (level === 8) {
-    const products = [];
-    const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
-
-    const cartItems = JSON.parse(details[1]);
-
-    cartItems.forEach((item) => {
-      const pickedFields = (({
-        id,
-        // eslint-disable-next-line camelcase
-        product_id,
-        userQuantity,
-        grade,
-        totalCost,
-      }) => ({
-        id,
-        product_id,
-        userQuantity,
-        grade,
-        totalCost,
-      }))(item);
-      if (pickedFields.userQuantity > 0 && pickedFields.totalCost > 0) {
-        const cartSelections = {
-          id: pickedFields.id,
-          product_id: pickedFields.product_id,
-          grade: pickedFields.grade,
-          units: pickedFields.userQuantity,
-          price: pickedFields.totalCost,
-        };
-        products.push(cartSelections);
-      }
-    });
-
-    const cartSelections = {
-      centre_id: 5,
-      user_id: parseInt(details[0], 10),
-      products,
-      order_priority: 'medium',
-    };
-
-    const response = await makebasicOrder(cartSelections);
-
-    if (response.status === 200) {
-      client.del('cartItems');
-      message = `${end()} ${menus.orderSuccess}`;
-    } else if (response.data.status === 'error') {
-      message = `${con()} ${menus.orderFailed}`;
+export const cartOperations = async (text, menuLevel, level, menus, itemId = null, index = null,) => {
+    let selection;
+    if (menuLevel === 'inner') {
+        selection = text.split('*')[7];
+    } else if (menuLevel === 'outer') {
+        selection = text.split('*')[2];
     }
-  } else if (level === 9) {
-    message = makePayment(menus);
-  }
-  return message;
+
+    if (level === 0) {
+        message = await displayCartItems(client, menus);
+    } else if (selection === '1' && level === 1) {
+        message = askForNumber(menus);
+    } else if (selection === '2' && level === 1) {
+        message = updateCart('firstscreen', menus);
+    } else if (level === 2) {
+        message = await updateType('remove', menus);
+    } else if (level === 3) {
+        message = await updateType('updateItemCount', menus);
+    } else if (level === 4) {
+        message = await removeItemFromCart(itemId, menus);
+    } else if (level === 5) {
+        const response = await findItemToChangeQuantity(client, itemId, menus);
+        message = response.message;
+    } else if (level === 6) {
+        const response = await findItemToChangeQuantity(client, itemId, menus);
+
+        const item = response.itemToUpdate;
+        message = changeQuantity(client, index, item, itemId, menus);
+    } else if (level === 7) {
+        message = confirmNewQuantity(client, itemSelection, totalCost, menus);
+    } else if (level === 8) {
+        const products = [];
+        const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
+
+        const cartItems = JSON.parse(details[1]);
+
+        cartItems.forEach((item) => {
+            const pickedFields = (({
+                id,
+                // eslint-disable-next-line camelcase
+                product_id,
+                userQuantity,
+                grade,
+                totalCost
+            }) => ({
+                id,
+                product_id,
+                userQuantity,
+                grade,
+                totalCost
+            }))(item);
+            if (pickedFields.userQuantity > 0 && pickedFields.totalCost > 0) {
+                const cartSelections = {
+                    id: pickedFields.id,
+                    product_id: pickedFields.product_id,
+                    grade: pickedFields.grade,
+                    units: pickedFields.userQuantity,
+                    price: pickedFields.totalCost
+                };
+                products.push(cartSelections);
+            }
+        });
+
+        const cartSelections = {
+            centre_id: 5,
+            user_id: parseInt(details[0], 10),
+            products,
+            order_priority: 'medium'
+        };
+
+        const response = await makebasicOrder(cartSelections);
+
+        if (response.status === 200) {
+            client.del('cartItems');
+            message = `${
+                end()
+            } ${
+                menus.orderSuccess
+            }`;
+        } else if (response.data.status === 'error') {
+            message = `${
+                con()
+            } ${
+                menus.orderFailed
+            }`;
+        }
+    } else if (level === 9) {
+        message = makePayment(menus);
+    }
+    return message;
 };
 
 export default cartOperations;

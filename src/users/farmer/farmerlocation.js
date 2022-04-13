@@ -98,7 +98,7 @@ export const promptToGive = async (client, locality, menus, id = null) => {
 
     prompt = `${con()} ${menus.selectLocation}`;
     prompt += results;
-    prompt += menus.footer;
+    
   } else if (locality === 'area') {
     await fetchLocalityDetails(client, 'area', menus, id);
     prompt = `${con()} ${menus.area}`;
