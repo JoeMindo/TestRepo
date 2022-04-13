@@ -141,7 +141,6 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.locationUpdateFailed},`;
-      
     }
   }
   message += menus.footer;

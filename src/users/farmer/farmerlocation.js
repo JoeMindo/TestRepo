@@ -81,28 +81,23 @@ export const promptToGive = async (client, locality, menus, id = null) => {
     const results = await fetchLocalityDetails(client, 'region', menus);
     prompt = `${con()} ${menus.selectRegion}`;
     prompt += results;
-   
   } else if (locality === 'county') {
     const results = await fetchLocalityDetails(client, 'county', menus, id);
 
     prompt = `${con()} ${menus.selectCounty}`;
     prompt += results;
-    
   } else if (locality === 'subcounty') {
     const results = await fetchLocalityDetails(client, 'subcounty', menus, id);
     prompt = `${con()} ${menus.selectSubCounty}`;
     prompt += results;
-    
   } else if (locality === 'location') {
     const results = await fetchLocalityDetails(client, 'location', menus, id);
 
     prompt = `${con()} ${menus.selectLocation}`;
     prompt += results;
-    
   } else if (locality === 'area') {
     await fetchLocalityDetails(client, 'area', menus, id);
     prompt = `${con()} ${menus.area}`;
-    
   }
   return prompt;
 };

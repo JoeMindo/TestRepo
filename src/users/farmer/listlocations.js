@@ -1,5 +1,5 @@
-import axios from "axios";
-import { BASEURL } from "../../core/urls.js";
+import axios from 'axios';
+import { BASEURL } from '../../core/urls.js';
 
 /**
  * It gets the regions from the database and returns them as a menu.
@@ -7,7 +7,7 @@ import { BASEURL } from "../../core/urls.js";
  */
 export const getRegions = async () => {
   const regions = [];
-  let menuItems = "";
+  let menuItems = '';
   const menuIDs = [];
 
   const regionsResult = await axios
@@ -39,7 +39,7 @@ export const getRegions = async () => {
 export const getLocations = async (type, id, identifier) => {
   const locationType = [];
 
-  let menuItems = "";
+  let menuItems = '';
   const menuIDs = [];
   const locationResult = await axios
     .get(`${BASEURL}/ussd/${type}/${id}`)
@@ -70,4 +70,4 @@ export const getLocations = async (type, id, identifier) => {
  * @param index - The index of the text to return.
  * @returns None
  */
-export const splitText = (text, index) => text.split("*")[`${index}`];
+export const splitText = (text, index) => text.split('*')[`${index}`];
