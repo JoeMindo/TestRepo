@@ -202,6 +202,10 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         const menuPrompt = `${end()} ${menus.registerFarmFail}`;
         message = menuPrompt;
       }
+    } else if (textValue === 7 && text.split('*')[2] === '1') {
+      const menuPrompt = `${con()} ${menus.farmDescription}`;
+      menuPrompt += menus.footer;
+      message = menuPrompt;
     }
     if (text.split('*')[2] === '2') {
       message = await inputFarmLocation(textValue, text, client, menus);
