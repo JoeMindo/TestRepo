@@ -108,8 +108,8 @@ export const strings = {
     sw: 'Chagua bidhaa unayokuza\n',
   },
   farmSize: {
-    en: 'What is the farm size in acres',
-    sw: 'Shamba hilo lina ukubwa gani katika ekari',
+    en: 'What is the farm size',
+    sw: 'Shamba hilo lina ukubwa gani',
   },
   registerFarmSuccess: {
     en: 'Farm registered successfully',
@@ -653,8 +653,12 @@ export const strings = {
     sw: 'Maelezo ya eneo imesasishwa kwa mafanikio',
   },
   farmSizeMetrics: {
-    en: 'Choose one of the following metrics',
-    sw: 'Chagua moja kati ya yafuatayo',
+    en: 'What metric do you use to measure farm size?\n',
+    sw: 'Nini unatumia kuweka maelezo ya ukubwa wa shamba?\n',
+  },
+  noMetricsFound: {
+    en: 'No metrics found',
+    sw: 'Hakuna maelezo zilizopatikana',
   },
 };
 export default strings;

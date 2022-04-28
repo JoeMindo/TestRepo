@@ -59,7 +59,7 @@ export const createIdsObject = (ids) => {
 
 export const getMetrics = async (id) => {
   const response = await axios
-    .get(`${BASEURL}/ussd/get-metrics/category/${id}`)
+    .get(`${BASEURL}/api/get-metrics/category/${id}`)
     .catch((error) => error.response);
 
   return response;

@@ -177,11 +177,15 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
       }
     } else if (textValue === 5 && text.split('*')[2] === '1') {
       client.set('farm_location', text.split('*')[4]);
-      let menuPrompt = `${con()} ${menus.farmSize}`;
-      menuPrompt += menus.footer;
-      message = menuPrompt;
+      const list = await getFarmSizeMetrics(menus);
+      message = list.message;
+      message += menus.footer;
     } else if (textValue === 6 && text.split('*')[2] === '1') {
-      message = getFarmSizeMetrics(menus);
+      const selection = text.split('*')[5];
+      const list = await getFarmSizeMetrics(menus);
+      const unitToUse = list.metricsObject[`${selection}`];
+      client.set('metric_unit', unitToUse);
+      message = `${con()} ${menus.farmSize}`;
     } else if (textValue === 7 && text.split('*')[2] === '1') {
       client.set('farm_size', parseInt(text.split('*')[5], 10));
       const farmDetails = await retreiveCachedItems(client, [
@@ -190,7 +194,7 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         'farm_description',
         'farm_size',
         'user_id',
-        'metric_units',
+        'metric_unit',
       ]);
       const postDetails = {
         farm_name: farmDetails[0],
@@ -198,8 +202,10 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         farm_description: 'Null',
         farm_size: farmDetails[3],
         user_id: farmDetails[4],
+        metric_units: farmDetails[5],
       };
       const responseForAddingFarm = await addFarm(postDetails);
+      console.log('The response for adding farm', responseForAddingFarm.data.errors);
       if (responseForAddingFarm.status === 200) {
         const menuPrompt = `${end()} ${menus.registerFarmSuccess}`;
         message = menuPrompt;

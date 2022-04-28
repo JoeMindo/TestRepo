@@ -328,13 +328,21 @@ export const renderFarmerFarms = async (userId, menus, idsArray) => {
 
 export const getFarmSizeMetrics = async (menus) => {
   let message;
+  let metricsObject;
   const response = await getMetrics(2);
+  const arrayOfMetrics = response.data.message;
   if (response.status === 200) {
     let menuPrompt = `${con()} ${menus.farmSizeMetrics}`;
-    response.data.message.forEach((element, index) => {
-      menuPrompt += `${(index += 1)}. ${element.name}\n`;
+    arrayOfMetrics.forEach((element, index) => {
+      menuPrompt += `${(index += 1)}. ${element.metric_name}\n`;
     });
     message = menuPrompt;
+    metricsObject = arrayOfMetrics.reduce((prev, curr, currentIndex) => {
+      prev[currentIndex += 1] = curr.id;
+      return prev;
+    }, {});
+  } else {
+    message = `${con()} ${menus.noMetricsFound}`;
   }
-  return message;
+  return { message, metricsObject };
 };
