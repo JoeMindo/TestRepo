@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
-import { renderBuyerMenus, con } from '../../menus/rendermenu.js';
-import * as groupOrderMenus from '../../orders/groupOrder.js';
+import { renderBuyerMenus, con, renderShippingMenus } from '../../menus/rendermenu.js';
+// import * as groupOrderMenus from '../../orders/groupOrder.js';
 import { showAvailableProducts } from '../../products/renderProducts.js';
 import { retreiveCachedItems } from '../../core/services.js';
 import client from '../../server.js';
@@ -9,6 +9,8 @@ import { numberWithinRange } from '../../helpers.js';
 import { renderOrders } from '../../orders/unitOrder.js';
 import { strings } from '../../menus/strings.js';
 import { getStrings } from '../../menus/language.js';
+import createNewShippingAddress from '../../shipping/newaddress.js';
+import renderShippingAddresses from '../../shipping/viewaddresses.js';
 
 let message;
 
@@ -84,29 +86,74 @@ const checkBuyerSelection = async (textValue, text, language) => {
         message = `${con()} ${result}`;
         message += menus.footer;
       } else if (selection === '4') {
-        // const status = await groupOrderMenus.checkIfUserIsInGroup();
-        message = groupOrderMenus.actionToTake(false, menus);
-        if (textValue === 2) {
-          message = groupOrderMenus.requestGroupName(menus);
-        } else if (textValue === 3) {
-          let userId = await retreiveCachedItems(client, ['user_id']);
-          // TODO: Use the userId in place of dean ID
+        // // const status = await groupOrderMenus.checkIfUserIsInGroup();
+        // message = groupOrderMenus.actionToTake(false, menus);
+        // if (textValue === 2) {
+        //   message = groupOrderMenus.requestGroupName(menus);
+        // } else if (textValue === 3) {
+        //   let userId = await retreiveCachedItems(client, ['user_id']);
+        //   // TODO: Use the userId in place of dean ID
 
-          userId = parseInt(userId[0], 10);
-          const groupData = {
-            dean_id: userId,
-            group_name: text.split('*')[2],
-            group_type: 2,
-            status: 1,
+        //   userId = parseInt(userId[0], 10);
+        //   const groupData = {
+        //     dean_id: userId,
+        //     group_name: text.split('*')[2],
+        //     group_type: 2,
+        //     status: 1,
+        //   };
+        //   const response = await groupOrderMenus.createGroup(groupData);
+        //   message = groupOrderMenus.groupCreationMessage(response, menus);
+        // } else {
+        //   message = await groupOrderMenus.groupPricedItems(
+        //     textValue,
+        //     text,
+        //     menus,
+        //   );
+        // }
+        if (textValue === 2) {
+          message = renderShippingMenus(menus);
+        } else if (textValue === 3 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.inputCity}`;
+          message += menus.footer;
+        } else if (textValue === 4 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.inputLandmark}`;
+          message += menus.footer;
+        } else if (textValue === 5 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.isHome}`;
+          message += menus.footer;
+        } else if (textValue === 6 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.isBilling}`;
+          message += menus.footer;
+        } else if (textValue === 7 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.isPrimary}`;
+          message += menus.footer;
+        } else if (textValue === 8 && text.split('*')[2] === '1') {
+          message = `${con()} ${menus.confirmShippingDetails}`;
+          message += menus.footer;
+        } else if (textValue === 9 && text.split('*')[2] === '1' && text.split('*')[8] === '1') {
+          const shippingResponses = text.split('*');
+          let userID = await retreiveCachedItems(client, ['user_id']);
+          ({ userID } = userID);
+          const shippingData = {
+            country: 'Kenya',
+            city: shippingResponses[3],
+            landmark: shippingResponses[4],
+            is_home: shippingResponses[5] === '1' ? 1 : 0,
+            is_shipping: 1,
+            is_billing: shippingResponses[6] === '1' ? 1 : 0,
+            is_primary: shippingResponses[7] === '1' ? 1 : 0,
+            user_id: userID,
           };
-          const response = await groupOrderMenus.createGroup(groupData);
-          message = groupOrderMenus.groupCreationMessage(response, menus);
-        } else {
-          message = await groupOrderMenus.groupPricedItems(
-            textValue,
-            text,
-            menus,
-          );
+          const createShippingAddressResponse = await createNewShippingAddress(shippingData);
+          if (createShippingAddressResponse.status === 200) {
+            message = `${con()} ${menus.shippingAddressCreated}`;
+          } else {
+            message = `${con()} ${menus.shippingAddressNotCreated}`;
+          }
+        } else if (textValue === 3 && text.split('*')[2] === '2') {
+          let userID = await retreiveCachedItems(client, ['user_id']);
+          ({ userID } = userID);
+          message = await renderShippingAddresses(menus, userID);
         }
       }
     } else {

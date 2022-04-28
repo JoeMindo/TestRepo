@@ -668,6 +668,55 @@ export const strings = {
     en: 'Nothing to see here',
     sw: 'Nothing to see here',
   },
+  shippingDetails: {
+    en: '4. Shipping details',
+    sw: '4. Maelezo ya kusafirisha',
+  },
+  newShippingDetails: {
+    en: '1. Enter new shipping details',
+    sw: '1. Ingiza maelezo mpya ya kusafirisha',
+  },
+  viewShippingAddresses: {
+    en: '2. View Shipping addresses',
+    sw: '2. Angalia anwani za kusafirisha',
+  },
+  inputCity: {
+    en: 'Enter city',
+    sw: 'Ingiza mji',
+  },
+  inputLandmark: {
+    en: 'Enter landmark',
+    sw: 'Ingiza alama',
+  },
+  isHome: {
+    en: 'Is this your home?\n 1. Yes\n 2. No\n',
+    sw: 'Ndio hii ni mji yako?\n 1. Ndio\n 2. La\n',
+
+  },
+  isBilling: {
+    en: 'Is this your billing address?\n 1. Yes\n 2. No\n',
+    sw: 'Ndio hii ni anwani ya kusafirisha yako\n 1. Ndio\n 2. La\n',
+  },
+  isPrimary: {
+    en: 'Use this address as the primary address?\n 1. Yes\n 2. No\n',
+    sw: 'Tumia anwani hii kama anwani ya kuu\n 1. Ndio\n 2. La\n',
+  },
+  confirmShippingDetails: {
+    en: 'Confirm shipping details\n 1. Yes\n 2. No\n',
+    sw: 'Thibitisha maelezo ya kusafirisha\n 1. Ndio\n 2. La\n',
+  },
+  shippingAddressCreated: {
+    en: 'Shipping address created successfully',
+    sw: 'Anwani ya kusafirisha imetengenezwa kwa mafanikio',
+  },
+  shippingAddressNotCreated: {
+    en: 'Shipping address not created',
+    sw: 'Anwani ya kusafirisha haikujatengenezwa',
+  },
+  noAddressFound: {
+    en: 'No address found',
+    sw: 'Hakuna anwani zilizopatikana',
+  },
 
 };
 export default strings;

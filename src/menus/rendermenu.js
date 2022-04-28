@@ -170,6 +170,15 @@ export const renderBuyerMenus = (menus) => {
   let menuPrompt = `${con()} ${menus.viewProducts}\n`;
   menuPrompt += `${menus.myCart}\n`;
   menuPrompt += `${menus.myOrders}\n`;
+  menuPrompt += `${menus.shippingDetails}\n`;
+  menuPrompt += menus.footer;
+  message = menuPrompt;
+  return message;
+};
+
+export const renderShippingMenus = (menus) => {
+  let menuPrompt = `${con()} ${menus.newShippingDetails}\n`;
+  menuPrompt += `${menus.viewShippingAddresses}\n`;
   menuPrompt += menus.footer;
   message = menuPrompt;
   return message;
