@@ -11,6 +11,7 @@ import {
   productsInFarm,
   updateListedProduct,
   listProductForSale,
+  getProductQuantityMetrics,
 } from '../../products/productmanagement.js';
 import {
   addFarm,
@@ -343,20 +344,27 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
       productIDS = JSON.parse(productIDS[0]);
       const productId = productIDS[parseInt(text.split('*')[4], 10) - 1];
       client.set('product_id', productId);
-      // TODO: This should be a dynamic prompt
-      const menuPrompt = `${con()} ${menus.quantityOfHarvest}`;
-      message = menuPrompt;
+      const list = await getProductQuantityMetrics(menus);
+      message = list.message;
     } else if (textValue === 6) {
-      const availableQuantity = text.split('*')[5];
+      const list = await getProductQuantityMetrics(menus);
+      const selection = text.split('*')[5];
+      const produceMetric = list.metricsObject[`${selection}`];
+      client.set('produce_metric', produceMetric);
+      message = `${con()} ${menus.askForQuantityPerHarvest}`;
+    } else if (textValue === 7) {
+      const availableQuantity = text.split('*')[6];
       // TODO: Add product
       const productData = await retreiveCachedItems(client, [
         'farm_id',
         'product_id',
+        'produce_metric',
       ]);
       const postProductDetails = {
         farm_id: productData[0],
         product_id: productData[1],
         capacity: availableQuantity,
+        metric_units: productData[2],
       };
       const addingProduct = await addProduct(postProductDetails);
 

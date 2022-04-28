@@ -123,8 +123,8 @@ export const strings = {
     en: 'What is the variety of produce that you grow',
     sw: 'Ni aina gani ya mazao unayolima',
   },
-  askForNumberOfBagsPerHarvest: {
-    en: 'How many bags of produce do you have per harvest',
+  askForQuantityPerHarvest: {
+    en: 'What quantity do you have per harvest',
     sw: 'Una magunia ngapi ya mazao kwa mavuno',
   },
   totalFarmSizeOwned: {
@@ -656,9 +656,14 @@ export const strings = {
     en: 'What metric do you use to measure farm size?\n',
     sw: 'Nini unatumia kuweka maelezo ya ukubwa wa shamba?\n',
   },
+  farmAddProductMetrics: {
+    en: 'What metric do you use to package your harvest?\n',
+    sw: 'Nini unatumia kuweka maelezo ya kifungo cha ukombozi?\n',
+  },
   noMetricsFound: {
     en: 'No metrics found',
     sw: 'Hakuna maelezo zilizopatikana',
   },
+
 };
 export default strings;
