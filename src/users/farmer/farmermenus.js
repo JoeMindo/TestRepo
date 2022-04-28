@@ -458,12 +458,15 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
     productID = parseInt(productID.filter((item) => item !== null)[0], 10);
     const farmProductID = productID;
     const quantity = text.split('*')[4];
+    const selectedMetric = await retreiveCachedItems(client, ['produce_metric']);
     const data = {
       farm_product_id: farmProductID,
       units: quantity,
       grade: '3',
+      metric_units: selectedMetric[0],
     };
     const response = await listProductForSale(data);
+    console.log('The listing of something for sale is', response);
 
     if (response.status === 200) {
       message = `${end()} ${menus.forSaleSuccess}`;

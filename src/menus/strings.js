@@ -584,7 +584,7 @@ export const strings = {
     sw: 'Ni kiasi gani kipya?\n',
   },
   bagsForSale: {
-    en: 'What are the bags for sale?\n',
+    en: 'What is the quantity for sale?\n',
     sw: 'Mifuko gani inauzwa?\n',
   },
   successfullUpdate: {
