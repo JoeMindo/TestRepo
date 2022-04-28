@@ -652,5 +652,9 @@ export const strings = {
     en: 'Location details updated successfully',
     sw: 'Maelezo ya eneo imesasishwa kwa mafanikio',
   },
+  farmSizeMetrics: {
+    en: 'Choose one of the following metrics',
+    sw: 'Chagua moja kati ya yafuatayo',
+  },
 };
 export default strings;

@@ -24,6 +24,7 @@ import {
   renderFarmerFarms,
   inputFarmLocation,
   renderProductsInFarm,
+  getFarmSizeMetrics,
 } from './farmmanagement.js';
 
 import { responsePrompt } from '../../menus/prompts.js';
@@ -114,7 +115,8 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
   } else if (textValue === 6) {
     const validRange = numberWithinRange(text, 5, menus);
     if (validRange === 'valid') {
-      const menuPrompt = await promptToGive(client, 'area', menus);
+      const locationId = parseInt(text.split('*')[5], 10);
+      const menuPrompt = await promptToGive(client, 'area', menus, locationId);
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.outOfRange}`;
@@ -135,6 +137,7 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
     };
     const userId = parseInt(postLocationDetails[3], 10);
     const response = await addLocation(postDetails, userId);
+    console.log('The response for add location is', response);
 
     if (response.status === 200) {
       const menuPrompt = `${end()} ${menus.locationUpdateOk}`;
@@ -178,6 +181,8 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
       menuPrompt += menus.footer;
       message = menuPrompt;
     } else if (textValue === 6 && text.split('*')[2] === '1') {
+      message = getFarmSizeMetrics(menus);
+    } else if (textValue === 7 && text.split('*')[2] === '1') {
       client.set('farm_size', parseInt(text.split('*')[5], 10));
       const farmDetails = await retreiveCachedItems(client, [
         'farm_name',
@@ -185,6 +190,7 @@ export const renderAddFarmDetailsMenu = async (textValue, text, menus) => {
         'farm_description',
         'farm_size',
         'user_id',
+        'metric_units',
       ]);
       const postDetails = {
         farm_name: farmDetails[0],
