@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BASEURL } from '../core/urls.js';
 import { retreiveCachedItems } from '../core/services.js';
 import { con } from '../menus/rendermenu.js';
+import { getMetrics } from '../helpers.js';
 
 const optionProducts = [];
 export const offersArray = [];
@@ -176,6 +177,26 @@ export const confirmQuantityWithPrice = async (userQuantity, productID, status, 
   }
   return message;
 };
+const getProductQuantityMetrics = async (menus) => {
+  let message;
+  let metricsObject;
+  const response = await getMetrics(1);
+  const arrayOfMetrics = response.data.message;
+  if (response.status === 200) {
+    let menuPrompt = `${con()} ${menus.farmAddProductMetrics}`;
+    arrayOfMetrics.forEach((element, index) => {
+      menuPrompt += `${(index += 1)}. ${element.symbol}\n`;
+    });
+    message = menuPrompt;
+    metricsObject = arrayOfMetrics.reduce((prev, curr, currentIndex) => {
+      prev[currentIndex += 1] = curr.id;
+      return prev;
+    }, {});
+  } else {
+    message = `${con()} ${menus.noMetricsFound}`;
+  }
+  return { message, metricsObject };
+};
 
 export {
   fetchCategories,
@@ -186,4 +207,5 @@ export {
   updateListedProduct,
   productsInFarm,
   listProductForSale,
+  getProductQuantityMetrics,
 };

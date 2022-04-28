@@ -57,10 +57,14 @@ export const fetchLocalityDetails = async (
     results = locations.items;
   } else if (locality === 'area') {
     const locationIds = await retreiveCachedItems(client, ['userLocationIds']);
+    console.log('The location IDs is', locationIds);
 
     let userLocationSelection = locationIds[0].split(',')[`${(id -= 1)}`];
+    console.log('The ID here is', id);
+    console.log('Usr location selection string', userLocationSelection);
 
     userLocationSelection = parseInt(userLocationSelection, 10);
+    console.log('The user location selection', userLocationSelection);
     client.set('userLocationSelection', userLocationSelection);
   } else {
     results = `${con()} ${menus.dataNotFound}`;
@@ -156,6 +160,7 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
     const validRange = numberWithinRange(text, 6, menus);
     if (validRange === 'valid') {
       const locationId = parseInt(text.split('*')[6], 10);
+      console.log('Where we find the location ID is', locationId);
       const menuPrompt = await promptToGive(client, 'area', menus, locationId);
       message = menuPrompt;
     } else {

@@ -38,13 +38,13 @@ export const getRegions = async () => {
  */
 export const getLocations = async (type, id, identifier) => {
   const locationType = [];
-
   let menuItems = '';
   const menuIDs = [];
   const locationResult = await axios
     .get(`${BASEURL}/ussd/${type}/${id}`)
     .catch((error) => error.response);
   if (locationResult.status === 200) {
+    console.log('The location result is', locationResult.data.message);
     locationResult.data.message.forEach((location) => {
       locationType.push(location);
     });

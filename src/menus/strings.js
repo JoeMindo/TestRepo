@@ -108,8 +108,8 @@ export const strings = {
     sw: 'Chagua bidhaa unayokuza\n',
   },
   farmSize: {
-    en: 'What is the farm size in acres',
-    sw: 'Shamba hilo lina ukubwa gani katika ekari',
+    en: 'What is the farm size',
+    sw: 'Shamba hilo lina ukubwa gani',
   },
   registerFarmSuccess: {
     en: 'Farm registered successfully',
@@ -123,8 +123,8 @@ export const strings = {
     en: 'What is the variety of produce that you grow',
     sw: 'Ni aina gani ya mazao unayolima',
   },
-  askForNumberOfBagsPerHarvest: {
-    en: 'How many bags of produce do you have per harvest',
+  askForQuantityPerHarvest: {
+    en: 'What quantity do you have per harvest',
     sw: 'Una magunia ngapi ya mazao kwa mavuno',
   },
   totalFarmSizeOwned: {
@@ -584,7 +584,7 @@ export const strings = {
     sw: 'Ni kiasi gani kipya?\n',
   },
   bagsForSale: {
-    en: 'What are the bags for sale?\n',
+    en: 'What is the quantity for sale?\n',
     sw: 'Mifuko gani inauzwa?\n',
   },
   successfullUpdate: {
@@ -652,5 +652,22 @@ export const strings = {
     en: 'Location details updated successfully',
     sw: 'Maelezo ya eneo imesasishwa kwa mafanikio',
   },
+  farmSizeMetrics: {
+    en: 'What metric do you use to measure farm size?\n',
+    sw: 'Nini unatumia kuweka maelezo ya ukubwa wa shamba?\n',
+  },
+  farmAddProductMetrics: {
+    en: 'What metric do you use to package your harvest?\n',
+    sw: 'Nini unatumia kuweka maelezo ya kifungo cha ukombozi?\n',
+  },
+  noMetricsFound: {
+    en: 'No metrics found',
+    sw: 'Hakuna maelezo zilizopatikana',
+  },
+  nothingToSee: {
+    en: 'Nothing to see here',
+    sw: 'Nothing to see here',
+  },
+
 };
 export default strings;

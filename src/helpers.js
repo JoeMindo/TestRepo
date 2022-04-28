@@ -1,4 +1,6 @@
 /* eslint-disable import/no-cycle */
+import axios from 'axios';
+import { BASEURL } from './core/urls.js';
 
 const usernameValidation = (text, index, menus, stringToDelete, client) => {
   const username = text.split('*')[`${index}`];
@@ -53,6 +55,14 @@ export const createIdsObject = (ids) => {
     id[`${(index += 1)}`] = item;
   });
   return id;
+};
+
+export const getMetrics = async (id) => {
+  const response = await axios
+    .get(`${BASEURL}/api/get-metrics/category/${id}`)
+    .catch((error) => error.response);
+
+  return response;
 };
 
 export default usernameValidation;

@@ -4,7 +4,7 @@
 import axios from 'axios';
 import { BASEURL } from '../../core/urls.js';
 import { promptToGive } from './farmerlocation.js';
-import { numberWithinRange } from '../../helpers.js';
+import { numberWithinRange, getMetrics } from '../../helpers.js';
 import { end, con } from '../../menus/rendermenu.js';
 import { isTextOnly } from './farmermenus.js';
 import { retreiveCachedItems } from '../../core/services.js';
@@ -324,4 +324,25 @@ export const renderFarmerFarms = async (userId, menus, idsArray) => {
     message = `${con()} ${menus.noFarm}`;
   }
   return { message, idsArray };
+};
+
+export const getFarmSizeMetrics = async (menus) => {
+  let message;
+  let metricsObject;
+  const response = await getMetrics(2);
+  const arrayOfMetrics = response.data.message;
+  if (response.status === 200) {
+    let menuPrompt = `${con()} ${menus.farmSizeMetrics}`;
+    arrayOfMetrics.forEach((element, index) => {
+      menuPrompt += `${(index += 1)}. ${element.metric_name}\n`;
+    });
+    message = menuPrompt;
+    metricsObject = arrayOfMetrics.reduce((prev, curr, currentIndex) => {
+      prev[currentIndex += 1] = curr.id;
+      return prev;
+    }, {});
+  } else {
+    message = `${con()} ${menus.noMetricsFound}`;
+  }
+  return { message, metricsObject };
 };
