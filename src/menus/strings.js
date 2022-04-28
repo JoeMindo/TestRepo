@@ -713,6 +713,10 @@ export const strings = {
     en: 'Shipping address not created',
     sw: 'Anwani ya kusafirisha haikujatengenezwa',
   },
+  noAddressFound: {
+    en: 'No address found',
+    sw: 'Hakuna anwani zilizopatikana',
+  },
 
 };
 export default strings;

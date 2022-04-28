@@ -10,6 +10,7 @@ import { renderOrders } from '../../orders/unitOrder.js';
 import { strings } from '../../menus/strings.js';
 import { getStrings } from '../../menus/language.js';
 import createNewShippingAddress from '../../shipping/newaddress.js';
+import renderShippingAddresses from '../../shipping/viewaddresses.js';
 
 let message;
 
@@ -149,6 +150,10 @@ const checkBuyerSelection = async (textValue, text, language) => {
           } else {
             message = `${con()} ${menus.shippingAddressNotCreated}`;
           }
+        } else if (textValue === 3 && text.split('*')[2] === '2') {
+          let userID = await retreiveCachedItems(client, ['user_id']);
+          ({ userID } = userID);
+          message = await renderShippingAddresses(menus, userID);
         }
       }
     } else {
