@@ -664,6 +664,10 @@ export const strings = {
     en: 'No metrics found',
     sw: 'Hakuna maelezo zilizopatikana',
   },
+  nothingToSee: {
+    en: 'Nothing to see here',
+    sw: 'Nothing to see here',
+  },
 
 };
 export default strings;

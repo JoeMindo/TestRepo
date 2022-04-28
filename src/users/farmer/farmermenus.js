@@ -501,6 +501,8 @@ export const secondLevelMenu = async (textValue, text, menus) => {
     } else if (textValue === 4) {
       const farmID = farms.idsArray[parseInt(text.split('*')[3], 10) - 1];
       message = await renderProductsInFarm(farmID, menus);
+    } else {
+      message = `${end()} ${menus.nothingToSee}`;
     }
   } else if (selection === '8') {
     const response = await changeUserLocation(textValue, text, client, menus);
