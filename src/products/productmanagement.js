@@ -185,7 +185,7 @@ const getProductQuantityMetrics = async (menus) => {
   if (response.status === 200) {
     let menuPrompt = `${con()} ${menus.farmAddProductMetrics}`;
     arrayOfMetrics.forEach((element, index) => {
-      menuPrompt += `${(index += 1)}. ${element.metric_name}\n`;
+      menuPrompt += `${(index += 1)}. ${element.symbol}\n`;
     });
     message = menuPrompt;
     metricsObject = arrayOfMetrics.reduce((prev, curr, currentIndex) => {

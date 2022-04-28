@@ -425,7 +425,9 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
     let productID = await retreiveCachedItems(client, [
       'update_product_id',
       'sale_product_id',
+
     ]);
+    const selectedMetric = await retreiveCachedItems(client, ['produce_metric']);
     productID = parseInt(productID.filter((item) => item !== null)[0], 10);
 
     let retreivedIDs = await retreiveCachedItems(client, ['productIDs']);
@@ -438,9 +440,11 @@ export const renderUpdateListedProduceMenu = async (textvalue, text, menus) => {
       farm_id: farmID,
       product_id: productIdentity.prodID,
       capacity: updatedQuantity,
+      metric_units: selectedMetric[0],
     };
 
     const updatedProduce = await updateListedProduct(productID, data);
+    console.log('The updated produce is', updatedProduce);
     if (updatedProduce.status === 200) {
       message = `${end()} ${menus.successfullUpdate}`;
     } else {
