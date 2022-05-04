@@ -138,7 +138,7 @@ export const renderUpdateLocationMenu = async (textValue, text, menus) => {
     };
     const userId = parseInt(postLocationDetails[3], 10);
     const response = await addLocation(postDetails, userId);
-    console.log('The response for add location is', response);
+    console.log('The response for add location is', response.response.data);
 
     if (response.status === 200) {
       const menuPrompt = `${end()} ${menus.locationUpdateOk}`;

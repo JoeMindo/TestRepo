@@ -189,7 +189,7 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
       const menuPrompt = `${end()} ${menus.locationUpdateOk}`;
       message = menuPrompt;
     } else {
-      message = `${end()} ${menus.locationUpdateFailed},`;
+      message = `${end()} ${menus.locationUpdateFailed}`;
       message += menus.footer;
     }
   }
