@@ -320,9 +320,9 @@ export const displayCartItems = async (client, menus) => {
   try {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
+    fetchCartItems = JSON.parse(fetchCartItems);
 
-    if (fetchCartItems.length > 0 && fetchCartItems[0] !== null) {
-      fetchCartItems = JSON.parse(fetchCartItems);
+    if (Object.keys(fetchCartItems[0]).length > 0) {
       fetchCartItems.forEach((item, index) => {
         prompt += `${
           (index += 1)
@@ -352,7 +352,7 @@ export const displayCartItems = async (client, menus) => {
       } ${availableTotal}\n ${
         menus.checkoutAndUpdate
       }`;
-    } else if (fetchCartItems[0] === null) {
+    } else if (Object.keys(fetchCartItems[0]).length === 0) {
       message = `${
         con()
       } ${
