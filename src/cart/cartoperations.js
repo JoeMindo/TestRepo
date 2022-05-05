@@ -65,21 +65,24 @@ export const showCartItems = async (client, idsArray) => {
   let prompt = '';
   let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
   fetchCartItems = JSON.parse(fetchCartItems);
-  fetchCartItems.forEach((item, index) => {
-    idsArray.push(item.id);
-    prompt += `${
-      (index += 1)
-    }. ${
-      item.product
-    }, ${
-      item.farmName
-    }, ${
-      item.grade
-    } ${
-      item.totalCost
-    }\n`;
-  });
-  return { prompt, idsArray };
+  if (fetchCartItems.length > 0) {
+    fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length !== 0);
+    fetchCartItems.forEach((item, index) => {
+      idsArray.push(item.id);
+      prompt += `${
+        (index += 1)
+      }. ${
+        item.product
+      }, ${
+        item.farmName
+      }, ${
+        item.grade
+      } ${
+        item.totalCost
+      }\n`;
+    });
+    return { prompt, idsArray };
+  }
 };
 
 /**
@@ -182,6 +185,7 @@ export const updateType = async (type, menus) => {
     }`;
   }
   const response = await showCartItems(client, []);
+  console.log('The response here is', response);
   client.set('idToUpdate', JSON.stringify(response.idsArray));
   message += response.prompt;
   return message;
@@ -321,8 +325,8 @@ export const displayCartItems = async (client, menus) => {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
     fetchCartItems = JSON.parse(fetchCartItems);
-
-    if (Object.keys(fetchCartItems[0]).length > 0) {
+    if (fetchCartItems.length > 0) {
+      fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length !== 0);
       fetchCartItems.forEach((item, index) => {
         prompt += `${
           (index += 1)
