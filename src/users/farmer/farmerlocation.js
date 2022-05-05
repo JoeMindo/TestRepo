@@ -180,17 +180,17 @@ export const changeUserLocation = async (textValue, text, client, menus) => {
       county_id: postLocationDetails[0],
       sub_county_id: postLocationDetails[1],
       location_id: postLocationDetails[2],
-      area: text.split('*')[6],
+      area: text.split('*')[7],
     };
 
     const response = await updateLocation(postDetails);
+    console.log('The response is', response);
 
     if (response.status === 200) {
       const menuPrompt = `${end()} ${menus.locationUpdateOk}`;
       message = menuPrompt;
     } else {
       message = `${end()} ${menus.locationUpdateFailed}`;
-      message += menus.footer;
     }
   }
   return message;

@@ -213,6 +213,7 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     const selection = parseInt(text.split('*')[2], 10);
     message = await renderProducts(selection, menus);
   } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') {
+    // TODO: Fix getting product ID here
     const selection = parseInt(text.split('*')[3], 10);
     const result = await renderOfferings(client, selection, menus);
     offeringStatus.push(result.status);

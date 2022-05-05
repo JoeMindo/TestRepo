@@ -133,18 +133,23 @@ const checkBuyerSelection = async (textValue, text, language) => {
         } else if (textValue === 9 && text.split('*')[2] === '1' && text.split('*')[8] === '1') {
           const shippingResponses = text.split('*');
           let userID = await retreiveCachedItems(client, ['user_id']);
-          ({ userID } = userID);
+          userID = parseInt(userID[0], 10);
           const shippingData = {
             country: 'Kenya',
             city: shippingResponses[3],
             landmark: shippingResponses[4],
             is_home: shippingResponses[5] === '1' ? 1 : 0,
             is_shipping: 1,
+            lat: 1.1,
+            lng: 1.1,
             is_billing: shippingResponses[6] === '1' ? 1 : 0,
             is_primary: shippingResponses[7] === '1' ? 1 : 0,
-            user_id: userID,
+
           };
-          const createShippingAddressResponse = await createNewShippingAddress(shippingData);
+
+          // eslint-disable-next-line max-len
+          const createShippingAddressResponse = await createNewShippingAddress(shippingData, userID);
+          console.log('This is the response from createNewShippingAddress', createShippingAddressResponse);
           if (createShippingAddressResponse.status === 200) {
             message = `${con()} ${menus.shippingAddressCreated}`;
           } else {
@@ -152,7 +157,7 @@ const checkBuyerSelection = async (textValue, text, language) => {
           }
         } else if (textValue === 3 && text.split('*')[2] === '2') {
           let userID = await retreiveCachedItems(client, ['user_id']);
-          ({ userID } = userID);
+          userID = parseInt(userID[0], 10);
           message = await renderShippingAddresses(menus, userID);
         }
       }

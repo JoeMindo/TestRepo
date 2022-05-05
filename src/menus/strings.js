@@ -55,8 +55,8 @@ export const strings = {
     en: 'Could not assign you a role, please register again',
     sw: 'Haikuweza kukupa jukumu, tafadhali jiandikishe tena',
   },
-  updateLocation: {
-    en: '1. Update Location\n',
+  update: {
+    en: '1. Add Location\n',
     sw: '1. Sasisha Mahali\n',
   },
   addFarmDetails: {
@@ -204,8 +204,8 @@ export const strings = {
     sw: 'Eneo Limesasishwa',
   },
   locationUpdateFailed: {
-    en: 'Could not update location',
-    sw: 'Haikuweza kusasisha eneo',
+    en: 'Could not update location, try again later!',
+    sw: 'Haikuweza kusasisha eneo, jaribu tena baadae!',
   },
   noLocation: {
     en: 'Update your location first',
