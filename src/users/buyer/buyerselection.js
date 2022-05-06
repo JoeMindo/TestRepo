@@ -67,9 +67,11 @@ const checkBuyerSelection = async (textValue, text, language) => {
         ) {
           message = await cartOperations(text, 'outer', 0);
         } else if (textValue === 6 && text.split('*')[3] === '2') {
-          const id = parseInt(text.split('*')[4], 10);
+          let ids = await retreiveCachedItems(client, ['idToUpdate']);
+          ids = JSON.parse(ids[0]);
+          const id = ids[parseInt(text.split('*')[4], 10) - 1];
           const newQuantity = parseInt(text.split('*')[5], 10);
-          message = await cartOperations(
+          const response = await cartOperations(
             text,
             'outer',
             6,
@@ -77,6 +79,7 @@ const checkBuyerSelection = async (textValue, text, language) => {
             id,
             newQuantity,
           );
+          message = response
         } else if (textValue === 7 && text.split('*')[3] === '2') {
           const id = parseInt(text.split('*')[4], 10);
           message = await cartOperations(text, 'outer', 6, id);

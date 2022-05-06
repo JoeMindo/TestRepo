@@ -231,10 +231,12 @@ export const removeItemFromCart = async (id, menus) => {
  * @returns A string
  */
 export const changeQuantity = async (client, amount, object, id, menus) => {
+  console.log('The passed object is', object);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
   cartItems = JSON.parse(cartItems);
   const newCartItems = [...cartItems];
   const oldObject = object;
+  console.log('The old object is', oldObject);
   const indexToRemove = cartItems.findIndex((x) => x.id === id);
   newCartItems.splice(indexToRemove, 1);
   const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
@@ -266,11 +268,13 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
  * }
  */
 export const findItemToChangeQuantity = async (client, id, menus) => {
+  console.log('The id passed is', id);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
 
   cartItems = JSON.parse(cartItems);
-
   const itemToUpdate = cartItems.find((x) => x.id === id);
+  console.log('The item to update', itemToUpdate);
+
   if (itemToUpdate) {
     message = `${
       con()
@@ -326,6 +330,7 @@ export const displayCartItems = async (client, menus) => {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
     fetchCartItems = JSON.parse(fetchCartItems);
+    console.log('The fetch cart items are', fetchCartItems);
     if (fetchCartItems.length > 0) {
       fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length !== 0);
       fetchCartItems.forEach((item, index) => {
@@ -427,7 +432,7 @@ export const cartOperations = async (
     message = response.message;
   } else if (level === 6) {
     const response = await findItemToChangeQuantity(client, itemId, menus);
-
+    console.log('The response at item to change quantity', response);
     const item = response.itemToUpdate;
     message = changeQuantity(client, index, item, itemId, menus);
   } else if (level === 7) {
