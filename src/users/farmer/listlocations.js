@@ -1,32 +1,31 @@
 import axios from 'axios';
-import { BASEURL } from '../../core/urls.js';
+import {BASEURL} from '../../core/urls.js';
 
 /**
  * It gets the regions from the database and returns them as a menu.
  * @returns The response object is an object with the following properties:
  */
 export const getRegions = async () => {
-  const regions = [];
-  let menuItems = '';
-  const menuIDs = [];
+    const regions = [];
+    let menuItems = '';
+    const menuIDs = [];
 
-  const regionsResult = await axios
-    .get(`${BASEURL}/ussd/regions/`)
-    .catch((err) => err.response);
-  if (regionsResult.status === 200) {
-    regionsResult.data.message.forEach((location) => {
-      regions.push(location);
-    });
-    regions.forEach((value, index) => {
-      menuItems += `${(index += 1)}. ${value.region_name}\n`;
-      menuIDs.push(value.id_regions);
-    });
-    return {
-      items: menuItems,
-      ids: menuIDs,
-    };
-  }
-  return regionsResult;
+    const regionsResult = await axios.get(`${BASEURL}/ussd/regions/`).catch((err) => err.response);
+    if (regionsResult.status === 200) {
+        regionsResult.data.message.forEach((location) => {
+            regions.push(location);
+        });
+        regions.forEach((value, index) => {
+            menuItems += `${
+                (index += 1)
+            }. ${
+                value.region_name
+            }\n`;
+            menuIDs.push(value.id_regions);
+        });
+        return {items: menuItems, ids: menuIDs};
+    }
+    return regionsResult;
 };
 
 /**
@@ -37,29 +36,26 @@ export const getRegions = async () => {
  * @returns The menu items and the ids of the locations.
  */
 export const getLocations = async (type, id, identifier) => {
-  const locationType = [];
-  let menuItems = '';
-  const menuIDs = [];
-  const locationResult = await axios
-    .get(`${BASEURL}/ussd/${type}/${id}`)
-    .catch((error) => error.response);
-  if (locationResult.status === 200) {
-    console.log('The location result is', locationResult.data.message);
-    locationResult.data.message.forEach((location) => {
-      locationType.push(location);
-    });
-    locationType.forEach((value, index) => {
-      const name = value[`${identifier}`];
-      menuItems += `${(index += 1)}. ${name}\n`;
-      menuIDs.push(value.id);
-    });
+    const locationType = [];
+    let menuItems = '';
+    const menuIDs = [];
+    const locationResult = await axios.get(`${BASEURL}/ussd/${type}/${id}`).catch((error) => error.response);
+    if (locationResult.status === 200) {
 
-    return {
-      items: menuItems,
-      ids: menuIDs,
-    };
-  }
-  return locationResult;
+        locationResult.data.message.forEach((location) => {
+            locationType.push(location);
+        });
+        locationType.forEach((value, index) => {
+            const name = value[`${identifier}`];
+            menuItems += `${
+                (index += 1)
+            }. ${name}\n`;
+            menuIDs.push(value.id);
+        });
+
+        return {items: menuItems, ids: menuIDs};
+    }
+    return locationResult;
 };
 
 /**

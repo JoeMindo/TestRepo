@@ -213,16 +213,15 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     const selection = parseInt(text.split('*')[2], 10);
     const products = await renderProducts(selection, menus);
     message = products.message;
-  } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') {
-    // TODO: Fix getting product ID here
+  } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') { // TODO: Fix getting product ID here
     const getIds = await renderProducts(parseInt(text.split('*')[2], 10), menus);
-    console.log('Get ids', getIds);
+
     const ids = getIds.idsArray;
-    console.log('The ids', ids);
+
     const selection = ids[parseInt(text.split('*')[3], 10) - 1];
-    console.log('The selection', selection);
+
     const result = await renderOfferings(client, selection, menus);
-    console.log('The result here is', result);
+
     offeringStatus.push(result.status);
     message = result.message;
   } else if (textValue === 5 && numberWithinRange(text, 4, menus) === 'valid') {
@@ -230,7 +229,7 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   } else if (textValue === 6 && parseInt(text.split('*')[5], 10) > 0 && numberWithinRange(text, 5, menus) === 'valid') {
     const userQuantity = parseInt(text.split('*')[5], 10);
     const productOffersIDs = await retreiveCachedItems(client, ['offersArray']);
-    console.log('The product offers IDs', productOffersIDs);
+
     const productOffers = JSON.parse(productOffersIDs);
     const productOfferID = productOffers[parseInt(text.split('*')[4], 10) - 1].id;
     message = await confirmQuantityWithPrice(userQuantity, productOfferID, 'unit', client, menus);
@@ -240,10 +239,12 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
     message = await cartOperations(text, 'inner', 1, menus);
   } else if (textValue === 8 && text.split('*')[7] === '67' && numberWithinRange(text, 7, menus) === 'valid') {
     message = await cartOperations(text, 'inner', 0, menus);
-  } else if (textValue === 9 && text.split('*')[8] === '1' && numberWithinRange(text, 7, menus) === 'valid') { // TODO: Add the payment method function here
+  } else if (textValue === 9 && text.split('*')[8] === '2' && numberWithinRange(text, 7, menus) === 'valid') { // TODO: Add the payment method function here
     message = 'CON Payment goes here';
   } else if (textValue === 9 && text.split('*')[7] === '67' && text.split('*')[8] === '2') {
     message = await updateCart('firstscreen', menus);
+  } else if (textValue === 9 && text.split('*')[8] === '1' && numberWithinRange(text, 7, menus) === 'valid') {
+    message = await cartOperations(text, 'inner', 8, menus);
   } else if (textValue === 10 && text.split('*')[9] === '1' && numberWithinRange(text, 9, menus) === 'valid') {
     message = await cartOperations(text, 'inner', 2, menus);
   } else if (textValue === 10 && text.split('*')[9] === '2' && numberWithinRange(text, 9, menus) === 'valid') {
@@ -251,15 +252,14 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   } else if (textValue === 11 && text.split('*')[9] === '1' && numberWithinRange(text, 10, menus) === 'valid') {
     const cartItems = await retreiveCachedItems(client, ['cartItems']);
     const cartItemsArray = JSON.parse(cartItems);
-    console.log('The cart items array', cartItemsArray);
+
     const itemID = cartItemsArray[parseInt(text.split('*')[10], 10) - 1].id;
     message = await cartOperations(text, 'inner', 4, menus, itemID);
   } else if (textValue === 11 && text.split('*')[9] === '2' && numberWithinRange(text, 10, menus) === 'valid') {
     const cartItems = await retreiveCachedItems(client, ['cartItems']);
     const cartItemsArray = JSON.parse(cartItems);
-    console.log('The cart items array', cartItemsArray);
+
     const itemID = cartItemsArray[parseInt(text.split('*')[10], 10) - 1].id;
-    console.log('The cart item id', itemID);
 
     message = await cartOperations(text, 'inner', 5, menus, itemID);
   } else if (textValue === 12 && text.split('*')[9] === '2' && numberWithinRange(text, 11, menus) === 'valid') {
@@ -281,5 +281,4 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   } message += menus.footer;
   return message;
 };
-
 export default renderOffers;

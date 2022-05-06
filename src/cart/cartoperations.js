@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable import/no-cycle */
 /* eslint-disable prefer-destructuring */
 import { retreiveCachedItems } from '../core/services.js';
@@ -66,7 +67,7 @@ export const showCartItems = async (client, idsArray) => {
   let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
   fetchCartItems = JSON.parse(fetchCartItems);
   if (fetchCartItems.length > 0) {
-    fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length !== 0);
+    fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length > 7);
     fetchCartItems.forEach((item, index) => {
       idsArray.push(item.id);
       prompt += `${
@@ -83,6 +84,8 @@ export const showCartItems = async (client, idsArray) => {
     });
     return { prompt, idsArray };
   }
+  prompt = 'No items found';
+  return prompt;
 };
 
 /**
@@ -101,7 +104,9 @@ export const addToCart = async (client, itemsObject, totalPriceObject, menus) =>
   if (itemsObject && totalPriceObject) {
     let existingItems = await retreiveCachedItems(client, ['cartItems']);
     client.exists('cartItems', (err, ok) => {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
 
       if (ok === 0) {
         cartItems.push(itemsObject);
@@ -185,7 +190,7 @@ export const updateType = async (type, menus) => {
     }`;
   }
   const response = await showCartItems(client, []);
-  console.log('The response here is', response);
+
   client.set('idToUpdate', JSON.stringify(response.idsArray));
   message += response.prompt;
   return message;
@@ -196,7 +201,6 @@ export const updateType = async (type, menus) => {
  * @returns The cart items
  */
 export const removeItemFromCart = async (id, menus) => {
-  console.log('The id is', id);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
   cartItems = JSON.parse(cartItems);
 
@@ -219,6 +223,7 @@ export const removeItemFromCart = async (id, menus) => {
       }`;
     }
   });
+  message += menus.footer;
   return message;
 };
 
@@ -231,12 +236,11 @@ export const removeItemFromCart = async (id, menus) => {
  * @returns A string
  */
 export const changeQuantity = async (client, amount, object, id, menus) => {
-  console.log('The passed object is', object);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
   cartItems = JSON.parse(cartItems);
   const newCartItems = [...cartItems];
   const oldObject = object;
-  console.log('The old object is', oldObject);
+
   const indexToRemove = cartItems.findIndex((x) => x.id === id);
   newCartItems.splice(indexToRemove, 1);
   const newTotalCost = oldObject.unitPrice * parseInt(amount, 10);
@@ -268,12 +272,10 @@ export const changeQuantity = async (client, amount, object, id, menus) => {
  * }
  */
 export const findItemToChangeQuantity = async (client, id, menus) => {
-  console.log('The id passed is', id);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
 
   cartItems = JSON.parse(cartItems);
   const itemToUpdate = cartItems.find((x) => x.id === id);
-  console.log('The item to update', itemToUpdate);
 
   if (itemToUpdate) {
     message = `${
@@ -330,9 +332,9 @@ export const displayCartItems = async (client, menus) => {
     let prompt = '';
     let fetchCartItems = await retreiveCachedItems(client, ['cartItems']);
     fetchCartItems = JSON.parse(fetchCartItems);
-    console.log('The fetch cart items are', fetchCartItems);
+
     if (fetchCartItems.length > 0) {
-      fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length !== 0);
+      fetchCartItems = fetchCartItems.filter((value) => Object.keys(value).length > 7);
       fetchCartItems.forEach((item, index) => {
         prompt += `${
           (index += 1)
@@ -405,9 +407,7 @@ export const updateCart = async (operation, menus, id = null) => {
 6. level 5: If checkout then ask for details and make order
 */
 
-export const cartOperations = async (
-  text, menuLevel, level, menus, itemId = null, index = null,
-) => {
+export const cartOperations = async (text, menuLevel, level, menus, itemId = null, index = null) => {
   let selection;
   if (menuLevel === 'inner') {
     selection = text.split('*')[7];
@@ -432,13 +432,12 @@ export const cartOperations = async (
     message = response.message;
   } else if (level === 6) {
     const response = await findItemToChangeQuantity(client, itemId, menus);
-    console.log('The response at item to change quantity', response);
+
     const item = response.itemToUpdate;
     message = changeQuantity(client, index, item, itemId, menus);
   } else if (level === 7) {
     message = confirmNewQuantity(client, itemSelection, totalCost, menus);
   } else if (level === 8) {
-    console.log('I am executed');
     const products = [];
     const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
 
@@ -479,7 +478,7 @@ export const cartOperations = async (
     };
 
     const response = await makebasicOrder(cartSelections);
-    console.log('The response is', response);
+
     if (response.status === 200) {
       client.del('cartItems');
       message = `${

@@ -282,8 +282,8 @@ export const strings = {
     sw: 'Ingiza kiasi unachotaka kununua\n',
   },
   successfullyAddItemsTocart: {
-    en: 'Successfully added items to cart\n 1. Checkout\n 67. View Cart',
-    sw: 'Imeongeza vipengee kwenye rukwama\n 1. Lipa\n 67. Angalia Rukwama',
+    en: 'Successfully added items to cart\n 1. Checkout\n',
+    sw: 'Imeongeza vipengee kwenye rukwama\n 1. Lipa\n',
   },
   noItemsAddedToCart: {
     en: 'You have not selected any item to add to cart',
@@ -307,7 +307,7 @@ export const strings = {
   },
 
   itemRemovedSuccessfully: {
-    en: 'Item removed successfully\n 67. View cart\n',
+    en: 'Item removed successfully\n',
     sw: 'Kipengee kimeondolewa\n 67. Tazama rukwama\n',
   },
   itemNotFound: {

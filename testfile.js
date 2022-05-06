@@ -2,8 +2,8 @@
 // import { BASEURL } from './src/core/urls.js';
 
 // const allMetrics = {
-//   status: 'success',
-//   message: [
+// status: 'success',
+// message: [
 //     {
 //       id: 1,
 //       metric_category_id: 1,
@@ -112,12 +112,12 @@
 //       no_of_items: 0,
 //       category_name: 'Warehouse',
 //     },
-//   ],
+// ],
 // };
 
 // const metricsByID = {
-//   status: 'success',
-//   message: [
+// status: 'success',
+// message: [
 //     {
 //       id: 1,
 //       metric_category_id: 1,
@@ -181,17 +181,16 @@
 //       no_of_items: 0,
 //       category_name: 'Products',
 //     },
-//   ],
+// ],
 
 // };
 // export const getMetrics = async (type) => {
-//   const response = await axios
+// const response = await axios
 //     .get(`${BASEURL}/ussd/get-metrics/`)
 //     .catch((error) => error.response);
-//   return response;
+// return response;
 // };
 
-// console.log(await getMetrics('Land'));
+//
 
 const arr = ['993,321,456'];
-console.log(arr[0].split(','));

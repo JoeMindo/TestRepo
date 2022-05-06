@@ -9,7 +9,7 @@ const viewShippingAddresses = async (userID) => {
 
 export const renderShippingMenus = async (menus, userID) => {
   let results = `${con()} Here are your addresses:`;
-  const response = await viewShippingAddresses(userID);8
+  const response = await viewShippingAddresses(userID);
   if (response.status === 200 && response.data.message.length > 0) {
     response.data.message.forEach((item, index) => {
       results += `\n${
