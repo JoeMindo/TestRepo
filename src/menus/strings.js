@@ -215,6 +215,11 @@ export const strings = {
     en: 'Error!',
     sw: 'Hitilafu!',
   },
+  choosePaymentPlan: {
+    en: 'Choose a payment option\n 1. Pay later\n 2. Pay Now',
+    sw: 'Chagua jinsi ya kulipa\n  1. Lipa baadae\n 2. Lipa sa hii',
+  },
+
   footer: {
     en: '\n 00. Back 0.Home',
     sw: '\n 00. Nyuma 0.Nyumbani',

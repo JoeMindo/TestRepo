@@ -17,11 +17,11 @@ let message;
  * Ask the user for a number.
  * @returns The message variable.
  */
-export const askForNumber = (menus) => {
+export const askPaymentPlan = (menus) => {
   message = `${
     con()
   } ${
-    menus.askForNumber
+    menus.choosePaymentPlan
   }`;
   return message;
 };
@@ -413,7 +413,7 @@ export const cartOperations = async (
   if (level === 0) {
     message = await displayCartItems(client, menus);
   } else if (selection === '1' && level === 1) {
-    message = askForNumber(menus);
+    message = askPaymentPlan(menus);
   } else if (selection === '2' && level === 1) {
     message = updateCart('firstscreen', menus);
   } else if (level === 2) {
@@ -433,6 +433,7 @@ export const cartOperations = async (
   } else if (level === 7) {
     message = confirmNewQuantity(client, itemSelection, totalCost, menus);
   } else if (level === 8) {
+    console.log('I am executed');
     const products = [];
     const details = await retreiveCachedItems(client, ['user_id', 'cartItems']);
 
@@ -473,7 +474,7 @@ export const cartOperations = async (
     };
 
     const response = await makebasicOrder(cartSelections);
-
+    console.log('The response is', response);
     if (response.status === 200) {
       client.del('cartItems');
       message = `${
@@ -481,7 +482,7 @@ export const cartOperations = async (
       } ${
         menus.orderSuccess
       }`;
-    } else if (response.data.status === 'error') {
+    } else if (response.status === 500) {
       message = `${
         con()
       } ${

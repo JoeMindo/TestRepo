@@ -37,6 +37,8 @@ const checkBuyerSelection = async (textValue, text, language) => {
           && text.split('*')[3] === '1'
         ) {
           message = await cartOperations(text, 'outer', 8, menus);
+        } else if (textValue === 4 && text.split('*')[2] === '1' && text.split('*')[3] === '2') {
+          message = await cartOperations(text, 'outer', 9, menus);
         } else if (textValue === 4 && text.split('*')[3] === '1') {
           message = await cartOperations(text, 'outer', 2, menus);
         } else if (textValue === 4 && text.split('*')[3] === '2') {
