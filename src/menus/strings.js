@@ -325,6 +325,11 @@ export const strings = {
     en: 'Your cart items are \n',
     sw: 'Vitu vyako vya rukwama ni \n',
   },
+  addLocation: {
+    en: '1. Add Location',
+    sw: '1. Jaza anwani',
+  },
+
   checkoutAndUpdate: {
     en: '1. Checkout\n 2. Update Cart',
     sw: '1. Malipo\n 2. Sasisha Rukwama',

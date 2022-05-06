@@ -130,7 +130,7 @@ export const renderLoginMenus = (menus) => {
  * @returns A string that is the message that is displayed to the user.
  */
 export const renderFarmerMenus = (menus) => {
-  let menuPrompt = `${con()} ${menus.updateLocation}`;
+  let menuPrompt = `${con()} ${menus.addLocation}`;
   menuPrompt += menus.addFarmDetails;
   menuPrompt += menus.addProduct;
   menuPrompt += menus.updateDetails;

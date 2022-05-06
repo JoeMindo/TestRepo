@@ -196,6 +196,7 @@ export const updateType = async (type, menus) => {
  * @returns The cart items
  */
 export const removeItemFromCart = async (id, menus) => {
+  console.log('The id is', id);
   let cartItems = await retreiveCachedItems(client, ['cartItems']).catch((err) => err);
   cartItems = JSON.parse(cartItems);
 
