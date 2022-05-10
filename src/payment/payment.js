@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import axios from 'axios';
-import { con } from '../menus/rendermenu.js';
+import { con, end } from '../menus/rendermenu.js';
 import { BASEURL } from '../core/urls.js';
 
 /**
@@ -20,7 +20,7 @@ export const makeSTKPush = async (phone, menus) => {
     const pushresponse = await axios.post(`${BASEURL}/ussd/testmpesa`, { phone_no: phone });
     if (pushresponse.status === 200) {
       message = `${
-        con()
+        end()
       } ${
         menus.stksuccess
       }`;
