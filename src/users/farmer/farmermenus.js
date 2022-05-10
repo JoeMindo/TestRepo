@@ -443,7 +443,7 @@ export const renderFarmerAddProductMenu = async (textValue, text, menus) => {
             }`;
         } else if (textValue === 7) {
             const availableQuantity = text.split('*')[6];
-            // TODO: Add product
+            
             const productData = await retreiveCachedItems(client, ['farm_id', 'product_id', 'produce_metric',]);
             const postProductDetails = {
                 farm_id: productData[0],

@@ -5,7 +5,7 @@ import { retreiveCachedItems } from '../core/services.js';
 import client from '../server.js';
 import { con, end } from '../menus/rendermenu.js';
 import makebasicOrder from '../orders/unitOrder.js';
-import makePayment from '../payment/payment.js';
+import { makeSTKPush } from '../payment/payment.js';
 import { itemSelection } from '../products/productmanagement.js';
 
 export const offersArray = [];
@@ -407,7 +407,7 @@ export const updateCart = async (operation, menus, id = null) => {
 6. level 5: If checkout then ask for details and make order
 */
 
-export const cartOperations = async (text, menuLevel, level, menus, itemId = null, index = null) => {
+export const cartOperations = async (text, menuLevel, level, menus, itemId = null, index = null, phone = null) => {
   let selection;
   if (menuLevel === 'inner') {
     selection = text.split('*')[7];
@@ -494,7 +494,7 @@ export const cartOperations = async (text, menuLevel, level, menus, itemId = nul
       }`;
     }
   } else if (level === 9) {
-    message = makePayment(menus);
+    message = await makeSTKPush(phone, menus);
   }
   return message;
 };

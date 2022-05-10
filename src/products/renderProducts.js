@@ -10,6 +10,7 @@ import {
 } from '../cart/cartoperations.js';
 import { numberWithinRange } from '../helpers.js';
 import { retreiveCachedItems } from '../core/services.js';
+import { makeSTKPush } from '../payment/payment.js';
 
 let message;
 export const offersArray = [];
@@ -206,14 +207,14 @@ export const renderOfferings = async (client, id, menus) => {
   return { message, status };
 };
 
-export const showAvailableProducts = async (client, textValue, text, menus) => {
+export const showAvailableProducts = async (client, textValue, text, menus, phone) => {
   if (textValue === 2) {
     message = await renderProductCategories(menus);
   } else if (textValue === 3 && numberWithinRange(text, 2, menus) === 'valid') {
     const selection = parseInt(text.split('*')[2], 10);
     const products = await renderProducts(selection, menus);
     message = products.message;
-  } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') { // TODO: Fix getting product ID here
+  } else if (textValue === 4 && numberWithinRange(text, 3, menus) === 'valid') {
     const getIds = await renderProducts(parseInt(text.split('*')[2], 10), menus);
 
     const ids = getIds.idsArray;
@@ -240,7 +241,8 @@ export const showAvailableProducts = async (client, textValue, text, menus) => {
   } else if (textValue === 8 && text.split('*')[7] === '67' && numberWithinRange(text, 7, menus) === 'valid') {
     message = await cartOperations(text, 'inner', 0, menus);
   } else if (textValue === 9 && text.split('*')[8] === '2' && numberWithinRange(text, 7, menus) === 'valid') { // TODO: Add the payment method function here
-    message = 'CON Payment goes here';
+    const stkpush = await makeSTKPush(phone, menus);
+    message = stkpush;
   } else if (textValue === 9 && text.split('*')[7] === '67' && text.split('*')[8] === '2') {
     message = await updateCart('firstscreen', menus);
   } else if (textValue === 9 && text.split('*')[8] === '1' && numberWithinRange(text, 7, menus) === 'valid') {

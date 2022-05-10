@@ -168,8 +168,28 @@ export const strings = {
     sw: 'Ingiza wingi wa',
   },
   askForGrade: {
-    en: `How would you grade your produce?\n1.${grades[1]}\n2.${grades[2]}\n3.${grades[3]}\n4. ${grades[4]}\n5. ${grades[5]}`,
-    sw: `Je, ungepangaje bidhaa zako?\n1.${grades[1]}\n2.${grades[2]}\n3.${grades[3]}\n4. ${grades[4]}\n5. ${grades[5]}`,
+    en: `How would you grade your produce?\n1.${
+      grades[1]
+    }\n2.${
+      grades[2]
+    }\n3.${
+      grades[3]
+    }\n4. ${
+      grades[4]
+    }\n5. ${
+      grades[5]
+    }`,
+    sw: `Je, ungepangaje bidhaa zako?\n1.${
+      grades[1]
+    }\n2.${
+      grades[2]
+    }\n3.${
+      grades[3]
+    }\n4. ${
+      grades[4]
+    }\n5. ${
+      grades[5]
+    }`,
   },
   productAddedSuccessfully: {
     en: 'Product added successfully',
@@ -726,6 +746,10 @@ export const strings = {
   noAddressFound: {
     en: 'No address found',
     sw: 'Hakuna anwani zilizopatikana',
+  },
+  stksuccess: {
+    en: 'You will be prompted to enter your mpesa pin',
+    sw: 'Unafanya kuweka pin ya mpesa',
   },
 
 };

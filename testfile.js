@@ -193,4 +193,6 @@
 
 //
 
-const arr = ['993,321,456'];
+let phone = '+254722222222';
+let newPhone = phone.replace(/^'(.*)'$/, '$1');
+console.log('The phone here is', newPhone);
